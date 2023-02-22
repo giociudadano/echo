@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "931594052343",
+    "project_id": "bullet-upvisayas",
+    "storage_bucket": "bullet-upvisayas.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:931594052343:android:20c346a1494df57f3129f2",
+        "android_client_info": {
+          "package_name": "com.upvisayas.bullet.bullet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "931594052343-1icr49smicgenkmfcgk811cr5clfh5f7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1DxBBMY4bqJ96cZr5y8J67bc15B4wU7E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "931594052343-1icr49smicgenkmfcgk811cr5clfh5f7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "931594052343-m53fon53dlhdh6klf2439ddokbeb92ts.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.upvisayas.bullet.bullet"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
