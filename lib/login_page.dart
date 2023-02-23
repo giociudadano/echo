@@ -11,10 +11,9 @@ class LoginPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Welcome!', style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 48,
-              )),
+              Text('Landing Page',
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 48,)
+              ),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
