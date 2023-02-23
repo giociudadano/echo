@@ -1,4 +1,5 @@
 import 'package:bullet/signup_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'home_page.dart';
@@ -62,10 +63,7 @@ class LoginPage extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                  content: Text("Account logged in!"),
-                                ));
-                                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomePage()), (route) => false);
+                                _loginUser(context, _inputEmail.text, _inputPassword.text);
                               }
                             },
                             child: const Text('Log In'),
@@ -101,5 +99,30 @@ class LoginPage extends StatelessWidget {
       return 'Please enter a password';
     }
     return null;
+  }
+
+  _loginUser(context, email, password) async {
+    try {
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email,
+          password: password
+      );
+    } on FirebaseAuthException catch (e) {
+      String errorMessage;
+      switch (e.code){
+        case 'user-not-found':
+        case 'wrong-password':
+          errorMessage = "Email or password is incorrect.";
+          break;
+        default:
+          errorMessage = "There was an unknown error with logging in your account. Please try again later.";
+      }
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$errorMessage')));
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("Account logged in!"),
+    ));
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomePage()), (route) => false);
   }
 }
