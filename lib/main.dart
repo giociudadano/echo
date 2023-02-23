@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'firebase_options.dart';
 import 'login_page.dart';
+import 'home_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +30,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MyAppPage extends StatefulWidget {
+  const MyAppPage({super.key});
+
   @override
   State <MyAppPage> createState() => _MyAppPageState();
 }

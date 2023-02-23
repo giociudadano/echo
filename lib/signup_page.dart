@@ -1,10 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'home_page.dart';
+
 class SignupPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  var _inputEmail = TextEditingController();
-  var _inputPassword = TextEditingController();
+  final _inputEmail = TextEditingController();
+  final _inputPassword = TextEditingController();
+
+  SignupPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +19,7 @@ class SignupPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Signup Page',
+              const Text('Signup Page',
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 48,)
               ),
               Form(
@@ -26,7 +30,7 @@ class SignupPage extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                       child: TextFormField(
                         controller: _inputEmail,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Email',
                         hintText: 'Enter your email',
@@ -41,7 +45,7 @@ class SignupPage extends StatelessWidget {
                       child: TextFormField(
                         controller: _inputPassword,
                         obscureText: true,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Password',
                           hintText: 'Enter your password',
@@ -53,13 +57,24 @@ class SignupPage extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            _addUser(context);
-                          }
-                        },
-                        child: const Text('Submit'),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                _addUser(context);
+                              }
+                            },
+                            child: const Text('Submit'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Back'),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -95,20 +110,24 @@ class SignupPage extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Account has been created!"),
       ));
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomePage()), (route) => false);
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Password is too weak, please enter at least 6 characters."),
-        ));
-      } else if (e.code == 'email-already-in-use') {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Email already exists, please try logging in using this email."),
-        ));
+      String errorMessage;
+      switch (e.code){
+        case 'weak-password':
+          errorMessage = "Password is too weak, please enter at least 6 characters.";
+          break;
+        case 'email-already-in-use':
+          errorMessage = "Email already exists, please try logging in using this email.";
+          break;
+        default:
+          errorMessage = "There was an unknown error with creating your account. Please try again later.";
       }
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$errorMessage')));
       return;
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("There was an unknown error creating your account. Please try again later."),
+        content: Text("There was an unknown error with authenticating to servers. Please try again later."),
       ));
       return;
     };
