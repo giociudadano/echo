@@ -60,7 +60,7 @@ class SignupPage extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                _addUser(context);
+                                _addUser(context, _inputEmail.text, _inputPassword.text);
                               }
                             },
                             child: const Text('Submit'),
@@ -98,11 +98,11 @@ class SignupPage extends StatelessWidget {
     return null;
   }
 
-  _addUser(BuildContext context) async {
+  _addUser(BuildContext context, email, password) async {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _inputEmail.text,
-        password: _inputPassword.text,
+        email: email,
+        password: password,
       );
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Account has been created!"),

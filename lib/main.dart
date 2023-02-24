@@ -7,7 +7,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:bullet/firebase_options.dart';
-
 part 'gui/login.dart';
 part 'gui/signup.dart';
 part 'gui/home.dart';
