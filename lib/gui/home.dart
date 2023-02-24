@@ -17,6 +17,12 @@ class HomePage extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () {
+                  _writeData();
+                },
+                child: const Text('Write Data'),
+              ),
+              ElevatedButton(
+                onPressed: () {
                   _logoutUser(context);
                 },
                 child: const Text('Log Out'),
@@ -42,4 +48,17 @@ class HomePage extends StatelessWidget {
     ));
     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginPage()), (route) => false);
   }
+
+  void _writeData() async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("users/123");
+
+    await ref.set({
+      "name": "John",
+      "age": 18,
+      "address": {
+        "line1": "100 Mountain View"
+      }
+    });
+  }
+
 }

@@ -4,6 +4,16 @@ import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
+/// Default [FirebaseOptions] for use with your Firebase apps.
+///
+/// Example:
+/// ```dart
+/// import 'firebase_options.dart';
+/// // ...
+/// await Firebase.initializeApp(
+///   options: DefaultFirebaseOptions.currentPlatform,
+/// );
+/// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -39,6 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '931594052343',
     projectId: 'bullet-upvisayas',
     authDomain: 'bullet-upvisayas.firebaseapp.com',
+    databaseURL: 'https://bullet-upvisayas-default-rtdb.firebaseio.com',
     storageBucket: 'bullet-upvisayas.appspot.com',
     measurementId: 'G-M9GSM500KR',
   );
@@ -48,6 +59,7 @@ class DefaultFirebaseOptions {
     appId: '1:931594052343:android:20c346a1494df57f3129f2',
     messagingSenderId: '931594052343',
     projectId: 'bullet-upvisayas',
+    databaseURL: 'https://bullet-upvisayas-default-rtdb.firebaseio.com',
     storageBucket: 'bullet-upvisayas.appspot.com',
   );
 
@@ -56,6 +68,7 @@ class DefaultFirebaseOptions {
     appId: '1:931594052343:ios:7c660f9fc57f0a853129f2',
     messagingSenderId: '931594052343',
     projectId: 'bullet-upvisayas',
+    databaseURL: 'https://bullet-upvisayas-default-rtdb.firebaseio.com',
     storageBucket: 'bullet-upvisayas.appspot.com',
     iosClientId: '931594052343-m53fon53dlhdh6klf2439ddokbeb92ts.apps.googleusercontent.com',
     iosBundleId: 'com.upvisayas.bullet.bullet',
@@ -66,6 +79,7 @@ class DefaultFirebaseOptions {
     appId: '1:931594052343:ios:7c660f9fc57f0a853129f2',
     messagingSenderId: '931594052343',
     projectId: 'bullet-upvisayas',
+    databaseURL: 'https://bullet-upvisayas-default-rtdb.firebaseio.com',
     storageBucket: 'bullet-upvisayas.appspot.com',
     iosClientId: '931594052343-m53fon53dlhdh6klf2439ddokbeb92ts.apps.googleusercontent.com',
     iosBundleId: 'com.upvisayas.bullet.bullet',
