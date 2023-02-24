@@ -5,6 +5,8 @@ class HomePage extends StatelessWidget {
   final _inputTitle = TextEditingController();
   final _inputContent = TextEditingController();
 
+  List li = ["1","2","3","4"];
+
   HomePage({super.key});
 
   @override
@@ -42,8 +44,8 @@ class HomePage extends StatelessWidget {
                       child: TextFormField(
                         controller: _inputContent,
                         keyboardType: TextInputType.multiline,
-                        minLines: 5,
-                        maxLines: 5,
+                        minLines: 3,
+                        maxLines: 3,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Content',
@@ -54,21 +56,27 @@ class HomePage extends StatelessWidget {
                         },
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        _writePost(context, _inputTitle.text, _inputContent.text);
-                      },
-                      child: const Text('Write Data'),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            _writePost(context, _inputTitle.text, _inputContent.text);
+                          },
+                          child: const Text('Write Data'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            _logoutUser(context);
+                          },
+                          child: const Text('Log Out'),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  _logoutUser(context);
-                },
-                child: const Text('Log Out'),
-              ),
+              _getCards(context),
             ],
           ),
         ),
@@ -117,6 +125,25 @@ class HomePage extends StatelessWidget {
 
   _verifyContent(String? value) {
     return null;
+  }
+
+  _getCards(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            for (var post in li)...[
+              Card(
+                  child: ListTile(
+                    title: Text('Title'),
+                    subtitle: Text('Context'),
+                  )
+              )
+            ]
+          ],
+        )
+    );
   }
 
 }
