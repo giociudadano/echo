@@ -1,9 +1,14 @@
+library main;
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-import 'firebase_options.dart';
-import 'login_page.dart';
-import 'home_page.dart';
+import 'package:bullet/firebase_options.dart';
+
+part 'gui/login.dart';
+part 'gui/signup.dart';
+part 'gui/home.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

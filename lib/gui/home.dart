@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
-import 'login_page.dart';
+part of main;
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
