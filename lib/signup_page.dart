@@ -103,7 +103,7 @@ class SignupPage extends StatelessWidget {
 
   _addUser(BuildContext context) async {
     try {
-      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _inputEmail.text,
         password: _inputPassword.text,
       );
@@ -119,6 +119,9 @@ class SignupPage extends StatelessWidget {
           break;
         case 'email-already-in-use':
           errorMessage = "Email already exists, please try logging in using this email.";
+          break;
+        case 'invalid-email':
+          errorMessage = "Please enter a valid email address.";
           break;
         default:
           errorMessage = "There was an unknown error with creating your account. Please try again later.";

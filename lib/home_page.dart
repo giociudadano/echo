@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'login_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -15,10 +18,31 @@ class HomePage extends StatelessWidget {
               const Text('Home Page',
                   style: TextStyle(fontWeight: FontWeight.w700, fontSize: 48,)
               ),
+              ElevatedButton(
+                onPressed: () {
+                  _logoutUser(context);
+                },
+                child: const Text('Log Out'),
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _logoutUser(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("There was an error logging out your account. Please try again later."),
+      ));
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("Logout Successful!"),
+    ));
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginPage()), (route) => false);
   }
 }
