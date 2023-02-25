@@ -26,7 +26,7 @@ class HomePage extends StatelessWidget {
               Align(
                 alignment: Alignment.topLeft,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
                   child: Text('Your Feed',
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
@@ -183,19 +183,20 @@ class updatePostsState extends State<updatePosts> {
   Widget build (BuildContext context) {
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
         child: ListView.builder(
             shrinkWrap: true,
             itemCount: posts.length,
             itemBuilder: (BuildContext context, int i) {
-              return Card(
+              /*return Card(
                   child: ListTile(
                     title: Text(posts[i].title,
                       style: TextStyle(fontWeight: FontWeight.w600, fontSize: 24)),
                     subtitle: Text(posts[i].content,
                       style: TextStyle(fontWeight: FontWeight.w300, fontSize: 14)),
                   )
-              );
+              );*/
+              return PostCard(posts[i].title, posts[i].content);
             },
           )
         )

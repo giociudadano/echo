@@ -10,6 +10,8 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'package:bullet/firebase_options.dart';
 
+import 'objects/PostCard.dart';
+
 part 'gui/login.dart';
 part 'gui/signup.dart';
 part 'gui/home.dart';
