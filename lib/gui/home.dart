@@ -35,6 +35,7 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(height: 110),
               /*
               Form(
                 key: _formKey,
@@ -183,19 +184,11 @@ class updatePostsState extends State<updatePosts> {
   Widget build (BuildContext context) {
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: ListView.builder(
             shrinkWrap: true,
             itemCount: posts.length,
             itemBuilder: (BuildContext context, int i) {
-              /*return Card(
-                  child: ListTile(
-                    title: Text(posts[i].title,
-                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 24)),
-                    subtitle: Text(posts[i].content,
-                      style: TextStyle(fontWeight: FontWeight.w300, fontSize: 14)),
-                  )
-              );*/
               return PostCard(posts[i].title, posts[i].content);
             },
           )
