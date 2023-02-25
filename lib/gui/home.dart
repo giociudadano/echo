@@ -164,7 +164,7 @@ class updatePostsState extends State<updatePosts> {
   void initState() {
     super.initState();
 
-    final StreamSubscription updates = widget.ref.onChildAdded.listen((event) {
+    widget.ref.onChildAdded.listen((event) {
       posts.add(
           Post(
               event.snapshot.child('title').value.toString(),
