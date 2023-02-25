@@ -1,13 +1,17 @@
 part of main;
 
+class Post {
+  String title = "";
+  String content = "";
+
+  Post(this.title, this.content);
+}
+
 class HomePage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _inputTitle = TextEditingController();
   final _inputContent = TextEditingController();
 
-  List li = ["1","2","3","4"];
-
-  HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +30,8 @@ class HomePage extends StatelessWidget {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 4),
                       child: TextFormField(
                         controller: _inputTitle,
                         decoration: const InputDecoration(
@@ -40,7 +45,8 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 4),
                       child: TextFormField(
                         controller: _inputContent,
                         keyboardType: TextInputType.multiline,
@@ -61,7 +67,8 @@ class HomePage extends StatelessWidget {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            _writePost(context, _inputTitle.text, _inputContent.text);
+                            _writePost(
+                                context, _inputTitle.text, _inputContent.text);
                           },
                           child: const Text('Write Data'),
                         ),
@@ -76,7 +83,7 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ),
-              _getCards(context),
+             updatePosts(),
             ],
           ),
         ),
@@ -89,14 +96,17 @@ class HomePage extends StatelessWidget {
       await FirebaseAuth.instance.signOut();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("There was an error logging out your account. Please try again later."),
+        content: Text(
+            "There was an error logging out your account. Please try again later."),
       ));
       return;
     }
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text("Logout Successful!"),
     ));
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginPage()), (route) => false);
+    Navigator.pushAndRemoveUntil(
+        context, MaterialPageRoute(builder: (context) => LoginPage()), (
+        route) => false);
   }
 
   void _writePost(BuildContext context, title, content) {
@@ -111,7 +121,8 @@ class HomePage extends StatelessWidget {
       ));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("There was an error submitting your post. Please try again later."),
+        content: Text(
+            "There was an error submitting your post. Please try again later."),
       ));
     }
   }
@@ -126,24 +137,62 @@ class HomePage extends StatelessWidget {
   _verifyContent(String? value) {
     return null;
   }
+  /*
+  _getPosts() {
 
-  _getCards(BuildContext context) {
-    return Padding(
+
+
+      updatePosts(posts);
+    });
+    return updatePosts(posts);
+  }
+  */
+}
+
+
+class updatePosts extends StatefulWidget {
+  DatabaseReference ref = FirebaseDatabase.instance.ref('Posts');
+
+  @override
+  State createState() => updatePostsState();
+}
+
+class updatePostsState extends State<updatePosts> {
+  List <Post> posts = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    final StreamSubscription updates = widget.ref.onChildAdded.listen((event) {
+      posts.add(
+          Post(
+              event.snapshot.child('title').value.toString(),
+              event.snapshot.child('content').value.toString()
+          )
+      );
+      setState(() {});
+    });
+  }
+
+  @override
+  Widget build (BuildContext context) {
+    return Expanded(
+      child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            for (var post in li)...[
-              Card(
+        child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: posts.length,
+            itemBuilder: (BuildContext context, int i) {
+              return Card(
                   child: ListTile(
-                    title: Text('Title'),
-                    subtitle: Text('Context'),
+                    title: Text(posts[i].title),
+                    subtitle: Text(posts[i].content),
                   )
-              )
-            ]
-          ],
+              );
+            },
+          )
         )
     );
   }
-
 }

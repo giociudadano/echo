@@ -1,12 +1,17 @@
 library main;
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+
+import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:bullet/firebase_options.dart';
+
 part 'gui/login.dart';
 part 'gui/signup.dart';
 part 'gui/home.dart';
