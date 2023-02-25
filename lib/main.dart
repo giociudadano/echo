@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Bullet',
       theme: ThemeData(
+        fontFamily: 'SF-Pro',
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
@@ -53,7 +54,7 @@ class _MyAppPageState extends State<MyAppPage> {
   void initState() {
     super.initState();
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      (user != null) ? isLoggedIn = true : isLoggedIn = false;
+      isLoggedIn = (user != null);
       if (mounted) {
         setState(() {});
       }

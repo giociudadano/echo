@@ -15,7 +15,7 @@ class LoginPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Landing Page',
+              const Text('Echo',
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 48,)
               ),
               Form(
@@ -23,7 +23,7 @@ class LoginPage extends StatelessWidget {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 4),
                       child: TextFormField(
                         controller: _inputEmail,
                         decoration: const InputDecoration(
@@ -37,7 +37,7 @@ class LoginPage extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 4),
                       child: TextFormField(
                         controller: _inputPassword,
                         obscureText: true,
@@ -52,7 +52,7 @@ class LoginPage extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 4),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [

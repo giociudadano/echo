@@ -22,9 +22,20 @@ class HomePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Home Page',
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 48,)
+              SizedBox(height: 10),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  child: Text('Your Feed',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 28,
+                    ),
+                  ),
+                ),
               ),
+              /*
               Form(
                 key: _formKey,
                 child: Column(
@@ -83,6 +94,7 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ),
+              */
              updatePosts(),
             ],
           ),
@@ -137,16 +149,6 @@ class HomePage extends StatelessWidget {
   _verifyContent(String? value) {
     return null;
   }
-  /*
-  _getPosts() {
-
-
-
-      updatePosts(posts);
-    });
-    return updatePosts(posts);
-  }
-  */
 }
 
 
@@ -171,7 +173,9 @@ class updatePostsState extends State<updatePosts> {
               event.snapshot.child('content').value.toString()
           )
       );
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
@@ -186,8 +190,10 @@ class updatePostsState extends State<updatePosts> {
             itemBuilder: (BuildContext context, int i) {
               return Card(
                   child: ListTile(
-                    title: Text(posts[i].title),
-                    subtitle: Text(posts[i].content),
+                    title: Text(posts[i].title,
+                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 24)),
+                    subtitle: Text(posts[i].content,
+                      style: TextStyle(fontWeight: FontWeight.w300, fontSize: 14)),
                   )
               );
             },
