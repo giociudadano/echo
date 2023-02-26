@@ -59,7 +59,7 @@ class LoginPage extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                _loginUser(context, _inputEmail.text, _inputPassword.text);
+                                loginUser(context, _inputEmail.text, _inputPassword.text);
                               }
                             },
                             child: const Text('Log In'),
@@ -97,7 +97,7 @@ class LoginPage extends StatelessWidget {
     return null;
   }
 
-  _loginUser(BuildContext context, email, password) async {
+  loginUser(BuildContext context, email, password) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,

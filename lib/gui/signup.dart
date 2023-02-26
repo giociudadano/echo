@@ -107,7 +107,8 @@ class SignupPage extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Account has been created!"),
       ));
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomePage()), (route) => false);
+      Navigator.pop(context);
+      LoginPage().loginUser(context, email, password);
     } on FirebaseAuthException catch (e) {
       String errorMessage;
       switch (e.code){

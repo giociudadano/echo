@@ -4,11 +4,11 @@ import 'dart:math';
 class PostCard extends StatelessWidget{
   String title;
   String content;
-  final _random = new Random();
+  final _random = Random();
 
   int next(int min, int max) => min + _random.nextInt(max - min);
   List<List<Color>> colors = [
-    [Color.fromRGBO(84, 104, 251, 1),Color.fromRGBO(100, 130, 255, 1)],
+    [Color.fromRGBO(84, 104, 251, 1),Color.fromRGBO(110, 143, 255, 1)],
     [Color.fromRGBO(255, 67, 111, 1),Color.fromRGBO(255, 122, 125, 1)],
     [Color.fromRGBO(58, 190, 117, 1),Color.fromRGBO(129, 182, 132, 1)]
   ];
@@ -35,22 +35,29 @@ class PostCard extends StatelessWidget{
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 32,
-                      color: Colors.white,
-                  )
-                ),
-                Text(
-                  content,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                      color: Colors.white,
-                      height: 0.4,
-                  )
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 28,
+                          color: Colors.white,
+                      )
+                    ),
+                    Positioned(
+                      top: 35,
+                      child: Text(
+                        content,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

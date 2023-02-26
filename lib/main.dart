@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-
+import 'package:flutter/foundation.dart';
 import 'package:bullet/firebase_options.dart';
 
 import 'objects/PostCard.dart';
@@ -22,7 +22,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
+  if (kIsWeb) {
+    await FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
+  }
   runApp(MyApp());
 }
 
@@ -86,7 +88,6 @@ class _MyAppPageState extends State<MyAppPage> {
 
   AppNavigationBar(){
     return BottomNavigationBar(
-      backgroundColor: Color.fromRGBO(27, 26, 25, 1),
       iconSize: 28,
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
@@ -99,8 +100,8 @@ class _MyAppPageState extends State<MyAppPage> {
         ),
       ],
       currentIndex: selectedIndex,
-      unselectedItemColor: Color.fromRGBO(100, 100, 100, 1),
-      selectedItemColor: Colors.white,
+      unselectedItemColor: Color.fromRGBO(70, 70, 70, 1),
+      selectedItemColor: Color.fromRGBO(100, 100, 100, 1),
       onTap: (index){
         setState(() {
           selectedIndex = index;

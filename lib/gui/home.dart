@@ -17,11 +17,11 @@ class HomePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 10),
-              Align(
+              const SizedBox(height: 10),
+              const Align(
                 alignment: Alignment.topLeft,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 4),
                   child: Text('Threads',
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
@@ -30,7 +30,7 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 110),
+              const SizedBox(height: 100),
              updatePosts(),
             ],
           ),
