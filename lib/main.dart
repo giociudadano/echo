@@ -60,10 +60,19 @@ class _MyAppPageState extends State<MyAppPage> {
   @override
   void initState() {
     super.initState();
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) async {
       isLoggedIn = (user != null);
-      setState(() {
-      });
+      if (isLoggedIn){
+        String username = await _getUsername();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:
+          Text("Successfully logged in as $username")
+        ));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:
+          Text("Successfully logged out!")
+        ));
+      }
+      setState(() {});
     });
   }
 
@@ -109,5 +118,18 @@ class _MyAppPageState extends State<MyAppPage> {
         });
       },
     );
+  }
+
+  _getUsername() async {
+    String userID = '';
+    String username = 'Anonymous';
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      userID = user.uid;
+      DatabaseReference ref = FirebaseDatabase.instance.ref("Users/$userID/username");
+      DataSnapshot snapshot = await ref.get();
+      username = snapshot.value.toString();
+    }
+    return username;
   }
 }

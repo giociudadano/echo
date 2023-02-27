@@ -2,6 +2,7 @@ part of main;
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _inputEmail = TextEditingController();
   final _inputPassword = TextEditingController();
@@ -9,6 +10,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.grey[100],
       body: SafeArea(
         child: Center(
@@ -59,7 +61,7 @@ class LoginPage extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                loginUser(context, _inputEmail.text, _inputPassword.text);
+                                loginUser(_scaffoldKey.currentContext, _inputEmail.text, _inputPassword.text);
                               }
                             },
                             child: const Text('Log In'),
@@ -97,7 +99,7 @@ class LoginPage extends StatelessWidget {
     return null;
   }
 
-  loginUser(BuildContext context, email, password) async {
+  loginUser(context, email, password) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
@@ -119,8 +121,5 @@ class LoginPage extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorMessage)));
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text("Login Successful!"),
-    ));
   }
 }

@@ -104,9 +104,6 @@ class ProfilePage extends StatelessWidget {
       ));
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text("Logout Successful!"),
-    ));
   }
 
   void _writePost(BuildContext context, title, content) {
