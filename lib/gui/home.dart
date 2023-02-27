@@ -8,6 +8,8 @@ class Post {
 }
 
 class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,6 +45,8 @@ class HomePage extends StatelessWidget {
 
 class updatePosts extends StatefulWidget {
   DatabaseReference ref = FirebaseDatabase.instance.ref('Posts');
+
+  updatePosts({super.key});
 
   @override
   State createState() => updatePostsState();

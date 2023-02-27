@@ -3,6 +3,7 @@ part of main;
 class SignupPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _inputEmail = TextEditingController();
+  final _inputUsername = TextEditingController();
   final _inputPassword = TextEditingController();
 
   SignupPage({super.key});
@@ -40,6 +41,20 @@ class SignupPage extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                       child: TextFormField(
+                        controller: _inputUsername,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Username',
+                          hintText: 'Enter your username',
+                        ),
+                        validator: (String? value) {
+                          return _verifyUsername(value);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      child: TextFormField(
                         controller: _inputPassword,
                         obscureText: true,
                         decoration: const InputDecoration(
@@ -60,7 +75,7 @@ class SignupPage extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                _addUser(context, _inputEmail.text, _inputPassword.text);
+                                _addUser(context, _inputEmail.text, _inputUsername.text, _inputPassword.text);
                               }
                             },
                             child: const Text('Submit'),
@@ -91,14 +106,25 @@ class SignupPage extends StatelessWidget {
     return null;
   }
 
-  _verifyPassword(value) {
+  _verifyUsername(value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter a password';
+      return 'Please enter a username';
+    } else if (value.length < 3) {
+      return 'Please enter 3 characters or more';
     }
     return null;
   }
 
-  _addUser(BuildContext context, email, password) async {
+  _verifyPassword(value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a password';
+    } else if (value.length < 8) {
+      return 'Please enter 8 characters or more';
+    }
+    return null;
+  }
+
+  _addUser(BuildContext context, email, username, password) async {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
@@ -107,14 +133,9 @@ class SignupPage extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Account has been created!"),
       ));
-      Navigator.pop(context);
-      LoginPage().loginUser(context, email, password);
     } on FirebaseAuthException catch (e) {
       String errorMessage;
       switch (e.code){
-        case 'weak-password':
-          errorMessage = "Password is too weak, please enter at least 6 characters.";
-          break;
         case 'email-already-in-use':
           errorMessage = "Email already exists, please try logging in using this email.";
           break;
@@ -131,6 +152,35 @@ class SignupPage extends StatelessWidget {
         content: Text("There was an unknown error with authenticating to servers. Please try again later."),
       ));
       return;
-    };
+    }
+    String userID;
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user != null) {
+        userID = user.uid;
+        DatabaseReference ref = FirebaseDatabase.instance.ref("Users/$userID");
+        ref.update({
+          "username": _generateUsername(username),
+        });
+      }
+    });
+    Navigator.pop(context);
+    LoginPage().loginUser(context, email, password);
+  }
+
+  _generateUsername(username) {
+    while (true) {
+      bool isDuplicate = false;
+      final String randomInt = Random().nextInt(9999).toString().padLeft(4, '0');
+      var newUsername = "$username#$randomInt";
+      DatabaseReference ref = FirebaseDatabase.instance.ref().child("Users");
+      ref.orderByChild("username").equalTo(newUsername).get().then((value) => {
+        if (value.exists){
+          isDuplicate = true
+        }
+      });
+      if (!isDuplicate) {
+        return newUsername;
+      }
+    }
   }
 }

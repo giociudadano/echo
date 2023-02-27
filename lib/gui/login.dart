@@ -116,7 +116,7 @@ class LoginPage extends StatelessWidget {
         default:
           errorMessage = "Authentication failed. Please try again later.";
       }
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$errorMessage')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorMessage)));
       return;
     }
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

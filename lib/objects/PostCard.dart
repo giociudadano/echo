@@ -4,9 +4,8 @@ import 'dart:math';
 class PostCard extends StatelessWidget{
   String title;
   String content;
-  final _random = Random();
+  final _random = Random().nextInt(3);
 
-  int next(int min, int max) => min + _random.nextInt(max - min);
   List<List<Color>> colors = [
     [Color.fromRGBO(84, 104, 251, 1),Color.fromRGBO(110, 143, 255, 1)],
     [Color.fromRGBO(255, 67, 111, 1),Color.fromRGBO(255, 122, 125, 1)],
@@ -25,7 +24,7 @@ class PostCard extends StatelessWidget{
             border: Border.all(color: Color.fromRGBO(255,255, 255, 0)),
             borderRadius: BorderRadius.all(Radius.circular(13)),
             gradient: LinearGradient(
-              colors: colors[next(0, 3)],
+              colors: colors[_random],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
