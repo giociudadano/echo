@@ -3,8 +3,10 @@ part of main;
 class Post {
   String title = "";
   String content = "";
+  String userID = "";
+  String username = "";
 
-  Post(this.title, this.content);
+  Post(this.title, this.content, this.userID, this.username);
 }
 
 class HomePage extends StatelessWidget {
@@ -23,8 +25,8 @@ class HomePage extends StatelessWidget {
               const Align(
                 alignment: Alignment.topLeft,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 4),
-                  child: Text('Threads',
+                  padding: EdgeInsets.fromLTRB(28, 5, 28, 10),
+                  child: Text('For You',
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 28,
@@ -32,7 +34,24 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 100),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 28),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide.none,
+                    ),
+                    contentPadding: EdgeInsets.fromLTRB(22, 15, 60, 15),
+                    hintText: 'Search cards',
+                    filled: true,
+                    fillColor: Color.fromRGBO(233, 235, 247, 1),
+                    isDense: true,
+                  ),
+                  style: TextStyle(fontSize: 14),
+                ),
+              ),
+              const SizedBox(height: 45),
              updatePosts(),
             ],
           ),
@@ -63,7 +82,9 @@ class updatePostsState extends State<updatePosts> {
       posts.add(
           Post(
               event.snapshot.child('title').value.toString(),
-              event.snapshot.child('content').value.toString()
+              event.snapshot.child('content').value.toString(),
+              event.snapshot.child('userID').value.toString(),
+              event.snapshot.child('username').value.toString(),
           )
       );
       if (mounted) {
@@ -81,7 +102,7 @@ class updatePostsState extends State<updatePosts> {
             shrinkWrap: true,
             itemCount: posts.length,
             itemBuilder: (BuildContext context, int i) {
-              return PostCard(posts[i].title, posts[i].content);
+              return PostCard(posts[i].title, posts[i].content, posts[i].username);
             },
           )
         )

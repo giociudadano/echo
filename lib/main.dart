@@ -10,8 +10,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:bullet/firebase_options.dart';
-
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'objects/PostCard.dart';
+import 'package:intl/intl.dart';
 
 part 'gui/login.dart';
 part 'gui/signup.dart';
@@ -101,8 +102,8 @@ class _MyAppPageState extends State<MyAppPage> {
       iconSize: 28,
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.view_list_outlined),
-          label: 'Threads',
+          icon: Icon(Icons.home),
+          label: 'Home',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
