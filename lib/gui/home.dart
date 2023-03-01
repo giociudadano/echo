@@ -4,8 +4,9 @@ class Post {
   String title = "";
   String content = "";
   String userID = "";
+  String timeStart = "";
 
-  Post(this.title, this.content, this.userID);
+  Post(this.title, this.content, this.userID, this.timeStart);
 }
 
 class HomePage extends StatelessWidget {
@@ -83,6 +84,7 @@ class updatePostsState extends State<updatePosts> {
               event.snapshot.child('title').value.toString(),
               event.snapshot.child('content').value.toString(),
               event.snapshot.child('userID').value.toString(),
+              event.snapshot.child('timeStart').value.toString(),
           )
       );
       if (mounted) {
@@ -100,7 +102,7 @@ class updatePostsState extends State<updatePosts> {
             shrinkWrap: true,
             itemCount: posts.length,
             itemBuilder: (BuildContext context, int i) {
-              return PostCard(posts[i].title, posts[i].content, posts[i].userID);
+              return CardPost(posts[i].title, posts[i].content, posts[i].userID, posts[i].timeStart);
             },
           )
         )

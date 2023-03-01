@@ -2,10 +2,19 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-class PostCard extends StatelessWidget {
+class CardPost extends StatefulWidget {
   String title;
   String content;
   String userID;
+  String timeStart;
+
+  CardPost(this.title, this.content, this.userID, this.timeStart);
+
+  @override
+  State<CardPost> createState() => _CardPostState();
+}
+
+class _CardPostState extends State<CardPost> {
   final _random = Random().nextInt(3);
 
   List<List<Color>> colors = [
@@ -13,8 +22,6 @@ class PostCard extends StatelessWidget {
     [Color.fromRGBO(255, 67, 111, 1), Color.fromRGBO(255, 122, 125, 1)],
     [Color.fromRGBO(58, 190, 117, 1), Color.fromRGBO(129, 182, 132, 1)]
   ];
-
-  PostCard(this.title, this.content, this.userID);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +47,7 @@ class PostCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      title,
+                      widget.title,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 28,
@@ -52,7 +59,7 @@ class PostCard extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(right: 40),
                       child: Text(
-                        content,
+                        widget.content,
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 13,
@@ -70,7 +77,7 @@ class PostCard extends StatelessWidget {
                             color: Color.fromRGBO(245, 245, 245, 0.8)),
                         SizedBox(width: 5),
                         Text(
-                          "Monday, February 28, 2023",
+                          widget.timeStart,
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
                             fontSize: 12,
@@ -106,7 +113,7 @@ class PostCard extends StatelessWidget {
   }
 
   _getUsername() async {
-    DatabaseReference ref = FirebaseDatabase.instance.ref("Users/$userID/username");
+    DatabaseReference ref = FirebaseDatabase.instance.ref("Users/${widget.userID}/username");
     DataSnapshot snapshot = await ref.get();
     return snapshot.value.toString();
   }

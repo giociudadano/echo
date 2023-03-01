@@ -1,23 +1,33 @@
 library main;
 
-import 'dart:async';
-import 'dart:math';
+// Dart Libraries
+import 'dart:async'; // Asynchronous Computing
+import 'dart:math'; // Randomizers
 
-import 'package:flutter/material.dart';
-
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
+// Flutter Libraries
+import 'package:flutter/material.dart'; // Material Design
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart'; // Date and Time Picker Widget
+import 'package:multi_select_flutter/multi_select_flutter.dart'; // Item Selector
 import 'package:flutter/foundation.dart';
+
+// Firebase Libraries
+import 'package:firebase_core/firebase_core.dart'; // Firebase Main
+import 'package:firebase_auth/firebase_auth.dart'; // Authentication
+import 'package:firebase_database/firebase_database.dart'; // Read and Write
 import 'package:bullet/firebase_options.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'objects/PostCard.dart';
+
+// Miscellaneous Libraries
 import 'package:intl/intl.dart';
+
+// Custom Objects
+import 'objects/card_post.dart';
+
+
 
 part 'gui/login.dart';
 part 'gui/signup.dart';
 part 'gui/home.dart';
-part 'gui/profile.dart';
+part 'gui/debug.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -85,7 +95,7 @@ class _MyAppPageState extends State<MyAppPage> {
         page = HomePage();
         break;
       case 1:
-        page = ProfilePage();
+        page = DebugPage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -106,8 +116,8 @@ class _MyAppPageState extends State<MyAppPage> {
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profile',
+          icon: Icon(Icons.handyman_sharp),
+          label: 'Debug',
         ),
       ],
       currentIndex: selectedIndex,
