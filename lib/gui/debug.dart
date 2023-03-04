@@ -22,14 +22,14 @@ class DebugPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 28),
                 child: Column(
                   children: [
-                    SizedBox(height: 17),
-                    Align(
+                    const SizedBox(height: 17),
+                    const Align(
                       alignment: Alignment.topLeft,
                       child: Text('Debug',
                           style: TextStyle(
                               fontWeight: FontWeight.w700, fontSize: 28)),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Expanded(
                         child: ListView(
                       children: [
@@ -39,8 +39,8 @@ class DebugPage extends StatelessWidget {
                           },
                           child: const Text('Log Out'),
                         ),
-                        FormAddPost(context),
-                        FormAddGroup(context),
+                        addPostForm(context),
+                        addFormGroup(context),
                       ],
                     )),
                   ],
@@ -49,15 +49,17 @@ class DebugPage extends StatelessWidget {
     );
   }
 
-  FormAddPost(BuildContext context) {
+  addPostForm(BuildContext context) {
+    var groupsToPost = [];
+
     return Form(
       key: _formAddPostKey,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(height: 40),
-          Text("Add Card"),
-          SizedBox(height: 5),
+          const SizedBox(height: 40),
+          const Text("Add Card"),
+          const SizedBox(height: 5),
           TextFormField(
             controller: _inputCardTitle,
             decoration: const InputDecoration(
@@ -66,12 +68,12 @@ class DebugPage extends StatelessWidget {
               hintText: 'Enter title',
               isDense: true,
             ),
-            style: TextStyle(fontSize: 14),
+            style: const TextStyle(fontSize: 14),
             validator: (String? value) {
               return _verifyCardTitle(value);
             },
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           TextFormField(
             controller: _inputCardContent,
             keyboardType: TextInputType.multiline,
@@ -83,9 +85,9 @@ class DebugPage extends StatelessWidget {
               hintText: 'Enter additional information here.',
               isDense: true,
             ),
-            style: TextStyle(fontSize: 14),
+            style: const TextStyle(fontSize: 14),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           TextFormField(
             controller: _inputCardTimeStart,
             readOnly: true,
@@ -103,14 +105,18 @@ class DebugPage extends StatelessWidget {
               labelText: 'Start Time',
               isDense: true,
             ),
-            style: TextStyle(fontSize: 14),
+            style: const TextStyle(fontSize: 16),
             validator: (String? value) {
               return _verifyCardDate(value);
             },
           ),
-          SizedBox(height: 30),
-          GroupSelector(),
-          SizedBox(height: 10),
+          const SizedBox(height: 30),
+          GroupSelector(
+            groupsSelected: (newGroups) {
+              groupsToPost = newGroups;
+            },
+          ),
+          const SizedBox(height: 10),
           ElevatedButton(
             onPressed: () async {
               if (_formAddPostKey.currentState!.validate()) {
@@ -119,7 +125,9 @@ class DebugPage extends StatelessWidget {
                     _inputCardTitle.text,
                     _inputCardContent.text,
                     getUID(),
-                    _inputCardTimeStart.text);
+                    _inputCardTimeStart.text,
+                    groupsToPost,
+                );
               }
             },
             child: const Text('Write Data'),
@@ -129,13 +137,13 @@ class DebugPage extends StatelessWidget {
     );
   }
 
-  FormAddGroup(BuildContext context) {
+  addFormGroup(BuildContext context) {
     return Form(
         key: _formAddGroupKey,
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          SizedBox(height: 40),
-          Text("Add Group"),
-          SizedBox(height: 10),
+          const SizedBox(height: 40),
+          const Text("Add Group"),
+          const SizedBox(height: 10),
           TextFormField(
             controller: _inputGroupName,
             decoration: const InputDecoration(
@@ -144,12 +152,12 @@ class DebugPage extends StatelessWidget {
               hintText: 'Enter group name',
               isDense: true,
             ),
-            style: TextStyle(fontSize: 14),
+            style: const TextStyle(fontSize: 14),
             validator: (String? value) {
               return _verifyGroupName(value);
             },
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           TextFormField(
             controller: _inputGroupDesc,
             keyboardType: TextInputType.multiline,
@@ -161,9 +169,9 @@ class DebugPage extends StatelessWidget {
               hintText: 'Enter group description',
               isDense: true,
             ),
-            style: TextStyle(fontSize: 14),
+            style: const TextStyle(fontSize: 14),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           ElevatedButton(
             onPressed: () async {
               if (_formAddGroupKey.currentState!.validate()) {
@@ -213,14 +221,17 @@ class DebugPage extends StatelessWidget {
     }
   }
 
-  void _writePost(BuildContext context, title, content, userID, timeStart) {
+  void _writePost(BuildContext context, title, content, userID, timeStart, groups) {
     try {
+      Map groupMap = {};
+      groups.forEach((group) => groupMap["$group"] = true);
       DatabaseReference ref = FirebaseDatabase.instance.ref("Posts");
       ref.push().update({
         'title': title,
         'content': content,
         'userID': userID,
         'timeStart': timeStart,
+        'groups': groupMap,
       });
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Post has been submitted!"),
@@ -233,7 +244,7 @@ class DebugPage extends StatelessWidget {
     }
   }
 
-  void _writeGroup(BuildContext context, String name, String desc, String UID) {
+  void _writeGroup(BuildContext context, String name, String desc, String userID) {
     try {
       DatabaseReference ref = FirebaseDatabase.instance.ref("Groups");
       var pushedRef = ref.push();
@@ -241,9 +252,9 @@ class DebugPage extends StatelessWidget {
       pushedRef.update({
         'name' : name,
         'description' : desc,
-        'members' : {UID : true},
+        'members' : {userID : true},
       });
-      DatabaseReference ref2 = FirebaseDatabase.instance.ref("Users/$UID/groups");
+      DatabaseReference ref2 = FirebaseDatabase.instance.ref("Users/$userID/groups");
       ref2.update({
         "$groupID" : true,
       });
@@ -260,12 +271,14 @@ class DebugPage extends StatelessWidget {
 }
 
 class GroupSelector extends StatefulWidget{
-  const GroupSelector({super.key});
+  final ValueChanged<List> groupsSelected;
+  const GroupSelector({super.key, required this.groupsSelected});
   @override
   State<GroupSelector> createState() => _GroupSelectorState();
 }
 
 class _GroupSelectorState extends State<GroupSelector>{
+  bool isDoneBuilding = false;
   var groups = [];
   var items;
   List selectedGroups = [];
@@ -278,45 +291,46 @@ class _GroupSelectorState extends State<GroupSelector>{
 
   @override
   Widget build(BuildContext context) {
-    return groups.length != 0 ? Column(
+    return isDoneBuilding ? Column(
       children: <Widget>[
-        Container(
-          child: MultiSelectBottomSheetField(
-            decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: Color.fromRGBO(235, 235, 235, 1),
-              borderRadius: BorderRadius.all(Radius.circular(4.0)),
-            ),
-            backgroundColor: Colors.white,
-            buttonIcon: Icon(Icons.group),
-            initialChildSize: 0.37,
-            listType: MultiSelectListType.CHIP,
-            searchable: true,
-            buttonText: Text("Select a group to post"),
-            items: items,
-            onConfirm: (values) {
-              selectedGroups = values;
+        MultiSelectBottomSheetField(
+          decoration: const BoxDecoration(
+            shape: BoxShape.rectangle,
+            color: Color.fromRGBO(235, 235, 235, 1),
+            borderRadius: BorderRadius.all(Radius.circular(4.0)),
+          ),
+          backgroundColor: Colors.white,
+          buttonIcon: const Icon(Icons.group),
+          initialChildSize: 0.37,
+          listType: MultiSelectListType.CHIP,
+          searchable: true,
+          buttonText: const Text("Select a group to post"),
+          items: items,
+          onConfirm: (values) {
+            selectedGroups = values;
+          },
+          onSelectionChanged: (values) {
+            widget.groupsSelected(values);
+          },
+          chipDisplay: MultiSelectChipDisplay(
+            onTap: (value) {
+              setState(() {
+                selectedGroups.remove(value);
+              });
             },
-            chipDisplay: MultiSelectChipDisplay(
-              onTap: (value) {
-                setState(() {
-                  selectedGroups.remove(value);
-                });
-              },
-            ),
           ),
         ),
         selectedGroups == null || selectedGroups.isEmpty
             ? Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             alignment: Alignment.centerLeft,
-            child: Text(
+            child: const Text(
               "None selected",
               style: TextStyle(color: Colors.black54),
             ))
             : Container(),
       ],
-    ) : Text("Join a group to post something!");
+    ) : const Text("Loading Groups...");
   }
 
   void getGroups() async {
@@ -324,25 +338,23 @@ class _GroupSelectorState extends State<GroupSelector>{
         "Users/${getUID()}/groups");
     DataSnapshot snapshot = await ref.get();
     Map value = snapshot.value as Map;
-    if (value != null){
       value.forEach((a, b) => groups.add(a));
-    }
-
-    var groupNames = [];
-    for(var group in groups){
-      DatabaseReference ref2 = FirebaseDatabase.instance.ref(
-          "Groups/${group}/name");
-      DataSnapshot snapshot = await ref2.get();
-      groupNames.add(snapshot.value);
-    }
-    items = groups.map((group) => MultiSelectItem(group, groupNames[groups.indexOf(group)])).toList();
-    selectedGroups = groups;
-    setState(() {});
+      var groupNames = [];
+      for(var group in groups){
+        DatabaseReference ref2 = FirebaseDatabase.instance.ref(
+            "Groups/${group}/name");
+        DataSnapshot snapshot = await ref2.get();
+        groupNames.add(snapshot.value);
+      }
+      items = groups.map((group) => MultiSelectItem(group, groupNames[groups.indexOf(group)])).toList();
+      selectedGroups = groups;
+      setState(() {
+        isDoneBuilding = true;
+      });
   }
 }
 
 getUID() {
-  String userID = '';
   User? user = FirebaseAuth.instance.currentUser;
   if (user != null) {
     return user.uid;

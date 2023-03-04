@@ -24,23 +24,25 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - lib/assets/images/emoji/
   fonts:
     - family: SF-Pro
       fonts:
-        - asset: lib/fonts/pro/SF-Pro-Display-Black.otf
+        - asset: lib/assets/fonts/sf-pro/SF-Pro-Display-Black.otf
           weight: 900
-        - asset: lib/fonts/pro/SF-Pro-Display-Heavy.otf
+        - asset: lib/assets/fonts/sf-pro/SF-Pro-Display-Heavy.otf
           weight: 800
-        - asset: lib/fonts/pro/SF-Pro-Display-Bold.otf
+        - asset: lib/assets/fonts/sf-pro/SF-Pro-Display-Bold.otf
           weight: 700
-        - asset: lib/fonts/pro/SF-Pro-Display-Semibold.otf
+        - asset: lib/assets/fonts/sf-pro/SF-Pro-Display-Semibold.otf
           weight: 600
-        - asset: lib/fonts/pro/SF-Pro-Display-Medium.otf
+        - asset: lib/assets/fonts/sf-pro/SF-Pro-Display-Medium.otf
           weight: 500
-        - asset: lib/fonts/pro/SF-Pro-Display-Regular.otf
-        - asset: lib/fonts/pro/SF-Pro-Text-Light.otf
+        - asset: lib/assets/fonts/sf-pro/SF-Pro-Display-Regular.otf
+        - asset: lib/assets/fonts/sf-pro/SF-Pro-Text-Light.otf
           weight: 300
-        - asset: lib/fonts/pro/SF-Pro-Display-Thin.otf
+        - asset: lib/assets/fonts/sf-pro/SF-Pro-Display-Thin.otf
           weight: 200
-        - asset: lib/fonts/pro/SF-Pro-Display-Ultralight.otf
+        - asset: lib/assets/fonts/sf-pro/SF-Pro-Display-Ultralight.otf
           weight: 100

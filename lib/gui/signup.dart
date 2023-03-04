@@ -145,7 +145,7 @@ class SignupPage extends StatelessWidget {
         default:
           errorMessage = "There was an unknown error with creating your account. Please try again later.";
       }
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$errorMessage')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorMessage)));
       return;
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

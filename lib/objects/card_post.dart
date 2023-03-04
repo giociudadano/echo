@@ -23,6 +23,12 @@ class _CardPostState extends State<CardPost> {
     [Color.fromRGBO(58, 190, 117, 1), Color.fromRGBO(129, 182, 132, 1)]
   ];
 
+  final _random2 = Random().nextInt(6),
+
+  emojis = [
+    "cry.png", "cry-laugh.png", "dove.png", "face-with-peeking-eye.png", "fish.png", "shark.png"
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -40,69 +46,111 @@ class _CardPostState extends State<CardPost> {
             ),
           ),
           child: Padding(
-            padding: EdgeInsets.fromLTRB(20, 10, 70, 10),
+            padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
             child: Stack(
               children: [
-                Column(
+                Positioned(
+                  top: 40,
+                  right: 0,
+                  child: Transform(
+                    transform: Matrix4.identity()..rotateZ(15 * 3.1415927 / 180),
+                    alignment: FractionalOffset.center,
+                    child: Image.asset(
+                      'lib/assets/images/emoji/${emojis[_random2]}',
+                      width: 120,
+                      height: 120,
+                      opacity: const AlwaysStoppedAnimation(.4),
+                    ),
+                  ),
+                ),
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 28,
-                        color: Colors.white,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 40),
-                      child: Text(
-                        widget.content,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 13,
-                          color: Colors.white,
-                          height: 1.15,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Icon(Icons.calendar_month,
-                            color: Color.fromRGBO(245, 245, 245, 0.8)),
-                        SizedBox(width: 5),
-                        Text(
-                          widget.timeStart,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 12,
-                            color: Color.fromRGBO(245, 245, 245, 0.8),
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                    Text(
+                                      widget.title,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 28,
+                                        color: Colors.white,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 40),
+                                  child: Text(
+                                    widget.content,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 13,
+                                      color: Colors.white,
+                                      height: 1.15,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    Icon(Icons.calendar_month,
+                                        color: Color.fromRGBO(245, 245, 245, 0.8)),
+                                    SizedBox(width: 5),
+                                    Text(
+                                      widget.timeStart,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12,
+                                        color: Color.fromRGBO(245, 245, 245, 0.8),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        )
+                          Positioned(
+                            top: 108,
+                            child: FutureBuilder(
+                              future: _getUsername(),
+                              builder: (BuildContext context, AsyncSnapshot<dynamic> text) {
+                                return Text(
+                                  "by ${text.data ?? 'Unknown User'}",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 13,
+                                    color: Color.fromRGBO(245, 245, 245, 0.8),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 30,
+                          width: 30,
+                          child: IconButton(
+                              color: Colors.white,
+                              onPressed: (){},
+                              iconSize: 20,
+                              icon: Icon(Icons.more_horiz)
+                          ),
+                        ),
                       ],
                     ),
                   ],
-                ),
-                Positioned(
-                  top: 108,
-                  child: FutureBuilder(
-                    future: _getUsername(),
-                    builder: (BuildContext context, AsyncSnapshot<dynamic> text) {
-                      return Text(
-                        "by ${text.data}",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 13,
-                          color: Color.fromRGBO(245, 245, 245, 0.8),
-                        ),
-                      );
-                    },
-                  ),
                 ),
               ],
             ),
