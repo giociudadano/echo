@@ -320,7 +320,7 @@ class _GroupSelectorState extends State<GroupSelector>{
             },
           ),
         ),
-        selectedGroups == null || selectedGroups.isEmpty
+        selectedGroups.isEmpty
             ? Container(
             padding: const EdgeInsets.all(10),
             alignment: Alignment.centerLeft,
@@ -342,7 +342,7 @@ class _GroupSelectorState extends State<GroupSelector>{
       var groupNames = [];
       for(var group in groups){
         DatabaseReference ref2 = FirebaseDatabase.instance.ref(
-            "Groups/${group}/name");
+            "Groups/$group/name");
         DataSnapshot snapshot = await ref2.get();
         groupNames.add(snapshot.value);
       }

@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class GroupFilter extends StatefulWidget{
@@ -27,14 +26,14 @@ class _GroupFilterState extends State<GroupFilter> {
         style: TextStyle(
           fontWeight: FontWeight.w500,
           fontSize: 12,
-          color: isSelected ? Color.fromRGBO(255, 255, 255, 0.6) : Color.fromRGBO(0, 0, 0, 0.6),
+          color: isSelected ? const Color.fromRGBO(255, 255, 255, 0.6) : const Color.fromRGBO(0, 0, 0, 0.6),
         ),
       ),
       selected: isSelected,
-      side: BorderSide(color: Colors.transparent),
-      checkmarkColor: Color.fromRGBO(233, 235, 247, 1),
+      side: const BorderSide(color: Colors.transparent),
+      checkmarkColor: const Color.fromRGBO(233, 235, 247, 1),
       backgroundColor: const Color.fromRGBO(233, 235, 247, 1),
-      selectedColor: Color.fromRGBO(84, 104, 251, 1),
+      selectedColor: const Color.fromRGBO(84, 104, 251, 1),
       onSelected: (bool selected) {
         setState(() {
           if (selected) {

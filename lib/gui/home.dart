@@ -9,9 +9,16 @@ class Post {
   Post(this.title, this.content, this.userID, this.timeStart);
 }
 
-class HomePage extends StatelessWidget {
-  var filters = [];
+class HomePage extends StatefulWidget {
+
   HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  var filters = [];
 
   @override
   Widget build(BuildContext context) {
@@ -56,10 +63,11 @@ class HomePage extends StatelessWidget {
              WidgetGroupsFilter(
                groupsFiltered: (newGroups){
                  filters = newGroups;
+                 setState(() {});
                }
              ),
              const SizedBox(height: 5),
-             WidgetPostsBuilder(),
+             WidgetPostsBuilder(filters),
             ],
           ),
         ),
@@ -95,16 +103,16 @@ class WidgetGroupsFilterState extends State<WidgetGroupsFilter> {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Row(
             children: [
-              Icon(Icons.filter_alt_sharp, color: Color.fromRGBO(120, 120, 120, 1), size: 14),
-              SizedBox(width: 5),
-              Text("Filter Class",
+              const Icon(Icons.filter_alt_sharp, color: Color.fromRGBO(120, 120, 120, 1), size: 14),
+              const SizedBox(width: 5),
+              const Text("Filter Class",
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 14,
                   color: Color.fromRGBO(120, 120, 120, 1),
                 ),
               ),
-              SizedBox(width: 14),
+              const SizedBox(width: 14),
               Expanded(
                 child: isDoneBuilding ? ListView.builder(
                   scrollDirection: Axis.horizontal,
@@ -133,11 +141,11 @@ class WidgetGroupsFilterState extends State<WidgetGroupsFilter> {
                                   }
                               ),
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                           ],
                         );
                   },
-                ) : Text("Loading your groups..."),
+                ) : const Text("Loading your groups..."),
               ),
             ],
           )
@@ -165,8 +173,8 @@ class WidgetGroupsFilterState extends State<WidgetGroupsFilter> {
 
 class WidgetPostsBuilder extends StatefulWidget {
   DatabaseReference ref = FirebaseDatabase.instance.ref('Posts');
-
-  WidgetPostsBuilder({super.key});
+  var filters = [];
+  WidgetPostsBuilder(this.filters, {super.key});
 
   @override
   State createState() => WidgetPostsBuilderState();
@@ -178,7 +186,6 @@ class WidgetPostsBuilderState extends State<WidgetPostsBuilder> {
   @override
   void initState() {
     super.initState();
-
     widget.ref.onChildAdded.listen((event) {
       posts.add(
           Post(
@@ -199,14 +206,14 @@ class WidgetPostsBuilderState extends State<WidgetPostsBuilder> {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: ListView.builder(
+        child: widget.filters.isEmpty ? ListView.builder(
             shrinkWrap: true,
             itemCount: posts.length,
             itemBuilder: (BuildContext context, int i) {
               return CardPost(posts[i].title, posts[i].content, posts[i].userID, posts[i].timeStart);
-            },
-          )
-        )
+            } ,
+        ) : SizedBox.shrink()
+      )
     );
   }
 }

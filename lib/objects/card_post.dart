@@ -18,9 +18,9 @@ class _CardPostState extends State<CardPost> {
   final _random = Random().nextInt(3);
 
   List<List<Color>> colors = [
-    [Color.fromRGBO(84, 104, 251, 1), Color.fromRGBO(110, 143, 255, 1)],
-    [Color.fromRGBO(255, 67, 111, 1), Color.fromRGBO(255, 122, 125, 1)],
-    [Color.fromRGBO(58, 190, 117, 1), Color.fromRGBO(129, 182, 132, 1)]
+    [const Color.fromRGBO(84, 104, 251, 1), const Color.fromRGBO(110, 143, 255, 1)],
+    [const Color.fromRGBO(255, 67, 111, 1), const Color.fromRGBO(255, 122, 125, 1)],
+    [const Color.fromRGBO(58, 190, 117, 1), const Color.fromRGBO(129, 182, 132, 1)]
   ];
 
   final _random2 = Random().nextInt(6),
@@ -37,8 +37,8 @@ class _CardPostState extends State<CardPost> {
         child: Container(
           height: 150,
           decoration: BoxDecoration(
-            border: Border.all(color: Color.fromRGBO(255, 255, 255, 0)),
-            borderRadius: BorderRadius.all(Radius.circular(13)),
+            border: Border.all(color: const Color.fromRGBO(255, 255, 255, 0)),
+            borderRadius: const BorderRadius.all(Radius.circular(13)),
             gradient: LinearGradient(
               colors: colors[_random],
               begin: Alignment.topCenter,
@@ -46,7 +46,7 @@ class _CardPostState extends State<CardPost> {
             ),
           ),
           child: Padding(
-            padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
+            padding: const EdgeInsets.fromLTRB(20, 10, 10, 0),
             child: Stack(
               children: [
                 Positioned(
@@ -76,7 +76,7 @@ class _CardPostState extends State<CardPost> {
                               children: [
                                     Text(
                                       widget.title,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.w700,
                                         fontSize: 28,
                                         color: Colors.white,
@@ -88,7 +88,7 @@ class _CardPostState extends State<CardPost> {
                                   padding: const EdgeInsets.only(right: 40),
                                   child: Text(
                                     widget.content,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontWeight: FontWeight.w400,
                                       fontSize: 13,
                                       color: Colors.white,
@@ -98,15 +98,15 @@ class _CardPostState extends State<CardPost> {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                SizedBox(height: 10),
+                                const SizedBox(height: 10),
                                 Row(
                                   children: [
-                                    Icon(Icons.calendar_month,
+                                    const Icon(Icons.calendar_month,
                                         color: Color.fromRGBO(245, 245, 245, 0.8)),
-                                    SizedBox(width: 5),
+                                    const SizedBox(width: 5),
                                     Text(
                                       widget.timeStart,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.w400,
                                         fontSize: 12,
                                         color: Color.fromRGBO(245, 245, 245, 0.8),
@@ -124,7 +124,7 @@ class _CardPostState extends State<CardPost> {
                               builder: (BuildContext context, AsyncSnapshot<dynamic> text) {
                                 return Text(
                                   "by ${text.data ?? 'Unknown User'}",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.w400,
                                     fontSize: 13,
                                     color: Color.fromRGBO(245, 245, 245, 0.8),
@@ -145,7 +145,7 @@ class _CardPostState extends State<CardPost> {
                               color: Colors.white,
                               onPressed: (){},
                               iconSize: 20,
-                              icon: Icon(Icons.more_horiz)
+                              icon: const Icon(Icons.more_horiz)
                           ),
                         ),
                       ],

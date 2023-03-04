@@ -37,7 +37,7 @@ Future<void> main() async {
   if (kIsWeb) {
     await FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
   }
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
-      home: MyAppPage(),
+      home: const MyAppPage(),
     );
   }
 }
@@ -79,7 +79,7 @@ class _MyAppPageState extends State<MyAppPage> {
           Text("Successfully logged in as $username")
         ));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:
           Text("Successfully logged out!")
         ));
       }
@@ -103,7 +103,7 @@ class _MyAppPageState extends State<MyAppPage> {
 
     return Scaffold(
       body: isLoggedIn ? page : LoginPage(),
-      bottomNavigationBar: isLoggedIn ? AppNavigationBar() : SizedBox.shrink(),
+      bottomNavigationBar: isLoggedIn ? AppNavigationBar() : const SizedBox.shrink(),
     );
   }
 
@@ -121,8 +121,8 @@ class _MyAppPageState extends State<MyAppPage> {
         ),
       ],
       currentIndex: selectedIndex,
-      unselectedItemColor: Color.fromRGBO(70, 70, 70, 1),
-      selectedItemColor: Color.fromRGBO(100, 100, 100, 1),
+      unselectedItemColor: const Color.fromRGBO(70, 70, 70, 1),
+      selectedItemColor: const Color.fromRGBO(100, 100, 100, 1),
       onTap: (index){
         setState(() {
           selectedIndex = index;
