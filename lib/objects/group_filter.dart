@@ -26,14 +26,14 @@ class _GroupFilterState extends State<GroupFilter> {
         style: TextStyle(
           fontWeight: FontWeight.w500,
           fontSize: 12,
-          color: isSelected ? const Color.fromRGBO(255, 255, 255, 0.6) : const Color.fromRGBO(0, 0, 0, 0.6),
+          color: const Color.fromRGBO(235, 235, 235, 0.8)
         ),
       ),
       selected: isSelected,
       side: const BorderSide(color: Colors.transparent),
       checkmarkColor: const Color.fromRGBO(233, 235, 247, 1),
-      backgroundColor: const Color.fromRGBO(233, 235, 247, 1),
-      selectedColor: const Color.fromRGBO(84, 104, 251, 1),
+      backgroundColor: const Color.fromRGBO(32, 35, 43, 1),
+      selectedColor: const Color.fromRGBO(98, 112, 242, 1),
       onSelected: (bool selected) {
         setState(() {
           if (selected) {

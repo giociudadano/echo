@@ -3,6 +3,7 @@ library main;
 // Dart Libraries
 import 'dart:async'; // Asynchronous Computing
 import 'dart:math'; // Randomizers
+import 'dart:ui';
 
 // Flutter Libraries
 import 'package:flutter/material.dart'; // Material Design
@@ -26,6 +27,7 @@ import 'objects/group_filter.dart';
 
 part 'gui/login.dart';
 part 'gui/signup.dart';
+part 'gui/groups.dart';
 part 'gui/home.dart';
 part 'gui/debug.dart';
 
@@ -75,8 +77,8 @@ class _MyAppPageState extends State<MyAppPage> {
       isLoggedIn = (user != null);
       if (isLoggedIn){
         String username = await _getUsername();
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:
-          Text("Successfully logged in as $username")
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Successfully logged in as $username"),
         ));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:
@@ -95,6 +97,9 @@ class _MyAppPageState extends State<MyAppPage> {
         page = HomePage();
         break;
       case 1:
+        page = GroupsPage();
+        break;
+      case 2:
         page = DebugPage();
         break;
       default:
@@ -102,32 +107,66 @@ class _MyAppPageState extends State<MyAppPage> {
     }
 
     return Scaffold(
-      body: isLoggedIn ? page : LoginPage(),
-      bottomNavigationBar: isLoggedIn ? AppNavigationBar() : const SizedBox.shrink(),
-    );
+          extendBody: true,
+          body: Stack(
+            children: [
+              isLoggedIn ? page : LoginPage(),
+              isLoggedIn ? AppNavigationBar() : const SizedBox.shrink(),
+            ],
+          ),
+        );
   }
 
   AppNavigationBar(){
-    return BottomNavigationBar(
-      iconSize: 28,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(30.0),
+              topRight: Radius.circular(30.0),
+            ),
+            child: BottomNavigationBar(
+              iconSize: 24,
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Padding(
+                    padding: EdgeInsets.fromLTRB(40, 8, 0, 8),
+                    child: Icon(Icons.home_outlined),
+                  ),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.groups_outlined),
+                  label: 'Groups',
+                ),
+                BottomNavigationBarItem(
+                  icon: Padding(
+                    padding: EdgeInsets.fromLTRB(0, 8, 40, 8),
+                    child: Icon(Icons.anchor_outlined),
+                  ),
+                  label: 'Debug',
+                ),
+              ],
+              currentIndex: selectedIndex,
+              backgroundColor: Color.fromRGBO(22, 23, 27, 0.2),
+              unselectedItemColor: const Color.fromRGBO(200, 200, 200, 0.8),
+              selectedItemColor: const Color.fromRGBO(98, 112, 142, 1),
+              onTap: (index){
+                setState(() {
+                  selectedIndex = index;
+                });
+              },
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
+            ),
+          ),
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.handyman_sharp),
-          label: 'Debug',
-        ),
-      ],
-      currentIndex: selectedIndex,
-      unselectedItemColor: const Color.fromRGBO(70, 70, 70, 1),
-      selectedItemColor: const Color.fromRGBO(100, 100, 100, 1),
-      onTap: (index){
-        setState(() {
-          selectedIndex = index;
-        });
-      },
+      ),
     );
   }
 

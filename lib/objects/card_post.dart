@@ -15,14 +15,6 @@ class CardPost extends StatefulWidget {
 }
 
 class _CardPostState extends State<CardPost> {
-  final _random = Random().nextInt(3);
-
-  List<List<Color>> colors = [
-    [const Color.fromRGBO(84, 104, 251, 1), const Color.fromRGBO(110, 143, 255, 1)],
-    [const Color.fromRGBO(255, 67, 111, 1), const Color.fromRGBO(255, 122, 125, 1)],
-    [const Color.fromRGBO(58, 190, 117, 1), const Color.fromRGBO(129, 182, 132, 1)]
-  ];
-
   final _random2 = Random().nextInt(6),
 
   emojis = [
@@ -37,13 +29,9 @@ class _CardPostState extends State<CardPost> {
         child: Container(
           height: 150,
           decoration: BoxDecoration(
-            border: Border.all(color: const Color.fromRGBO(255, 255, 255, 0)),
-            borderRadius: const BorderRadius.all(Radius.circular(13)),
-            gradient: LinearGradient(
-              colors: colors[_random],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
+            border: Border.all(color: const Color.fromRGBO(21, 23, 28, 0)),
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
+            color: Color.fromRGBO(21, 23, 28, 1),
           ),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 10, 10, 0),
