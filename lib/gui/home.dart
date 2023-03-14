@@ -1,15 +1,5 @@
 part of main;
 
-class Post {
-  String title = "";
-  String content = "";
-  String userID = "";
-  String timeStart = "";
-  List groups = [];
-
-  Post(this.title, this.content, this.userID, this.timeStart, this.groups);
-}
-
 class HomePage extends StatefulWidget {
 
   HomePage({super.key});
@@ -19,6 +9,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final inputSearch = TextEditingController();
   var filters = [];
 
   @override
@@ -38,6 +29,7 @@ class _HomePageState extends State<HomePage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 28),
                       child: TextFormField(
+                        controller: inputSearch,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -168,9 +160,11 @@ class WidgetGroupsFilterState extends State<WidgetGroupsFilter> {
       DataSnapshot snapshot = await ref2.get();
       groupNames.add("${snapshot.value}");
     }
-    setState(() {
-      isDoneBuilding = true;
-    });
+    if(this.mounted) {
+      setState(() {
+        isDoneBuilding = true;
+      });
+    }
   }
 }
 
@@ -191,25 +185,32 @@ class WidgetPostsBuilderState extends State<WidgetPostsBuilder> {
   @override
   void initState() {
     super.initState();
-    widget.ref.onChildAdded.listen((event) {
+    widget.ref.onChildAdded.listen((event) async {
       Map groups = event.snapshot.child('groups').value as Map;
-      if (groups != null){
-        posts.add(
-            Post(
-                event.snapshot.child('title').value.toString(),
-                event.snapshot.child('content').value.toString(),
-                event.snapshot.child('userID').value.toString(),
-                event.snapshot.child('timeStart').value.toString(),
-                groups.keys.toList()
-            )
-        );
-      }
+      var userID = event.snapshot.child('userID').value.toString();
+      var username = await getUsername(userID);
+      posts.add(
+          Post(
+              event.snapshot.child('title').value.toString(),
+              event.snapshot.child('content').value.toString(),
+              userID,
+              username,
+              event.snapshot.child('timeStart').value.toString(),
+              groups.keys.toList()
+          )
+      );
       if (mounted) {
         setState(() {
         });
       }
     });
+  }
 
+  getUsername(userID) async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref(
+        "Users/$userID/username");
+    DataSnapshot snapshot = await ref.get();
+    return snapshot.value.toString();
   }
 
   @override
@@ -229,7 +230,7 @@ class WidgetPostsBuilderState extends State<WidgetPostsBuilder> {
               }
               if (isPrint) {
                 return CardPost(
-                    posts[i].title, posts[i].content, posts[i].userID,
+                    posts[i].title, posts[i].content, posts[i].username,
                     posts[i].timeStart
                 );
               } else {
@@ -242,3 +243,13 @@ class WidgetPostsBuilderState extends State<WidgetPostsBuilder> {
   }
 }
 
+class Post {
+  String title = "";
+  String content = "";
+  String username = "";
+  String userID = "";
+  String timeStart = "";
+  List groups = [];
+
+  Post(this.title, this.content, this.userID, this.username, this.timeStart, this.groups);
+}

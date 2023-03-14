@@ -348,9 +348,11 @@ class _GroupSelectorState extends State<GroupSelector>{
       }
       items = groups.map((group) => MultiSelectItem(group, groupNames[groups.indexOf(group)])).toList();
       selectedGroups = groups;
-      setState(() {
-        isDoneBuilding = true;
-      });
+      if (mounted) {
+        setState(() {
+          isDoneBuilding = true;
+        });
+      }
   }
 }
 

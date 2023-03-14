@@ -5,10 +5,10 @@ import 'dart:math';
 class CardPost extends StatefulWidget {
   String title;
   String content;
-  String userID;
+  String username;
   String timeStart;
 
-  CardPost(this.title, this.content, this.userID, this.timeStart);
+  CardPost(this.title, this.content, this.username, this.timeStart);
 
   @override
   State<CardPost> createState() => _CardPostState();
@@ -107,18 +107,13 @@ class _CardPostState extends State<CardPost> {
                           ),
                           Positioned(
                             top: 108,
-                            child: FutureBuilder(
-                              future: _getUsername(),
-                              builder: (BuildContext context, AsyncSnapshot<dynamic> text) {
-                                return Text(
-                                  "by ${text.data ?? 'Unknown User'}",
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 13,
-                                    color: Color.fromRGBO(245, 245, 245, 0.8),
-                                  ),
-                                );
-                              },
+                            child: Text(
+                              "by ${widget.username}",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 13,
+                                color: Color.fromRGBO(245, 245, 245, 0.8),
+                              ),
                             ),
                           ),
                         ],
@@ -127,13 +122,20 @@ class _CardPostState extends State<CardPost> {
                     Column(
                       children: [
                         SizedBox(
-                          height: 30,
-                          width: 30,
-                          child: IconButton(
-                              color: Colors.white,
-                              onPressed: (){},
-                              iconSize: 20,
-                              icon: const Icon(Icons.more_horiz)
+                          height: 50,
+                          width: 50,
+                          child: Transform.scale(
+                            scale: 1.3,
+                            child: Checkbox(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6.0),
+                              ),
+                              side: MaterialStateBorderSide.resolveWith(
+                                    (states) => BorderSide(width: 1.0, color: Color.fromRGBO(98, 112,242, 1)),
+                              ),
+                              value: false,
+                              onChanged: (bool? value) {},
+                            ),
                           ),
                         ),
                       ],
@@ -146,11 +148,5 @@ class _CardPostState extends State<CardPost> {
         ),
       ),
     );
-  }
-
-  _getUsername() async {
-    DatabaseReference ref = FirebaseDatabase.instance.ref("Users/${widget.userID}/username");
-    DataSnapshot snapshot = await ref.get();
-    return snapshot.value.toString();
   }
 }
