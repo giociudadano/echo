@@ -3,23 +3,44 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 class CardPost extends StatefulWidget {
+  String postID;
   String title;
   String content;
+  String userID;
   String username;
   String timeStart;
 
-  CardPost(this.title, this.content, this.username, this.timeStart);
+  CardPost(this.postID, this.title, this.content, this.userID, this.username, this.timeStart);
 
   @override
   State<CardPost> createState() => _CardPostState();
 }
 
 class _CardPostState extends State<CardPost> {
-  final _random2 = Random().nextInt(6),
 
-  emojis = [
+  //TODO PLACEHOLDER VARIABLES
+  final _random2 = Random().nextInt(6);
+  var emojis = [
     "cry.png", "cry-laugh.png", "dove.png", "face-with-peeking-eye.png", "fish.png", "shark.png"
   ];
+
+  bool isDone = false;
+
+  @override
+  void initState(){
+    getPostDoneState(widget.userID, widget.postID);
+  }
+
+  void getPostDoneState(String userID, String postID) async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref(
+        "Users/$userID/postsDone");
+    DataSnapshot snapshot = await ref.get();
+    Map postsDoneMap = snapshot.value as Map;
+    var postsDoneList = postsDoneMap.keys.toList();
+    setState(() {
+      isDone = postsDoneList.contains(postID);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,14 +148,20 @@ class _CardPostState extends State<CardPost> {
                           child: Transform.scale(
                             scale: 1.3,
                             child: Checkbox(
+                              activeColor: Color.fromRGBO(98, 112, 242, 1),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(6.0),
                               ),
                               side: MaterialStateBorderSide.resolveWith(
-                                    (states) => BorderSide(width: 1.0, color: Color.fromRGBO(98, 112,242, 1)),
+                                    (states) => BorderSide(width: 1.0, color: Color.fromRGBO(98, 112, 242, 1)),
                               ),
-                              value: false,
-                              onChanged: (bool? value) {},
+                              value: isDone,
+                              onChanged: (bool? value) {
+                                updatePostDoneState(widget.userID, widget.postID, value!);
+                                setState(() {
+                                  isDone = value;
+                                });
+                              },
                             ),
                           ),
                         ),
@@ -148,5 +175,14 @@ class _CardPostState extends State<CardPost> {
         ),
       ),
     );
+  }
+
+  void updatePostDoneState(String userID, String postID, bool value) {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("Users/$userID/postsDone");
+    if (value == true){
+      ref.update({postID:true});
+    } else {
+      ref.child(postID).remove();
+    }
   }
 }

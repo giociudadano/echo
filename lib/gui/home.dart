@@ -160,7 +160,7 @@ class WidgetGroupsFilterState extends State<WidgetGroupsFilter> {
       DataSnapshot snapshot = await ref2.get();
       groupNames.add("${snapshot.value}");
     }
-    if(this.mounted) {
+    if(mounted) {
       setState(() {
         isDoneBuilding = true;
       });
@@ -191,6 +191,7 @@ class WidgetPostsBuilderState extends State<WidgetPostsBuilder> {
       var username = await getUsername(userID);
       posts.add(
           Post(
+              event.snapshot.key.toString(),
               event.snapshot.child('title').value.toString(),
               event.snapshot.child('content').value.toString(),
               userID,
@@ -230,7 +231,7 @@ class WidgetPostsBuilderState extends State<WidgetPostsBuilder> {
               }
               if (isPrint) {
                 return CardPost(
-                    posts[i].title, posts[i].content, posts[i].username,
+                    posts[i].postID, posts[i].title, posts[i].content, posts[i].userID, posts[i].username,
                     posts[i].timeStart
                 );
               } else {
@@ -244,6 +245,7 @@ class WidgetPostsBuilderState extends State<WidgetPostsBuilder> {
 }
 
 class Post {
+  String postID = "";
   String title = "";
   String content = "";
   String username = "";
@@ -251,5 +253,5 @@ class Post {
   String timeStart = "";
   List groups = [];
 
-  Post(this.title, this.content, this.userID, this.username, this.timeStart, this.groups);
+  Post(this.postID, this.title, this.content, this.userID, this.username, this.timeStart, this.groups);
 }
