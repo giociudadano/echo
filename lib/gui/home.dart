@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
              const SizedBox(height: 15),
-             WidgetPostsBuilder(filters),
+             WidgetPostsBuilder(filters, inputSearch),
             ],
           ),
         ),
@@ -171,7 +171,8 @@ class WidgetGroupsFilterState extends State<WidgetGroupsFilter> {
 class WidgetPostsBuilder extends StatefulWidget {
   DatabaseReference ref = FirebaseDatabase.instance.ref('Posts');
   var filters = [];
-  WidgetPostsBuilder(this.filters, {super.key});
+  TextEditingController inputSearch;
+  WidgetPostsBuilder(this.filters, this.inputSearch, {super.key});
 
   @override
   State createState() => WidgetPostsBuilderState();
@@ -180,10 +181,12 @@ class WidgetPostsBuilder extends StatefulWidget {
 class WidgetPostsBuilderState extends State<WidgetPostsBuilder> {
   List <Post> posts = [];
   List <Post> postsFiltered = [];
+  bool isDoneBuilding = false;
 
   @override
   void initState() {
     super.initState();
+    widget.inputSearch.addListener(refresh);
     widget.ref.onChildAdded.listen((event) async {
       Map groups = event.snapshot.child('groups').value as Map;
       var userID = event.snapshot.child('userID').value.toString();
@@ -201,6 +204,7 @@ class WidgetPostsBuilderState extends State<WidgetPostsBuilder> {
       );
       if (mounted) {
         setState(() {
+          isDoneBuilding = true;
         });
       }
     });
@@ -213,12 +217,17 @@ class WidgetPostsBuilderState extends State<WidgetPostsBuilder> {
     return snapshot.value.toString();
   }
 
+  void refresh() {
+    setState(() {
+    });
+  }
+
   @override
   Widget build (BuildContext context) {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: ListView.builder(
+        child: isDoneBuilding ? ListView.builder(
             shrinkWrap: true,
             itemCount: posts.length,
             itemBuilder: (BuildContext context, int i) {
@@ -226,6 +235,19 @@ class WidgetPostsBuilderState extends State<WidgetPostsBuilder> {
               if (widget.filters.isNotEmpty) {
                 for (var filter in widget.filters) {
                   isPrint = posts[i].groups.contains(filter);
+                  if (posts[i].groups.contains(filter)){
+                    if (widget.inputSearch.text.isNotEmpty){
+                      isPrint = posts[i].title.toLowerCase().contains(widget.inputSearch.text.toLowerCase());
+                    } else {
+                      isPrint = true;
+                    }
+                  } else {
+                    isPrint = false;
+                  }
+                }
+              } else {
+                if (widget.inputSearch.text.isNotEmpty){
+                  isPrint = posts[i].title.toLowerCase().contains(widget.inputSearch.text.toLowerCase());
                 }
               }
               if (isPrint) {
@@ -237,6 +259,8 @@ class WidgetPostsBuilderState extends State<WidgetPostsBuilder> {
                 return const SizedBox.shrink();
               }
             },
+        ) : Center(
+          child: CircularProgressIndicator(),
         )
       )
     );
@@ -244,12 +268,7 @@ class WidgetPostsBuilderState extends State<WidgetPostsBuilder> {
 }
 
 class Post {
-  String postID = "";
-  String title = "";
-  String content = "";
-  String username = "";
-  String userID = "";
-  String timeStart = "";
+  String postID, title, content, username, userID, timeStart;
   List groups = [];
 
   Post(this.postID, this.title, this.content, this.userID, this.username, this.timeStart, this.groups);

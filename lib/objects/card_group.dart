@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
 class CardGroup extends StatefulWidget {
+  var name, desc, admin;
+  CardGroup(this.name, this.desc, this.admin);
+
   @override
   State<CardGroup> createState() => _CardGroupState();
 }
 
 class _CardGroupState extends State<CardGroup> {
+
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -34,17 +39,17 @@ class _CardGroupState extends State<CardGroup> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Group Name",
+                                  "${widget.name}",
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w700,
-                                    fontSize: 28,
+                                    fontSize: 20,
                                     color: Colors.white,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 Text(
-                                  "Lecturer Name",
+                                  "${widget.desc}",
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w400,
                                     fontSize: 13,
@@ -60,11 +65,11 @@ class _CardGroupState extends State<CardGroup> {
                           Positioned(
                             top: 58,
                             child: Text(
-                              "by User",
+                              "by ${widget.admin}",
                               style: const TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 13,
-                                color: Color.fromRGBO(235, 235, 235, 0.8),
+                                color: Color.fromRGBO(235, 235, 235, 0.6),
                               ),
                             ),
                           ),
@@ -72,7 +77,13 @@ class _CardGroupState extends State<CardGroup> {
                       ),
                     ),
                     Column(
-                      children: [],
+                      children: [
+                        IconButton(
+                          color: Color.fromRGBO(98, 112, 242, 1),
+                          icon: Icon(Icons.arrow_forward),
+                          onPressed: () {},
+                        )
+                      ],
                     ),
                   ],
                 ),

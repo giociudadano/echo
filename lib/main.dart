@@ -23,7 +23,7 @@ import 'package:intl/intl.dart';
 // Custom Objects
 import 'objects/card_post.dart';
 import 'objects/group_filter.dart';
-import 'objects/group_post.dart';
+import 'objects/card_group.dart';
 
 part 'gui/login.dart';
 part 'gui/signup.dart';
