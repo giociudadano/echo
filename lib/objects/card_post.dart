@@ -37,9 +37,11 @@ class _CardPostState extends State<CardPost> {
     DataSnapshot snapshot = await ref.get();
     Map postsDoneMap = snapshot.value as Map;
     var postsDoneList = postsDoneMap.keys.toList();
-    setState(() {
-      isDone = postsDoneList.contains(postID);
-    });
+    if(mounted) {
+      setState(() {
+        isDone = postsDoneList.contains(postID);
+      });
+    }
   }
 
   @override

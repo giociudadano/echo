@@ -153,8 +153,7 @@ class WidgetGroupsFilterState extends State<WidgetGroupsFilter> {
     DatabaseReference ref = FirebaseDatabase.instance.ref(
         "Users/${getUID()}/groups");
     DataSnapshot snapshot = await ref.get();
-    Map value = snapshot.value as Map;
-    value.forEach((a, b) => groupIDs.add(a));
+    groupIDs = (snapshot.value as Map).keys.toList();
     for(var groupID in groupIDs){
       DatabaseReference ref2 = FirebaseDatabase.instance.ref("Groups/$groupID/name");
       DataSnapshot snapshot = await ref2.get();
