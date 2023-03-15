@@ -35,12 +35,14 @@ class _CardPostState extends State<CardPost> {
     DatabaseReference ref = FirebaseDatabase.instance.ref(
         "Users/$userID/postsDone");
     DataSnapshot snapshot = await ref.get();
-    Map postsDoneMap = snapshot.value as Map;
-    var postsDoneList = postsDoneMap.keys.toList();
-    if(mounted) {
-      setState(() {
-        isDone = postsDoneList.contains(postID);
-      });
+    if (snapshot.value != null) {
+      Map postsDoneMap = snapshot.value as Map;
+      var postsDoneList = postsDoneMap.keys.toList();
+      if (mounted) {
+        setState(() {
+          isDone = postsDoneList.contains(postID);
+        });
+      }
     }
   }
 
