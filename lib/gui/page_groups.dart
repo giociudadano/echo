@@ -179,13 +179,13 @@ class _FormAddGroupState extends State<FormAddGroup> {
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(
                                         30, 10, 30, 10),
-                                    child: Form(
+                                    child: ListView(children: [Form(
                                         key: _formAddGroupKey,
                                         child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             children: [
-                                              const SizedBox(height: 30),
+                                              const SizedBox(height: 20),
                                               const Text("Add Class",
                                                   style: TextStyle(
                                                       color: Colors.white,
@@ -281,7 +281,8 @@ class _FormAddGroupState extends State<FormAddGroup> {
                                                       color: Colors.white),
                                                 ),
                                               ),
-                                            ])),
+                                            ])
+                                    )]),
                                   ),
                                   Positioned(
                                     right: 0,

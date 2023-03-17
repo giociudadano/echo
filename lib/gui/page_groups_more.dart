@@ -12,6 +12,7 @@ class GroupsMorePage extends StatefulWidget {
 }
 
 class _GroupsMorePageState extends State<GroupsMorePage> {
+  bool isFormVisible = false;
   final inputSearch = TextEditingController();
 
   @override
@@ -24,84 +25,118 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
     return Stack(
       children: [
         Scaffold(
-            backgroundColor: const Color.fromRGBO(32, 35, 43, 1),
-            body: SafeArea(
-              child: Column(
-                children: [
-                  Container(
-                    color: Colors.black,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 10, 24, 15),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              IconButton(
-                                color: Color.fromRGBO(98, 112, 242, 1),
-                                icon: const Icon(Icons.arrow_back),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              SizedBox(width: 20),
-                              Expanded(
-                                child: Container(
-                                  height: 60,
-                                  child: Stack(
-                                    children: [
-                                      Text(
-                                        "${widget.groupName}",
+          backgroundColor: const Color.fromRGBO(32, 35, 43, 1),
+          body: SafeArea(
+            child: Column(
+              children: [
+                Container(
+                  color: Colors.black,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 10, 24, 15),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            IconButton(
+                              color: Color.fromRGBO(98, 112, 242, 1),
+                              icon: const Icon(Icons.arrow_back),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                            SizedBox(width: 20),
+                            Expanded(
+                              child: Container(
+                                height: 60,
+                                child: Stack(
+                                  children: [
+                                    Text(
+                                      "${widget.groupName}",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                    Positioned(
+                                      top: 28,
+                                      child: Text(
+                                        "${widget.groupDesc}",
                                         style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.w700),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400),
                                       ),
-                                      Positioned(
-                                        top: 28,
-                                        child: Text(
-                                          "${widget.groupDesc}",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                          TextFormField(
-                            controller: inputSearch,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: BorderSide.none,
-                              ),
-                              contentPadding:
-                                  const EdgeInsets.fromLTRB(22, 12, 60, 12),
-                              hintText: '🔍  Search cards',
-                              hintStyle: const TextStyle(
-                                  color: Color.fromRGBO(235, 235, 235, 0.8)),
-                              filled: true,
-                              fillColor: const Color.fromRGBO(22, 23, 27, 1),
-                              isDense: true,
                             ),
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Color.fromRGBO(235, 235, 235, 0.8),
+                            PopupMenuButton(
+                                icon: Icon(Icons.more_vert, color: Colors.white),
+                                color: Colors.black,
+                                itemBuilder: (BuildContext context) {
+                                  return [
+                                    PopupMenuItem(
+                                      child: Text(
+                                        "Delete Class",
+                                        style: TextStyle(color: Color.fromRGBO(
+                                            255, 167, 167, 1)),
+                                      ),
+                                    ),
+                                  ];
+                                },
                             ),
+                          ],
+                        ),
+                        TextFormField(
+                          controller: inputSearch,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding:
+                                const EdgeInsets.fromLTRB(22, 12, 60, 12),
+                            hintText: '🔍  Search cards',
+                            hintStyle: TextStyle(
+                                color: Color.fromRGBO(235, 235, 235, 0.8),
+                                fontSize: 14),
+                            filled: true,
+                            fillColor: const Color.fromRGBO(22, 23, 27, 1),
+                            isDense: true,
                           ),
-                        ],
-                      ),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Color.fromRGBO(235, 235, 235, 0.8),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 15),
-                  WidgetGroupsMorePostsBuilder(widget.groupID, inputSearch),
-                ],
-              ),
-            )),
+                ),
+                const SizedBox(height: 15),
+                WidgetGroupsMorePostsBuilder(widget.groupID, inputSearch),
+              ],
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            shape: const CircleBorder(),
+            onPressed: () {
+              setState(() {
+                isFormVisible = true;
+              });
+            },
+            backgroundColor: const Color.fromRGBO(98, 112, 242, 1),
+            child: const Icon(Icons.add_card),
+          ),
+        ),
+        Visibility(
+          visible: isFormVisible,
+          child: FormAddPost(widget.groupID, isVisible: (value) {
+            isFormVisible = value;
+            setState(() {});
+          }),
+        ),
       ],
     );
   }
@@ -133,7 +168,8 @@ class WidgetGroupsMorePostsBuilderState
     DatabaseReference ref =
         FirebaseDatabase.instance.ref('Groups/${widget.groupID}/posts');
     DataSnapshot snapshot = await ref.get();
-    List postIDs = snapshot.value == null ? [] : (snapshot.value as Map).keys.toList();
+    List postIDs =
+        snapshot.value == null ? [] : (snapshot.value as Map).keys.toList();
     for (var postID in postIDs) {
       DatabaseReference ref = FirebaseDatabase.instance.ref('Posts/$postID');
       DataSnapshot snapshot = await ref.get();
