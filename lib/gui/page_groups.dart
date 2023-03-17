@@ -149,9 +149,7 @@ class _FormAddGroupState extends State<FormAddGroup> {
 
   @override
   Widget build(BuildContext context) {
-    return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-      child: Center(
+    return Center(
           child: Row(children: [
         Expanded(
           child: Padding(
@@ -259,7 +257,6 @@ class _FormAddGroupState extends State<FormAddGroup> {
         )
       ]
           )
-      ),
     );
   }
 

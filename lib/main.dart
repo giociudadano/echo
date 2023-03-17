@@ -67,13 +67,20 @@ class MyAppPage extends StatefulWidget {
   State <MyAppPage> createState() => _MyAppPageState();
 }
 
-class _MyAppPageState extends State<MyAppPage> {
+class _MyAppPageState extends State<MyAppPage> with TickerProviderStateMixin {
+  late TabController tabController;
   bool isLoggedIn = false;
   int selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
+    tabController = TabController(vsync: this, length: 3);
+    tabController.addListener(() {
+      setState(() {
+        selectedIndex = tabController.index;
+      });
+    });
     FirebaseAuth.instance.authStateChanges().listen((User? user) async {
       isLoggedIn = (user != null);
       if (isLoggedIn){
@@ -93,32 +100,30 @@ class _MyAppPageState extends State<MyAppPage> {
   @override
   Widget build(BuildContext context) {
     Widget page;
-    switch (selectedIndex) {
-      case 0:
-        page = HomePage();
-        break;
-      case 1:
-        page = GroupsPage();
-        break;
-      case 2:
-        page = DebugPage();
-        break;
-      default:
-        throw UnimplementedError('no widget for $selectedIndex');
-    }
+    page = TabBarView(
+    controller: tabController,
+      children: [
+        HomePage(),
+        GroupsPage(),
+        DebugPage(),
+      ]
+    );
 
-    return Scaffold(
+    return DefaultTabController(
+        length: 3,
+        child: Scaffold(
           extendBody: true,
           body: Stack(
             children: [
               isLoggedIn ? page : LoginPage(),
-              isLoggedIn ? AppNavigationBar() : const SizedBox.shrink(),
+              isLoggedIn ? AppNavigationBar(tabController) : const SizedBox.shrink(),
             ],
           ),
-        );
+        )
+    );
   }
 
-  AppNavigationBar(){
+  AppNavigationBar(TabController tabController){
     return Positioned(
       left: 0,
       right: 0,
@@ -159,6 +164,8 @@ class _MyAppPageState extends State<MyAppPage> {
               selectedItemColor: const Color.fromRGBO(98, 112, 142, 1),
               onTap: (index){
                 setState(() {
+                  tabController.index = index;
+                  tabController.animateTo(index);
                   selectedIndex = index;
                 });
               },
