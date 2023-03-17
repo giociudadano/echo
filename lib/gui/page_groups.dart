@@ -97,13 +97,10 @@ class _GroupsPageState extends State<GroupsPage> {
         ),
         Visibility(
           visible: isFormVisible,
-          child: FormAddGroup(
-            isVisible: (value) {
-              isFormVisible = value;
-              setState(() {
-              });
-            }
-          ),
+          child: FormAddGroup(isVisible: (value) {
+            isFormVisible = value;
+            setState(() {});
+          }),
         ),
       ],
     );
@@ -135,6 +132,7 @@ class _GroupsPageState extends State<GroupsPage> {
 
 class FormAddGroup extends StatefulWidget {
   final ValueChanged<bool> isVisible;
+
   const FormAddGroup({super.key, required this.isVisible});
 
   @override
@@ -146,129 +144,183 @@ class _FormAddGroupState extends State<FormAddGroup> {
   final _inputGroupName = TextEditingController();
   final _inputGroupDesc = TextEditingController();
 
-
   @override
   Widget build(BuildContext context) {
-    return Center(
-          child: Row(children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-            child: Container(
-              decoration: const BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 5.0,
-                  ),
-                ],
+    return Column(children: [
+      Expanded(
+        child: Row(children: [
+          Expanded(
+              child: Stack(
+            children: [
+              Container(
+                color: Colors.black54,
               ),
-              child: Card(
-                  color: const Color.fromRGBO(32, 35, 43, 1),
-                  child: Container(
-                    height: 300,
-                    child: Stack(
-                      children: [
-                        Padding(
-                      padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-                      child: Form(
-                        key: _formAddGroupKey,
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 30),
-                              const Text("Add Class",
-                                  style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w700)),
-                              const SizedBox(height: 10),
-                              TextFormField(
-                                controller: _inputGroupName,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: 'Group Name',
-                                  labelStyle: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.6), fontSize: 14),
-                                  hintText: 'Enter group name',
-                                  hintStyle: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.2), fontSize: 14),
-                                  isDense: true,
-                                  filled: true,
-                                  fillColor: Color.fromRGBO(22, 23, 27, 1),
-                                ),
-                                style: const TextStyle(fontSize: 14, color: Color.fromRGBO(235, 235, 235, 0.8)),
-                                validator: (String? value) {
-                                  return _verifyGroupName(value);
-                                },
+              Center(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 5.0,
                               ),
-                              const SizedBox(height: 10),
-                              TextFormField(
-                                controller: _inputGroupDesc,
-                                keyboardType: TextInputType.multiline,
-                                minLines: 2,
-                                maxLines: 2,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: 'Group Description',
-                                  labelStyle: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.6), fontSize: 14),
-                                  hintText: 'Enter group description',
-                                  hintStyle: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.2), fontSize: 14),
-                                  isDense: true,
-                                  filled: true,
-                                  fillColor: Color.fromRGBO(22, 23, 27, 1),
-                                ),
-                                style: const TextStyle(fontSize: 14, color: Color.fromRGBO(235, 235, 235, 0.8)),
+                            ],
+                          ),
+                          child: Card(
+                            color: const Color.fromRGBO(32, 35, 43, 1),
+                            child: Container(
+                              height: 300,
+                              child: Stack(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        30, 10, 30, 10),
+                                    child: Form(
+                                        key: _formAddGroupKey,
+                                        child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              const SizedBox(height: 30),
+                                              const Text("Add Class",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.w700)),
+                                              const SizedBox(height: 10),
+                                              TextFormField(
+                                                controller: _inputGroupName,
+                                                decoration:
+                                                    const InputDecoration(
+                                                  border: OutlineInputBorder(),
+                                                  labelText: 'Class Name',
+                                                  labelStyle: TextStyle(
+                                                      color: Color.fromRGBO(
+                                                          235, 235, 235, 0.6),
+                                                      fontSize: 14),
+                                                  hintText: 'Enter class name',
+                                                  hintStyle: TextStyle(
+                                                      color: Color.fromRGBO(
+                                                          235, 235, 235, 0.2),
+                                                      fontSize: 14),
+                                                  isDense: true,
+                                                  filled: true,
+                                                  fillColor: Color.fromRGBO(
+                                                      22, 23, 27, 1),
+                                                ),
+                                                style: const TextStyle(
+                                                    fontSize: 14,
+                                                    color: Color.fromRGBO(
+                                                        235, 235, 235, 0.8)),
+                                                validator: (String? value) {
+                                                  return _verifyGroupName(
+                                                      value);
+                                                },
+                                              ),
+                                              const SizedBox(height: 10),
+                                              TextFormField(
+                                                controller: _inputGroupDesc,
+                                                keyboardType:
+                                                    TextInputType.multiline,
+                                                minLines: 2,
+                                                maxLines: 2,
+                                                decoration:
+                                                    const InputDecoration(
+                                                  border: OutlineInputBorder(),
+                                                  labelText:
+                                                      'Class Description',
+                                                  labelStyle: TextStyle(
+                                                      color: Color.fromRGBO(
+                                                          235, 235, 235, 0.6),
+                                                      fontSize: 14),
+                                                  hintText:
+                                                      'Enter class description',
+                                                  hintStyle: TextStyle(
+                                                      color: Color.fromRGBO(
+                                                          235, 235, 235, 0.2),
+                                                      fontSize: 14),
+                                                  isDense: true,
+                                                  filled: true,
+                                                  fillColor: Color.fromRGBO(
+                                                      22, 23, 27, 1),
+                                                ),
+                                                style: const TextStyle(
+                                                    fontSize: 14,
+                                                    color: Color.fromRGBO(
+                                                        235, 235, 235, 0.8)),
+                                              ),
+                                              const SizedBox(height: 10),
+                                              ElevatedButton(
+                                                style: const ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStatePropertyAll<
+                                                              Color>(
+                                                          Color.fromRGBO(
+                                                              98, 112, 242, 1)),
+                                                ),
+                                                onPressed: () async {
+                                                  if (_formAddGroupKey
+                                                      .currentState!
+                                                      .validate()) {
+                                                    addGroup(
+                                                      context,
+                                                      _inputGroupName.text,
+                                                      _inputGroupDesc.text,
+                                                      getUID(),
+                                                    );
+                                                  }
+                                                },
+                                                child: const Text(
+                                                  'Add Group',
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                            ])),
+                                  ),
+                                  Positioned(
+                                    right: 0,
+                                    top: 0,
+                                    child: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            widget.isVisible(false);
+                                          });
+                                        },
+                                        icon: const Icon(Icons.close_rounded,
+                                            color: Color.fromRGBO(
+                                                98, 112, 242, 1))),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 10),
-                              ElevatedButton(
-                                style: const ButtonStyle(
-                                  backgroundColor: MaterialStatePropertyAll<Color>(Color.fromRGBO(98, 112, 242, 1)),
-                                ),
-                                onPressed: () async {
-                                  if (_formAddGroupKey.currentState!
-                                      .validate()) {
-                                    _writeGroup(
-                                      context,
-                                      _inputGroupName.text,
-                                      _inputGroupDesc.text,
-                                      getUID(),
-                                    );
-                                  }
-                                },
-                                child: const Text('Add Group',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ]
-                        )
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                        Positioned(
-                          right: 0,
-                          top: 0,
-                          child: IconButton(onPressed: () {
-                            setState(() {
-                              widget.isVisible(false);
-                            });
-                          }, icon: const Icon(Icons.close_rounded, color: Color.fromRGBO(98, 112, 242, 1))),
-                        ),
-                ],
-                    ),
-                  )
+                  ],
+                ),
               ),
-            ),
-          ),
-        )
-      ]
-          )
-    );
+            ],
+          )),
+        ]),
+      )
+    ]);
   }
 
   _verifyGroupName(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter a group name';
+      return 'Please enter a class name';
     }
     return null;
   }
 
-  void _writeGroup(
-      BuildContext context, String name, String desc, String userID) {
+  void addGroup(BuildContext context, String name, String desc, String userID) {
     try {
       DatabaseReference ref = FirebaseDatabase.instance.ref("Groups");
       var pushedRef = ref.push();
@@ -333,7 +385,8 @@ class _WidgetGroupsBuilderState extends State<WidgetGroupsBuilder> {
                 .contains(widget.inputSearch.text.toLowerCase());
           }
           if (isPrint) {
-            return CardGroup(group.groupID, group.groupName, group.groupDesc, group.adminName);
+            return CardGroup(group.groupID, group.groupName, group.groupDesc,
+                group.adminName);
           } else {
             return const SizedBox.shrink();
           }
