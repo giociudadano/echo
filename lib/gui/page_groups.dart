@@ -53,7 +53,7 @@ class _GroupsPageState extends State<GroupsPage> {
                               contentPadding:
                                   const EdgeInsets.fromLTRB(22, 12, 60, 12),
                               hintText: '🔍  Search classes',
-                              hintStyle: TextStyle(
+                              hintStyle: const TextStyle(
                                   color: Color.fromRGBO(235, 235, 235, 0.8)),
                               filled: true,
                               fillColor: const Color.fromRGBO(22, 23, 27, 1),
@@ -73,7 +73,7 @@ class _GroupsPageState extends State<GroupsPage> {
                   Expanded(
                     child: isDoneBuilding
                         ? WidgetGroupsBuilder(groups, inputSearch)
-                        : Center(
+                        : const Center(
                             child: CircularProgressIndicator(),
                           ),
                   ),
@@ -84,13 +84,13 @@ class _GroupsPageState extends State<GroupsPage> {
           floatingActionButton: Padding(
             padding: const EdgeInsets.only(bottom: 70),
             child: FloatingActionButton(
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
               onPressed: () {
                 setState(() {
                   isFormVisible = true;
                 });
               },
-              backgroundColor: Color.fromRGBO(98, 112, 242, 1),
+              backgroundColor: const Color.fromRGBO(98, 112, 242, 1),
               child: const Icon(Icons.new_label_outlined),
             ),
           ),
@@ -157,7 +157,7 @@ class _FormAddGroupState extends State<FormAddGroup> {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black12,
@@ -166,7 +166,7 @@ class _FormAddGroupState extends State<FormAddGroup> {
                 ],
               ),
               child: Card(
-                  color: Color.fromRGBO(32, 35, 43, 1),
+                  color: const Color.fromRGBO(32, 35, 43, 1),
                   child: Container(
                     height: 300,
                     child: Stack(
@@ -219,7 +219,7 @@ class _FormAddGroupState extends State<FormAddGroup> {
                               ),
                               const SizedBox(height: 10),
                               ElevatedButton(
-                                style: ButtonStyle(
+                                style: const ButtonStyle(
                                   backgroundColor: MaterialStatePropertyAll<Color>(Color.fromRGBO(98, 112, 242, 1)),
                                 ),
                                 onPressed: () async {
@@ -248,7 +248,7 @@ class _FormAddGroupState extends State<FormAddGroup> {
                             setState(() {
                               widget.isVisible(false);
                             });
-                          }, icon: Icon(Icons.close_rounded, color: Color.fromRGBO(98, 112, 242, 1))),
+                          }, icon: const Icon(Icons.close_rounded, color: Color.fromRGBO(98, 112, 242, 1))),
                         ),
                 ],
                     ),
@@ -280,6 +280,7 @@ class _FormAddGroupState extends State<FormAddGroup> {
         'name': name,
         'description': desc,
         'members': {userID: true},
+        'admin': userID,
       });
       DatabaseReference ref2 =
           FirebaseDatabase.instance.ref("Users/$userID/groups");
@@ -287,12 +288,12 @@ class _FormAddGroupState extends State<FormAddGroup> {
         "$groupID": true,
       });
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Group has been added!"),
+        content: Text("Class has been added!"),
       ));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text(
-            "There was an error adding your group. Please try again later."),
+            "There was an error adding your class. Please try again later."),
       ));
     }
   }
@@ -335,7 +336,7 @@ class _WidgetGroupsBuilderState extends State<WidgetGroupsBuilder> {
                 .contains(widget.inputSearch.text.toLowerCase());
           }
           if (isPrint) {
-            return CardGroup(group.groupName, group.groupDesc, group.adminName);
+            return CardGroup(group.groupID, group.groupName, group.groupDesc, group.adminName);
           } else {
             return const SizedBox.shrink();
           }

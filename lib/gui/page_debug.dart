@@ -226,13 +226,19 @@ class DebugPage extends StatelessWidget {
       Map groupMap = {};
       groups.forEach((group) => groupMap["$group"] = true);
       DatabaseReference ref = FirebaseDatabase.instance.ref("Posts");
-      ref.push().update({
+      var newPost = ref.push();
+      newPost.update({
         'title': title,
         'content': content,
         'userID': userID,
         'timeStart': timeStart,
         'groups': groupMap,
       });
+      for (var group in groups){
+        DatabaseReference ref2 = FirebaseDatabase.instance.ref("Groups/$group/posts");
+        ref2.update({newPost.key!: true});
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Post has been submitted!"),
       ));

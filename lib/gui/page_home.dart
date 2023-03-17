@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
                             borderSide: BorderSide.none,
                           ),
                           contentPadding: const EdgeInsets.fromLTRB(22, 12, 60, 12),
-                          hintText: '🔍  Search task',
+                          hintText: '🔍  Search card',
                           hintStyle: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.8)),
                           filled: true,
                           fillColor: const Color.fromRGBO(22, 23, 27, 1),
@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
              const SizedBox(height: 15),
-             WidgetPostsBuilder(filters, inputSearch),
+             WidgetDashboardPostsBuilder(filters, inputSearch),
             ],
           ),
         ),
@@ -139,7 +139,7 @@ class WidgetGroupsFilterState extends State<WidgetGroupsFilter> {
                           ],
                         );
                   },
-                ) : const Text("Loading your groups...",
+                ) : const Text("Loading your cards...",
                   style: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.8))
                 ),
               ),
@@ -168,17 +168,17 @@ class WidgetGroupsFilterState extends State<WidgetGroupsFilter> {
 }
 
 
-class WidgetPostsBuilder extends StatefulWidget {
+class WidgetDashboardPostsBuilder extends StatefulWidget {
   DatabaseReference ref = FirebaseDatabase.instance.ref('Posts');
   var filters = [];
   TextEditingController inputSearch;
-  WidgetPostsBuilder(this.filters, this.inputSearch, {super.key});
+  WidgetDashboardPostsBuilder(this.filters, this.inputSearch, {super.key});
 
   @override
-  State createState() => WidgetPostsBuilderState();
+  State createState() => WidgetDashboardPostsBuilderState();
 }
 
-class WidgetPostsBuilderState extends State<WidgetPostsBuilder> {
+class WidgetDashboardPostsBuilderState extends State<WidgetDashboardPostsBuilder> {
   List <Post> posts = [];
   List <Post> postsFiltered = [];
   bool isDoneBuilding = false;

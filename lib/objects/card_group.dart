@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+part of main;
 
 class CardGroup extends StatefulWidget {
-  var name, desc, admin;
-  CardGroup(this.name, this.desc, this.admin);
+  var id, name, desc, admin;
+  CardGroup(this.id, this.name, this.desc, this.admin);
 
   @override
   State<CardGroup> createState() => _CardGroupState();
@@ -81,7 +81,12 @@ class _CardGroupState extends State<CardGroup> {
                         IconButton(
                           color: Color.fromRGBO(98, 112, 242, 1),
                           icon: Icon(Icons.arrow_forward),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => GroupsMorePage("${widget.id}","${widget.name}", "${widget.desc}")),
+                            );
+                          },
                         )
                       ],
                     ),

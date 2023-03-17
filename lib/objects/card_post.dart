@@ -52,7 +52,7 @@ class _CardPostState extends State<CardPost> {
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Card(
         child: Container(
-          height: 150,
+          height: 140,
           decoration: BoxDecoration(
             border: Border.all(color: const Color.fromRGBO(21, 23, 28, 0)),
             borderRadius: const BorderRadius.all(Radius.circular(12)),
@@ -91,7 +91,7 @@ class _CardPostState extends State<CardPost> {
                                       widget.title,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w700,
-                                        fontSize: 28,
+                                        fontSize: 20,
                                         color: Colors.white,
                                       ),
                                       maxLines: 1,
@@ -131,13 +131,13 @@ class _CardPostState extends State<CardPost> {
                             ),
                           ),
                           Positioned(
-                            top: 108,
+                            top: 98,
                             child: Text(
                               "by ${widget.username}",
                               style: const TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 13,
-                                color: Color.fromRGBO(245, 245, 245, 0.8),
+                                color: Color.fromRGBO(245, 245, 245, 0.6),
                               ),
                             ),
                           ),
