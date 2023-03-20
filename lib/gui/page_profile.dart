@@ -19,10 +19,26 @@ class ProfilePage extends StatelessWidget {
                         child: ListView(
                           children: [
                             ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStatePropertyAll<Color>(Colors.black),
+                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                      )
+                                  )
+                              ),
                               onPressed: () {
                                 _logoutUser(context);
                               },
-                              child: const Text('Log Out'),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 10),
+                                child: Text('Log Out',
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(235, 235, 235, 0.8),
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
                         )),

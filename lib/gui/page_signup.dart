@@ -11,88 +11,162 @@ class SignupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Color.fromRGBO(98, 112, 243, 1),
       body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('Signup Page',
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 48,)
-              ),
-              Form(
-                key: _formKey,
-                child: Column(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 40),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                      child: TextFormField(
+                    const Text(
+                      'Nice to\nmeet you!',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 50,
+                          height: 0.85,
+                          color: Colors.white),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 80),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Email",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      TextFormField(
                         controller: _inputEmail,
-                        decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Email',
-                        hintText: 'Enter your email',
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          hintText: 'Enter your email',
+                          filled: true,
+                          fillColor: Colors.white,
+                          isDense: true,
                         ),
                         validator: (String? value) {
                           return _verifyEmail(value);
                         },
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                      child: TextFormField(
+                      SizedBox(height: 20),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Username",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      TextFormField(
                         controller: _inputUsername,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Username',
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
                           hintText: 'Enter your username',
+                          filled: true,
+                          fillColor: Colors.white,
+                          isDense: true,
                         ),
                         validator: (String? value) {
                           return _verifyUsername(value);
                         },
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                      child: TextFormField(
+                      SizedBox(height: 20),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Password",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      TextFormField(
                         controller: _inputPassword,
                         obscureText: true,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Password',
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
                           hintText: 'Enter your password',
+                          filled: true,
+                          fillColor: Colors.white,
+                          isDense: true,
                         ),
                         validator: (String? value) {
                           return _verifyPassword(value);
                         },
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
+                      SizedBox(height: 60),
+                      Row(
                         children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                _addUser(context, _inputEmail.text, _inputUsername.text, _inputPassword.text);
-                              }
-                            },
-                            child: const Text('Submit'),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Back'),
-                          ),
+                          Expanded(
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStatePropertyAll<Color>(
+                                          Colors.black),
+                                  shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ))),
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  _addUser(context, _inputEmail.text,
+                                      _inputUsername.text, _inputPassword.text);
+                                }
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 10),
+                                child: Text(
+                                  'Get Started',
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(235, 235, 235, 0.8),
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
                         ],
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 15),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text(
+                          'I already have an account',
+                          style: TextStyle(
+                            color: Colors.white,
+                            decoration: TextDecoration.underline,
+                            decorationColor: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -135,21 +209,25 @@ class SignupPage extends StatelessWidget {
       ));
     } on FirebaseAuthException catch (e) {
       String errorMessage;
-      switch (e.code){
+      switch (e.code) {
         case 'email-already-in-use':
-          errorMessage = "Email already exists, please try logging in using this email.";
+          errorMessage =
+              "Email already exists, please try logging in using this email.";
           break;
         case 'invalid-email':
           errorMessage = "Please enter a valid email address.";
           break;
         default:
-          errorMessage = "There was an unknown error with creating your account. Please try again later.";
+          errorMessage =
+              "There was an unknown error with creating your account. Please try again later.";
       }
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorMessage)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(errorMessage)));
       return;
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("There was an unknown error with authenticating to servers. Please try again later."),
+        content: Text(
+            "There was an unknown error with authenticating to servers. Please try again later."),
       ));
       return;
     }
@@ -170,14 +248,13 @@ class SignupPage extends StatelessWidget {
   _generateUsername(username) {
     while (true) {
       bool isDuplicate = false;
-      final String randomInt = Random().nextInt(9999).toString().padLeft(4, '0');
+      final String randomInt =
+          Random().nextInt(9999).toString().padLeft(4, '0');
       var newUsername = "$username#$randomInt";
       DatabaseReference ref = FirebaseDatabase.instance.ref().child("Users");
       ref.orderByChild("username").equalTo(newUsername).get().then((value) => {
-        if (value.exists){
-          isDuplicate = true
-        }
-      });
+            if (value.exists) {isDuplicate = true}
+          });
       if (!isDuplicate) {
         return newUsername;
       }
