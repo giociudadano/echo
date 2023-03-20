@@ -247,11 +247,7 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                             Text(
                               "Cancel",
                               style: TextStyle(
-                                color: (widget.selectedColor != null &&
-                                        widget.selectedColor !=
-                                            Colors.transparent)
-                                    ? widget.selectedColor!.withOpacity(1)
-                                    : Colors.black54,
+                                color: Color.fromRGBO(255, 167, 167, 1),
                                 fontSize: 16,
                               ),
                             ),
@@ -269,7 +265,8 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                                         widget.selectedColor !=
                                             Colors.transparent)
                                     ? widget.selectedColor!.withOpacity(1)
-                                    : Colors.blue,
+                                    : Color.fromRGBO(
+                                    98, 112, 242, 1),
                                 fontSize: 16,
                               ),
                             ),

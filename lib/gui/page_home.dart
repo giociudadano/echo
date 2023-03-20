@@ -619,16 +619,25 @@ class _GroupSelectorState extends State<GroupSelector>{
         MultiSelectBottomSheetField(
           decoration: const BoxDecoration(
             shape: BoxShape.rectangle,
-            color: Color.fromRGBO(235, 235, 235, 1),
-            borderRadius: BorderRadius.all(Radius.circular(4.0)),
+            color: Color.fromRGBO(22, 23, 27, 1),
           ),
-          backgroundColor: Colors.white,
-          buttonIcon: const Icon(Icons.group),
+          searchTextStyle: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.6)),
+          backgroundColor: Color.fromRGBO(41, 44, 50, 1),
+          buttonIcon: const Icon(Icons.new_label_outlined, color: Color.fromRGBO(235, 235, 235, 0.6)),
           initialChildSize: 0.37,
+          itemsTextStyle: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.8)),
+          selectedItemsTextStyle: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.8)),
+          checkColor: Color.fromRGBO(235, 235, 235, 0.8),
+          selectedColor: Color.fromRGBO(98, 112, 242, 1),
+          unselectedColor:  Color.fromRGBO(63, 69, 84, 1),
           listType: MultiSelectListType.CHIP,
           searchable: true,
-          buttonText: const Text("Select a group to post"),
+          searchHintStyle: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.6)),
+          searchIcon: Icon(Icons.search, color: Color.fromRGBO(235, 235, 235, 0.6)),
+          closeSearchIcon: Icon(Icons.close, color: Color.fromRGBO(235, 235, 235, 0.6)),
+          buttonText: const Text("Select a class to post", style: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.8))),
           items: items,
+          title: Text("Search a class", style: TextStyle(color: Color.fromRGBO(225, 225, 225, 1))),
           onConfirm: (values) {
             selectedGroups = values;
           },
@@ -636,6 +645,8 @@ class _GroupSelectorState extends State<GroupSelector>{
             widget.groupsSelected(values);
           },
           chipDisplay: MultiSelectChipDisplay(
+            chipColor: Color.fromRGBO(98, 112, 242, 1),
+            textStyle: TextStyle(color: Colors.white, fontSize: 12),
             onTap: (value) {
               setState(() {
                 selectedGroups.remove(value);
@@ -649,9 +660,9 @@ class _GroupSelectorState extends State<GroupSelector>{
             alignment: Alignment.centerLeft,
             child: const Text(
               "None selected",
-              style: TextStyle(color: Colors.black54),
+              style: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.4)),
             ))
-            : Container(),
+            : SizedBox.shrink(),
       ],
     ) : const Padding(
         padding: EdgeInsets.symmetric(vertical: 12),

@@ -29,7 +29,7 @@ part 'gui/page_login.dart';
 part 'gui/page_signup.dart';
 part 'gui/page_groups.dart';
 part 'gui/page_home.dart';
-part 'gui/page_debug.dart';
+part 'gui/page_profile.dart';
 part 'gui/page_groups_more.dart';
 
 Future<void> main() async {
@@ -105,7 +105,7 @@ class _MyAppPageState extends State<MyAppPage> with TickerProviderStateMixin {
       children: [
         HomePage(),
         GroupsPage(),
-        DebugPage(),
+        ProfilePage(),
       ]
     );
 
