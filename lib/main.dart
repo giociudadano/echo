@@ -64,7 +64,7 @@ class MyAppPage extends StatefulWidget {
   const MyAppPage({super.key});
 
   @override
-  State <MyAppPage> createState() => _MyAppPageState();
+  State<MyAppPage> createState() => _MyAppPageState();
 }
 
 class _MyAppPageState extends State<MyAppPage> with TickerProviderStateMixin {
@@ -83,15 +83,14 @@ class _MyAppPageState extends State<MyAppPage> with TickerProviderStateMixin {
     });
     FirebaseAuth.instance.authStateChanges().listen((User? user) async {
       isLoggedIn = (user != null);
-      if (isLoggedIn){
+      if (isLoggedIn) {
         String username = await _getUsername();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text("Successfully logged in as $username"),
+          content: Text("Successfully logged in as $username"),
         ));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:
-          Text("Successfully logged out!")
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Successfully logged out!")));
       }
       setState(() {});
     });
@@ -100,14 +99,11 @@ class _MyAppPageState extends State<MyAppPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     Widget page;
-    page = TabBarView(
-    controller: tabController,
-      children: [
-        HomePage(),
-        GroupsPage(),
-        ProfilePage(),
-      ]
-    );
+    page = TabBarView(controller: tabController, children: [
+      HomePage(),
+      GroupsPage(),
+      ProfilePage(),
+    ]);
 
     return DefaultTabController(
         length: 3,
@@ -116,14 +112,15 @@ class _MyAppPageState extends State<MyAppPage> with TickerProviderStateMixin {
           body: Stack(
             children: [
               isLoggedIn ? page : LoginPage(),
-              isLoggedIn ? AppNavigationBar(tabController) : const SizedBox.shrink(),
+              isLoggedIn
+                  ? AppNavigationBar(tabController)
+                  : const SizedBox.shrink(),
             ],
           ),
-        )
-    );
+        ));
   }
 
-  AppNavigationBar(TabController tabController){
+  AppNavigationBar(TabController tabController) {
     return Positioned(
       left: 0,
       right: 0,
@@ -162,7 +159,7 @@ class _MyAppPageState extends State<MyAppPage> with TickerProviderStateMixin {
               backgroundColor: Color.fromRGBO(22, 23, 27, 0.2),
               unselectedItemColor: const Color.fromRGBO(200, 200, 200, 0.8),
               selectedItemColor: const Color.fromRGBO(98, 112, 142, 1),
-              onTap: (index){
+              onTap: (index) {
                 setState(() {
                   tabController.index = index;
                   tabController.animateTo(index);
@@ -184,10 +181,15 @@ class _MyAppPageState extends State<MyAppPage> with TickerProviderStateMixin {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       userID = user.uid;
-      DatabaseReference ref = FirebaseDatabase.instance.ref("Users/$userID/username");
+      DatabaseReference ref =
+          FirebaseDatabase.instance.ref("Users/$userID/username");
       DataSnapshot snapshot = await ref.get();
       username = snapshot.value.toString();
     }
     return username;
   }
 }
+
+
+
+// hi from lloyd
