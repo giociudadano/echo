@@ -56,7 +56,7 @@ class _CardPostState extends State<CardPost> {
           decoration: BoxDecoration(
             border: Border.all(color: const Color.fromRGBO(21, 23, 28, 0)),
             borderRadius: const BorderRadius.all(Radius.circular(12)),
-            color: Color.fromRGBO(21, 23, 28, 1),
+            color: const Color.fromRGBO(21, 23, 28, 1),
           ),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 10, 10, 0),
@@ -152,12 +152,12 @@ class _CardPostState extends State<CardPost> {
                           child: Transform.scale(
                             scale: 1.3,
                             child: Checkbox(
-                              activeColor: Color.fromRGBO(98, 112, 242, 1),
+                              activeColor: const Color.fromRGBO(98, 112, 242, 1),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(6.0),
                               ),
                               side: MaterialStateBorderSide.resolveWith(
-                                    (states) => BorderSide(width: 1.0, color: Color.fromRGBO(98, 112, 242, 1)),
+                                    (states) => const BorderSide(width: 1.0, color: Color.fromRGBO(98, 112, 242, 1)),
                               ),
                               value: isDone,
                               onChanged: (bool? value) {
