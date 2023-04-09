@@ -201,7 +201,7 @@ class _CardPostState extends State<CardPost> {
                         ),
                     ),
                     onPressed: (){
-                      print("Clicked on 'Delete Card' Button");
+                      AlertDeleteCard();
                     },
                     icon: Icon(Icons.cancel_presentation_outlined, color: Colors.white),
                     label: Text("Delete Card", style: TextStyle(color: Colors.white)),
@@ -240,4 +240,66 @@ class _CardPostState extends State<CardPost> {
       ref.child(postID).remove();
     }
   }
+
+  void AlertDeleteCard() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Color.fromRGBO(32, 35, 43, 1),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            title: Text("Confirm Delete Card",
+                style: TextStyle(
+                  color: Color.fromRGBO(245, 245, 245, 1),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 24,
+                )
+            ),
+            content: Text("This action will permanently delete your card. Are you sure you want to continue?",
+                style: TextStyle(
+                  color: Color.fromRGBO(245, 245, 245, 0.8),
+                  fontSize: 14,
+                )
+            ),
+            actions: [
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        side: BorderSide(color: Color.fromRGBO(245, 245, 245, 0.8), width: 1.5),
+                      )
+                  ),
+                ),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+                child: Text("Cancel", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+              ),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll<Color>(
+                      Color.fromRGBO(238, 94, 94, 1)
+                  ),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      )
+                  ),
+                ),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+                child: Text("Delete", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+              ),
+            ]
+          );
+        }
+    );
+  }
 }
+
+

@@ -376,8 +376,11 @@ class _WidgetGroupsBuilderState extends State<WidgetGroupsBuilder> {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: ListView.builder(
         shrinkWrap: true,
-        itemCount: widget.groups.length,
+        itemCount: widget.groups.length+1,
         itemBuilder: (BuildContext context, int i) {
+          if (i == widget.groups.length){
+            return SizedBox(height: 75);
+          }
           var group = widget.groups[i];
           bool isPrint = true;
           if (widget.inputSearch.text.isNotEmpty) {
