@@ -211,9 +211,12 @@ class WidgetGroupsMorePostsBuilderState
             child: isDoneBuilding
                 ? ListView.builder(
                     shrinkWrap: true,
-                    itemCount: posts.length,
+                    itemCount: posts.length+1,
                     itemBuilder: (BuildContext context, int i) {
                       bool isPrint = true;
+                      if (i == posts.length){
+                        return SizedBox(height: 75);
+                      }
                       if (widget.inputSearch.text.isNotEmpty) {
                         isPrint = posts[i]
                             .title
