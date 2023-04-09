@@ -183,7 +183,49 @@ class _CardPostState extends State<CardPost> {
                   ),
                 ],
               ),
-            ) : SizedBox.shrink(),
+            )
+            :
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton.icon(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll<Color>(
+                            Color.fromRGBO(238, 94, 94, 1)
+                        ),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            )
+                        ),
+                    ),
+                    onPressed: (){
+                      print("Clicked on 'Delete Card' Button");
+                    },
+                    icon: Icon(Icons.cancel_presentation_outlined, color: Colors.white),
+                    label: Text("Delete Card", style: TextStyle(color: Colors.white)),
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton.icon(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            side: BorderSide(color: Color.fromRGBO(238, 94, 94, 1), width: 1.5),
+                          )
+                      ),
+                    ),
+                    onPressed: (){
+                      print("Clicked on 'Report User' Button");
+                    },
+                    icon: Icon(Icons.flag, color: Color.fromRGBO(238, 94, 94, 1)),
+                    label: Text("Report User", style: TextStyle(color: Color.fromRGBO(238, 94, 94, 1))),
+                    ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
