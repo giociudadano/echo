@@ -25,6 +25,7 @@ class _CardPostState extends State<CardPost> {
   ];
 
   bool isDone = false;
+  bool isVisible = true;
   bool isCardFront = true;
 
   @override
@@ -49,7 +50,7 @@ class _CardPostState extends State<CardPost> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return !isVisible ? SizedBox.shrink() : GestureDetector(
       onTap: () {
         setState((){
           isCardFront = !isCardFront;
@@ -201,7 +202,7 @@ class _CardPostState extends State<CardPost> {
                         ),
                     ),
                     onPressed: (){
-                      AlertDeleteCard();
+                      AlertDeleteCard(widget.postID);
                     },
                     icon: Icon(Icons.cancel_presentation_outlined, color: Colors.white),
                     label: Text("Delete Card", style: TextStyle(color: Colors.white)),
@@ -241,7 +242,7 @@ class _CardPostState extends State<CardPost> {
     }
   }
 
-  void AlertDeleteCard() {
+  void AlertDeleteCard(String postID) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -292,6 +293,7 @@ class _CardPostState extends State<CardPost> {
                 ),
                 onPressed: (){
                   Navigator.of(context).pop();
+                  DeleteCard(postID);
                 },
                 child: Text("Delete", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
               ),
@@ -299,6 +301,24 @@ class _CardPostState extends State<CardPost> {
           );
         }
     );
+  }
+
+  void DeleteCard(String postID) async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("Posts/$postID/groups");
+    DataSnapshot snapshot = await ref.get();
+    List groups = [];
+    (snapshot.value as Map).forEach((a, b) => groups.add(a));
+    for (var group in groups){
+      (FirebaseDatabase.instance.ref("Groups/$group/posts/$postID")).remove();
+    }
+    (FirebaseDatabase.instance.ref("Posts/$postID")).remove();
+
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("Post has been deleted!"),
+    ));
+    setState(() {
+      isVisible = false;
+    });
   }
 }
 
