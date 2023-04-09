@@ -132,8 +132,9 @@ class WidgetGroupsFilterState extends State<WidgetGroupsFilter> {
               ),
               const SizedBox(width: 14),
               Expanded(
-                child: isDoneBuilding
-                    ? ListView.builder(
+                child:
+                  groupIDs.length == 0 ? SizedBox.shrink() :
+                      isDoneBuilding ? ListView.builder(
                         scrollDirection: Axis.horizontal,
                         shrinkWrap: true,
                         itemCount: groupIDs.length,
@@ -177,6 +178,12 @@ class WidgetGroupsFilterState extends State<WidgetGroupsFilter> {
     DatabaseReference ref =
         FirebaseDatabase.instance.ref("Users/${getUID()}/groups");
     DataSnapshot snapshot = await ref.get();
+    if (snapshot.value == null) {
+      setState(() {
+        isDoneBuilding = true;
+      });
+      return;
+    }
     groupIDs = (snapshot.value as Map).keys.toList();
     for (var groupID in groupIDs) {
       DatabaseReference ref2 =
@@ -509,7 +516,7 @@ class _FormAddPostState extends State<FormAddPost> {
                                                     );
                                                   }
                                                 },
-                                                child: const Text('Add Group',
+                                                child: const Text('Add Card',
                                                     style: TextStyle(
                                                         color: Colors.white)),
                                               ),
@@ -617,7 +624,9 @@ class _GroupSelectorState extends State<GroupSelector>{
 
   @override
   Widget build(BuildContext context) {
-    return isDoneBuilding ? Column(
+    return groups.length == 0 ?
+      Text("Join a class to submit a card!", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))) :
+      isDoneBuilding ? Column(
       children: <Widget>[
         MultiSelectBottomSheetField(
           decoration: const BoxDecoration(
@@ -677,6 +686,12 @@ class _GroupSelectorState extends State<GroupSelector>{
     DatabaseReference ref = FirebaseDatabase.instance.ref(
         "Users/${getUID()}/groups");
     DataSnapshot snapshot = await ref.get();
+    if (snapshot.value == null) {
+      setState(() {
+        isDoneBuilding = true;
+      });
+      return;
+    }
     Map value = snapshot.value as Map;
     value.forEach((a, b) => groups.add(a));
     var groupNames = [];

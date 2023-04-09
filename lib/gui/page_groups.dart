@@ -71,7 +71,7 @@ class _GroupsPageState extends State<GroupsPage> {
                   ),
                   const SizedBox(height: 20),
                   Expanded(
-                    child: isDoneBuilding
+                    child: groups.length == 0 ? SizedBox.shrink() : isDoneBuilding
                         ? WidgetGroupsBuilder(groups, inputSearch)
                         : const Center(
                             child: CircularProgressIndicator(),
@@ -110,6 +110,12 @@ class _GroupsPageState extends State<GroupsPage> {
     DatabaseReference ref =
         FirebaseDatabase.instance.ref("Users/${getUID()}/groups");
     DataSnapshot snapshot = await ref.get();
+    if (snapshot.value == null) {
+      setState(() {
+        isDoneBuilding = true;
+      });
+      return;
+    }
     List groupIDs = (snapshot.value as Map).keys.toList();
     for (var groupID in groupIDs) {
       DatabaseReference ref2 = FirebaseDatabase.instance.ref("Groups/$groupID");

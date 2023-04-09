@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
@@ -27,10 +28,12 @@ class _CardPostState extends State<CardPost> {
   bool isDone = false;
   bool isVisible = true;
   bool isCardFront = true;
+  bool isAuthor = false;
 
   @override
   void initState(){
     getPostDoneState(widget.userID, widget.postID);
+    isCardAuthor(widget.postID);
   }
 
   void getPostDoneState(String userID, String postID) async {
@@ -190,7 +193,7 @@ class _CardPostState extends State<CardPost> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton.icon(
+                  !isAuthor ? SizedBox.shrink() : ElevatedButton.icon(
                     style: ButtonStyle(
                         backgroundColor: MaterialStatePropertyAll<Color>(
                             Color.fromRGBO(238, 94, 94, 1)
@@ -318,6 +321,14 @@ class _CardPostState extends State<CardPost> {
     ));
     setState(() {
       isVisible = false;
+    });
+  }
+
+  void isCardAuthor(String postID) async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("Posts/$postID/userID");
+    DataSnapshot snapshot = await ref.get();
+    setState(() {
+      isAuthor = (FirebaseAuth.instance.currentUser?.uid.toString() == snapshot.value.toString());
     });
   }
 }
