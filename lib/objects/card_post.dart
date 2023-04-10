@@ -323,11 +323,13 @@ class _CardPostState extends State<CardPost> {
     ref = FirebaseDatabase.instance.ref("Posts/$postID/usersDone");
     snapshot = await ref.get();
     List users = [];
-    (snapshot.value as Map).forEach((a, b) => users.add(a));
-    for (var user in users){
-      (FirebaseDatabase.instance.ref("Users/$user/postsDone/$postID")).remove();
+    if (snapshot.value != null) {
+      (snapshot.value as Map).forEach((a, b) => users.add(a));
+      for (var user in users) {
+        (FirebaseDatabase.instance.ref("Users/$user/postsDone/$postID"))
+            .remove();
+      }
     }
-
     (FirebaseDatabase.instance.ref("Posts/$postID")).remove();
 
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

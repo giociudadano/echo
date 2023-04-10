@@ -13,11 +13,14 @@ class GroupsMorePage extends StatefulWidget {
 
 class _GroupsMorePageState extends State<GroupsMorePage> {
   bool isFormVisible = false;
+  bool isAdmin = false;
+
   final inputSearch = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    isGroupAdmin(widget.groupID);
   }
 
   @override
@@ -72,19 +75,36 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                               ),
                             ),
                             PopupMenuButton(
-                                icon: Icon(Icons.more_vert, color: Colors.white),
-                                color: Colors.black,
-                                itemBuilder: (BuildContext context) {
-                                  return [
-                                    PopupMenuItem(
-                                      child: Text(
-                                        "Delete Class",
-                                        style: TextStyle(color: Color.fromRGBO(
-                                            255, 167, 167, 1)),
-                                      ),
-                                    ),
-                                  ];
-                                },
+                              icon: Icon(Icons.more_vert, color: Colors.white),
+                              color: Colors.black,
+                              itemBuilder: (BuildContext context) {
+                                return isAdmin
+                                    ? [
+                                        PopupMenuItem(
+                                          onTap: () {
+                                            Future.delayed(
+                                                const Duration(seconds: 0),
+                                            () => AlertDeleteGroup(widget.groupID));
+                                          },
+                                          child: Text(
+                                            "Delete Class",
+                                            style: TextStyle(
+                                                color: Color.fromRGBO(
+                                                    255, 167, 167, 1)),
+                                          ),
+                                        ),
+                                      ]
+                                    : [
+                                        PopupMenuItem(
+                                          child: Text(
+                                            "Leave Class",
+                                            style: TextStyle(
+                                                color: Color.fromRGBO(
+                                                    255, 167, 167, 1)),
+                                          ),
+                                        ),
+                                      ];
+                              },
                             ),
                           ],
                         ),
@@ -140,6 +160,135 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
       ],
     );
   }
+
+  void isGroupAdmin(String groupID) async {
+    DatabaseReference ref =
+        FirebaseDatabase.instance.ref("Groups/$groupID/admin");
+    DataSnapshot snapshot = await ref.get();
+    setState(() {
+      isAdmin = (FirebaseAuth.instance.currentUser?.uid.toString() ==
+          snapshot.value.toString());
+    });
+  }
+
+  void AlertDeleteGroup(String groupID) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          icon: Icon(Icons.label_off,
+              color: Color.fromRGBO(238, 94, 94, 1), size: 32),
+          backgroundColor: Color.fromRGBO(32, 35, 43, 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: Text("Confirm Delete Class",
+              style: TextStyle(
+                color: Color.fromRGBO(245, 245, 245, 1),
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              )),
+          content: Text(
+              "This action will permanently delete your class. Are you sure you want to continue?",
+              style: TextStyle(
+                color: Color.fromRGBO(245, 245, 245, 0.8),
+                fontSize: 14,
+              )),
+          actions: [
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStatePropertyAll<Color>(Colors.transparent),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  side: BorderSide(
+                      color: Color.fromRGBO(245, 245, 245, 0.8), width: 1.5),
+                )),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Cancel",
+                  style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+            ),
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll<Color>(
+                    Color.fromRGBO(238, 94, 94, 1)),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                )),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                DeleteGroup(groupID);
+              },
+              child: Text("Delete",
+                  style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void DeleteGroup(String groupID) async {
+    DataSnapshot snapshot = await (FirebaseDatabase.instance.ref("Groups/$groupID/posts")).get();
+    List posts = [];
+
+    if (snapshot.value != null) {
+      (snapshot.value as Map).forEach((a, b) => posts.add(a));
+      for (var post in posts){
+        snapshot = await (FirebaseDatabase.instance.ref("Posts/$post/groups")).get();
+        List groups = [];
+        (snapshot.value as Map).forEach((a, b) => groups.add(a));
+
+        // 1. Remove posts whose groups are only this group
+        if (groups.length == 1){
+          DeleteCard(post);
+        } else {
+          (FirebaseDatabase.instance.ref("Posts/$post/groups/$groupID")).remove();
+        }
+      }
+    }
+
+    // 3. Remove membership to this group
+    snapshot = await (FirebaseDatabase.instance.ref("Groups/$groupID/members")).get();
+    List members = [];
+    (snapshot.value as Map).forEach((a, b) => members.add(a));
+    for (var member in members){
+      (FirebaseDatabase.instance.ref("Users/$member/groups/$groupID")).remove();
+    }
+
+    // 4. Remove this group
+    (FirebaseDatabase.instance.ref("Groups/$groupID")).remove();
+    Navigator.pop(context);
+  }
+
+
+  void DeleteCard(String postID) async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("Posts/$postID/groups");
+    DataSnapshot snapshot = await ref.get();
+    List groups = [];
+    (snapshot.value as Map).forEach((a, b) => groups.add(a));
+    for (var group in groups){
+      (FirebaseDatabase.instance.ref("Groups/$group/posts/$postID")).remove();
+    }
+
+    ref = FirebaseDatabase.instance.ref("Posts/$postID/usersDone");
+    snapshot = await ref.get();
+    List users = [];
+    if (snapshot.value != null) {
+      (snapshot.value as Map).forEach((a, b) => users.add(a));
+      for (var user in users) {
+        (FirebaseDatabase.instance.ref("Users/$user/postsDone/$postID"))
+            .remove();
+      }
+    }
+    (FirebaseDatabase.instance.ref("Posts/$postID")).remove();
+  }
 }
 
 class WidgetGroupsMorePostsBuilder extends StatefulWidget {
@@ -165,26 +314,28 @@ class WidgetGroupsMorePostsBuilderState
   }
 
   getPosts(groupID) async {
-    DatabaseReference ref =
-        FirebaseDatabase.instance.ref('Groups/${widget.groupID}/posts');
-    DataSnapshot snapshot = await ref.get();
-    List postIDs =
-        snapshot.value == null ? [] : (snapshot.value as Map).keys.toList();
-    for (var postID in postIDs) {
+    (FirebaseDatabase.instance.ref('Groups/$groupID/posts')).onChildAdded.listen((event) async {
+      var postID = event.snapshot.key;
       DatabaseReference ref = FirebaseDatabase.instance.ref('Posts/$postID');
       DataSnapshot snapshot = await ref.get();
       Map postMetadata = snapshot.value as Map;
       var userID = postMetadata['userID'].toString();
       var username = await getUsername(userID);
       posts.add(Post(
-          postID,
+          postID!,
           postMetadata['title'].toString(),
           postMetadata['content'].toString(),
           userID,
           username,
           postMetadata['timeStart'].toString(),
-          postMetadata['groups'].keys.toList()));
-    }
+          postMetadata['groups'].keys.toList()
+      ));
+      if (mounted) {
+        setState(() {
+          isDoneBuilding = true;
+        });
+      }
+    });
     if (mounted) {
       setState(() {
         isDoneBuilding = true;
@@ -211,10 +362,10 @@ class WidgetGroupsMorePostsBuilderState
             child: isDoneBuilding
                 ? ListView.builder(
                     shrinkWrap: true,
-                    itemCount: posts.length+1,
+                    itemCount: posts.length + 1,
                     itemBuilder: (BuildContext context, int i) {
                       bool isPrint = true;
-                      if (i == posts.length){
+                      if (i == posts.length) {
                         return SizedBox(height: 75);
                       }
                       if (widget.inputSearch.text.isNotEmpty) {

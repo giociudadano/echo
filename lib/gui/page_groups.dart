@@ -107,32 +107,30 @@ class _GroupsPageState extends State<GroupsPage> {
   }
 
   void getGroups() async {
-    DatabaseReference ref =
-        FirebaseDatabase.instance.ref("Users/${getUID()}/groups");
-    DataSnapshot snapshot = await ref.get();
-    if (snapshot.value == null) {
-      setState(() {
-        isDoneBuilding = true;
-      });
-      return;
-    }
-    List groupIDs = (snapshot.value as Map).keys.toList();
-    for (var groupID in groupIDs) {
+    (FirebaseDatabase.instance.ref("Users/${getUID()}/groups")).onChildAdded.listen((event) async {
+      var groupID = event.snapshot.key;
       DatabaseReference ref2 = FirebaseDatabase.instance.ref("Groups/$groupID");
       DataSnapshot snapshot = await ref2.get();
       Map groupMetadata = snapshot.value as Map;
       DatabaseReference ref3 = FirebaseDatabase.instance
-          .ref("Users/${groupMetadata['admin']}/username");
+        .ref("Users/${groupMetadata['admin']}/username");
       DataSnapshot snapshot2 = await ref3.get();
       var username = snapshot2.value;
       groups.add(Group("$groupID", "${groupMetadata['name']}",
-          "${groupMetadata['description']}", "$username"));
-    }
-    if (mounted) {
+        "${groupMetadata['description']}", "$username"));
+      if (mounted) {
+        setState(() {
+          isDoneBuilding = true;
+        });
+      }
+    });
+
+    (FirebaseDatabase.instance.ref("Users/${getUID()}/groups")).onChildRemoved.listen((event) async {
+      var groupID = event.snapshot.key;
+      groups.removeWhere((group) => group.groupID == groupID);
       setState(() {
-        isDoneBuilding = true;
       });
-    }
+    });
   }
 }
 
@@ -282,7 +280,7 @@ class _FormAddGroupState extends State<FormAddGroup> {
                                                   }
                                                 },
                                                 child: const Text(
-                                                  'Add Group',
+                                                  'Add Class',
                                                   style: TextStyle(
                                                       color: Colors.white),
                                                 ),
@@ -346,6 +344,7 @@ class _FormAddGroupState extends State<FormAddGroup> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Class has been added!"),
       ));
+      setState(() {});
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text(
