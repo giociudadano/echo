@@ -210,8 +210,7 @@ class WidgetDashboardPostsBuilder extends StatefulWidget {
   State createState() => WidgetDashboardPostsBuilderState();
 }
 
-class WidgetDashboardPostsBuilderState
-    extends State<WidgetDashboardPostsBuilder> {
+class WidgetDashboardPostsBuilderState extends State<WidgetDashboardPostsBuilder> {
   List<Post> posts = [];
   List<Post> postsFiltered = [];
   bool isDoneBuilding = false;
@@ -221,17 +220,26 @@ class WidgetDashboardPostsBuilderState
     super.initState();
     widget.inputSearch.addListener(refresh);
     widget.ref.onChildAdded.listen((event) async {
-      Map groups = event.snapshot.child('groups').value as Map;
+      List groups = (event.snapshot.child('groups').value as Map).keys.toList();
       var userID = event.snapshot.child('userID').value.toString();
       var username = await getUsername(userID);
-      posts.add(Post(
-          event.snapshot.key.toString(),
-          event.snapshot.child('title').value.toString(),
-          event.snapshot.child('content').value.toString(),
-          userID,
-          username,
-          event.snapshot.child('timeStart').value.toString(),
-          groups.keys.toList()));
+      DatabaseReference ref2 = FirebaseDatabase.instance.ref("Users/${getUID()}/groups");
+      DataSnapshot snapshot = await ref2.get();
+      if (snapshot.value != null){
+        for (var group in (snapshot.value as Map).keys.toList()){
+          if (groups.contains(group)){
+            posts.add(Post(
+                event.snapshot.key.toString(),
+                event.snapshot.child('title').value.toString(),
+                event.snapshot.child('content').value.toString(),
+                userID,
+                username,
+                event.snapshot.child('timeStart').value.toString(),
+                groups));
+            break;
+          }
+        }
+      }
       if (mounted) {
         setState(() {
           isDoneBuilding = true;
@@ -256,7 +264,8 @@ class WidgetDashboardPostsBuilderState
     return Expanded(
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: isDoneBuilding
+            child: posts.length == 0 ? SizedBox.shrink() :
+            isDoneBuilding
                 ? ListView.builder(
                     shrinkWrap: true,
                     itemCount: posts.length + 1,

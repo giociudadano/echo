@@ -193,8 +193,9 @@ class _CardPostState extends State<CardPost> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  !isAuthor ? SizedBox.shrink() : ElevatedButton.icon(
-                    style: ButtonStyle(
+                  isAuthor ?
+                    ElevatedButton.icon(
+                      style: ButtonStyle(
                         backgroundColor: MaterialStatePropertyAll<Color>(
                             Color.fromRGBO(238, 94, 94, 1)
                         ),
@@ -203,30 +204,30 @@ class _CardPostState extends State<CardPost> {
                               borderRadius: BorderRadius.circular(8.0),
                             )
                         ),
-                    ),
-                    onPressed: (){
-                      AlertDeleteCard(widget.postID);
-                    },
-                    icon: Icon(Icons.cancel_presentation_outlined, color: Colors.white),
-                    label: Text("Delete Card", style: TextStyle(color: Colors.white)),
-                  ),
-                  SizedBox(height: 10),
+                      ),
+                      onPressed: (){
+                        AlertDeleteCard(widget.postID);
+                      },
+                      icon: Icon(Icons.cancel_presentation_outlined, color: Colors.white),
+                      label: Text("Delete Card", style: TextStyle(color: Colors.white)),
+                    )
+                  :
                   ElevatedButton.icon(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+                      backgroundColor: MaterialStatePropertyAll<Color>(
+                          Color.fromRGBO(238, 94, 94, 1)),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
-                            side: BorderSide(color: Color.fromRGBO(238, 94, 94, 1), width: 1.5),
                           )
                       ),
                     ),
                     onPressed: (){
-                      print("Clicked on 'Report User' Button");
+                      AlertReportAuthor(widget.postID, widget.userID, widget.username);
                     },
-                    icon: Icon(Icons.flag, color: Color.fromRGBO(238, 94, 94, 1)),
-                    label: Text("Report User", style: TextStyle(color: Color.fromRGBO(238, 94, 94, 1))),
-                    ),
+                    icon: Icon(Icons.flag, color: Colors.white),
+                    label: Text("Report Author", style: TextStyle(color: Colors.white)),
+                  )
                 ],
               ),
             ),
@@ -238,10 +239,13 @@ class _CardPostState extends State<CardPost> {
 
   void updatePostDoneState(String userID, String postID, bool value) {
     DatabaseReference ref = FirebaseDatabase.instance.ref("Users/$userID/postsDone");
+    DatabaseReference ref2 = FirebaseDatabase.instance.ref("Posts/$postID/usersDone");
     if (value == true){
       ref.update({postID:true});
+      ref2.update({userID:true});
     } else {
       ref.child(postID).remove();
+      ref2.child(userID).remove();
     }
   }
 
@@ -250,6 +254,7 @@ class _CardPostState extends State<CardPost> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
+            icon: Icon(Icons.cancel_presentation_outlined, color: Color.fromRGBO(238, 94, 94, 1), size: 32),
             backgroundColor: Color.fromRGBO(32, 35, 43, 1),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -258,7 +263,7 @@ class _CardPostState extends State<CardPost> {
                 style: TextStyle(
                   color: Color.fromRGBO(245, 245, 245, 1),
                   fontWeight: FontWeight.w700,
-                  fontSize: 24,
+                  fontSize: 16,
                 )
             ),
             content: Text("This action will permanently delete your card. Are you sure you want to continue?",
@@ -314,6 +319,15 @@ class _CardPostState extends State<CardPost> {
     for (var group in groups){
       (FirebaseDatabase.instance.ref("Groups/$group/posts/$postID")).remove();
     }
+
+    ref = FirebaseDatabase.instance.ref("Posts/$postID/usersDone");
+    snapshot = await ref.get();
+    List users = [];
+    (snapshot.value as Map).forEach((a, b) => users.add(a));
+    for (var user in users){
+      (FirebaseDatabase.instance.ref("Users/$user/postsDone/$postID")).remove();
+    }
+
     (FirebaseDatabase.instance.ref("Posts/$postID")).remove();
 
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -330,6 +344,76 @@ class _CardPostState extends State<CardPost> {
     setState(() {
       isAuthor = (FirebaseAuth.instance.currentUser?.uid.toString() == snapshot.value.toString());
     });
+  }
+
+  void AlertReportAuthor(String postID, String userID, String username) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              icon: Icon(Icons.flag, color: Color.fromRGBO(238, 94, 94, 1), size: 32),
+              backgroundColor: Color.fromRGBO(32, 35, 43, 1),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              title: Text("Report $username?",
+                  style: TextStyle(
+                    color: Color.fromRGBO(245, 245, 245, 1),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  )
+              ),
+              content: Text("We value your safe space and take reports seriously. If we find this account to be malicious, we will either remove this card or suspend the account. Are you sure you want to continue?",
+                  style: TextStyle(
+                    color: Color.fromRGBO(245, 245, 245, 0.8),
+                    fontSize: 14,
+                  )
+              ),
+              actions: [
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          side: BorderSide(color: Color.fromRGBO(245, 245, 245, 0.8), width: 1.5),
+                        )
+                    ),
+                  ),
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Cancel", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+                ),
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll<Color>(
+                        Color.fromRGBO(238, 94, 94, 1)
+                    ),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        )
+                    ),
+                  ),
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                    ReportAuthor(postID, userID);
+                  },
+                  child: Text("Report", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+                ),
+              ]
+          );
+        }
+    );
+  }
+
+  void ReportAuthor(String postID, String userID) {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("Reports/$postID");
+    ref.update({userID:true});
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("User has been reported!"),
+    ));
   }
 }
 
