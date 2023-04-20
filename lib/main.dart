@@ -6,10 +6,11 @@ import 'dart:math'; // Randomizers
 import 'dart:ui';
 
 // Flutter Libraries
+import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart'; // Material Design
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart'; // Date and Time Picker Widget
 import 'package:multi_select_flutter/multi_select_flutter.dart'; // Item Selector
-import 'package:flutter/foundation.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 
 // Firebase Libraries
 import 'package:firebase_core/firebase_core.dart'; // Firebase Main
@@ -19,6 +20,8 @@ import 'package:bullet/firebase_options.dart';
 
 // Miscellaneous Libraries
 import 'package:intl/intl.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 // Custom Objects
 import 'objects/card_post.dart';
@@ -37,7 +40,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  if (kIsWeb) {
+  if (foundation.kIsWeb) {
     await FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
   }
   runApp(const MyApp());

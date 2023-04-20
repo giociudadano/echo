@@ -261,12 +261,13 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                             Text(
                               "Done",
                               style: TextStyle(
-                                color: (widget.selectedColor != null &&
+                                color: Color.fromRGBO(98, 112, 242, 1),
+                                  /*(widget.selectedColor != null &&
                                         widget.selectedColor !=
                                             Colors.transparent)
                                     ? widget.selectedColor!.withOpacity(1)
                                     : Color.fromRGBO(
-                                    98, 112, 242, 1),
+                                    98, 112, 242, 1),*/
                                 fontSize: 16,
                               ),
                             ),

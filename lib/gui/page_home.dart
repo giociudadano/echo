@@ -336,7 +336,9 @@ class _FormAddPostState extends State<FormAddPost> {
   final _inputCardTitle = TextEditingController();
   final _inputCardContent = TextEditingController();
   final _inputCardTimeStart = TextEditingController();
+  final _emojiController = TextEditingController();
   final _scrollController = ScrollController();
+  bool emojiShowing = false;
 
   @override
   Widget build(BuildContext context) {
@@ -564,6 +566,81 @@ class _FormAddPostState extends State<FormAddPost> {
                                                   letterSpacing: 2.5,
                                                 ),
                                               ),
+                                              const SizedBox(height: 5),
+                                              Row(
+                                                children:[
+                                                  Expanded(child: ElevatedButton(
+                                                    style: ButtonStyle(
+                                                      padding: MaterialStateProperty.all<EdgeInsets>(
+                                                          EdgeInsets.fromLTRB(10, 22, 0, 22)),
+                                                      backgroundColor:
+                                                      MaterialStatePropertyAll<
+                                                          Color>(
+                                                          Color.fromRGBO(20, 20, 20, 1)),
+                                                      shape: MaterialStateProperty
+                                                          .all<RoundedRectangleBorder>(
+                                                          RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius.circular(0),
+                                                          )),
+                                                    ),
+
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        emojiShowing = !emojiShowing;
+                                                      });
+                                                    },
+                                                    child: Align(
+                                                      alignment: Alignment.centerLeft,
+                                                      child: Text( emojiShowing ? 'Select an Emoji (Hide Picker)' : 'Select an Emoji (Show Picker)',
+                                                        style: TextStyle(
+                                                            color: Color.fromRGBO(235, 235, 235, 0.8)
+                                                        ),
+                                                        textAlign: TextAlign.left,
+                                                      ),
+                                                    ),
+                                                  )),
+                                                ],
+                                              ),
+                                              Offstage(
+                                                offstage: !emojiShowing,
+                                                child: SizedBox(
+                                                    height: 250,
+                                                    child: EmojiPicker(
+                                                      textEditingController: _emojiController,
+                                                      config: Config(
+                                                        columns: 7,
+                                                        // Issue: https://github.com/flutter/flutter/issues/28894
+                                                        emojiSizeMax: 24,
+                                                        verticalSpacing: 0,
+                                                        horizontalSpacing: 0,
+                                                        gridPadding: EdgeInsets.zero,
+                                                        initCategory: Category.RECENT,
+                                                        bgColor: const Color.fromRGBO(30, 38, 49, 1),
+                                                        indicatorColor: const Color.fromRGBO(93, 111, 238, 1),
+                                                        iconColor: Colors.grey,
+                                                        iconColorSelected: const Color.fromRGBO(93, 111, 238, 1),
+                                                        backspaceColor: const Color.fromRGBO(93, 111, 238, 1),
+                                                        skinToneDialogBgColor: Color.fromRGBO(30, 38, 49, 1),
+                                                        skinToneIndicatorColor: Color.fromRGBO(235, 235, 235, 0.8),
+                                                        enableSkinTones: true,
+                                                        showRecentsTab: true,
+                                                        recentsLimit: 28,
+                                                        replaceEmojiOnLimitExceed: true,
+                                                        noRecents: const Text(
+                                                          'No Recents',
+                                                          style: TextStyle(fontSize: 20, color: Colors.black26),
+                                                          textAlign: TextAlign.center,
+                                                        ),
+                                                        loadingIndicator: const SizedBox.shrink(),
+                                                        tabIndicatorAnimDuration: kTabScrollDuration,
+                                                        categoryIcons: const CategoryIcons(),
+                                                        buttonMode: ButtonMode.MATERIAL,
+                                                        checkPlatformCompatibility: false,
+                                                        emojiTextStyle: GoogleFonts.notoColorEmoji(),
+                                                      ),
+                                                    )),
+                                              ),
                                               const SizedBox(height: 15),
                                               ElevatedButton(
                                                 style: ButtonStyle(
@@ -717,9 +794,9 @@ class _GroupSelectorState extends State<GroupSelector> {
                     itemsTextStyle:
                         TextStyle(color: Color.fromRGBO(235, 235, 235, 0.8)),
                     selectedItemsTextStyle:
-                        TextStyle(color: Color.fromRGBO(235, 235, 235, 0.8)),
+                        TextStyle(color: Colors.black),
                     checkColor: Color.fromRGBO(235, 235, 235, 0.8),
-                    selectedColor: Color.fromRGBO(98, 112, 242, 1),
+                    selectedColor: Color.fromRGBO(210, 210, 210, 1),
                     unselectedColor: Color.fromRGBO(63, 69, 84, 1),
                     listType: MultiSelectListType.CHIP,
                     searchable: true,
@@ -743,8 +820,8 @@ class _GroupSelectorState extends State<GroupSelector> {
                       widget.groupsSelected(values);
                     },
                     chipDisplay: MultiSelectChipDisplay(
-                      chipColor: Color.fromRGBO(98, 112, 242, 1),
-                      textStyle: TextStyle(color: Colors.white, fontSize: 12),
+                      chipColor: Color.fromRGBO(210, 210, 210, 1),
+                      textStyle: TextStyle(color: Colors.black, fontSize: 12),
                       onTap: (value) {
                         setState(() {
                           selectedGroups.remove(value);
