@@ -25,9 +25,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
+    return Scaffold(
           backgroundColor: const Color.fromRGBO(32, 35, 43, 1),
           body: SafeArea(
             child: Column(
@@ -142,23 +140,16 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
           floatingActionButton: FloatingActionButton(
             shape: const CircleBorder(),
             onPressed: () {
-              setState(() {
-                isFormVisible = true;
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return FormAddPost(widget.groupID);
               });
             },
             backgroundColor: const Color.fromRGBO(98, 112, 242, 1),
             child: const Icon(Icons.add_card),
           ),
-        ),
-        Visibility(
-          visible: isFormVisible,
-          child: FormAddPost(widget.groupID, isVisible: (value) {
-            isFormVisible = value;
-            setState(() {});
-          }),
-        ),
-      ],
-    );
+        );
   }
 
   void isGroupAdmin(String groupID) async {

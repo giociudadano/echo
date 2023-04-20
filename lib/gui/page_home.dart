@@ -14,79 +14,72 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Scaffold(
-          backgroundColor: const Color.fromRGBO(32, 35, 43, 1),
-          body: SafeArea(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    color: Colors.black,
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 20),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 28),
-                          child: TextFormField(
-                            controller: inputSearch,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: BorderSide.none,
-                              ),
-                              contentPadding:
-                                  const EdgeInsets.fromLTRB(22, 12, 60, 12),
-                              hintText: '🔍  Search card',
-                              hintStyle: TextStyle(
-                                  color: Color.fromRGBO(235, 235, 235, 0.8)),
-                              filled: true,
-                              fillColor: const Color.fromRGBO(22, 23, 27, 1),
-                              isDense: true,
+    return Scaffold(
+        backgroundColor: const Color.fromRGBO(32, 35, 43, 1),
+        body: SafeArea(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  color: Colors.black,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 28),
+                        child: TextFormField(
+                          controller: inputSearch,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide.none,
                             ),
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Color.fromRGBO(235, 235, 235, 0.8),
-                            ),
+                            contentPadding:
+                                const EdgeInsets.fromLTRB(22, 12, 60, 12),
+                            hintText: '🔍  Search card',
+                            hintStyle: TextStyle(
+                                color: Color.fromRGBO(235, 235, 235, 0.8)),
+                            filled: true,
+                            fillColor: const Color.fromRGBO(22, 23, 27, 1),
+                            isDense: true,
+                          ),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Color.fromRGBO(235, 235, 235, 0.8),
                           ),
                         ),
-                        const SizedBox(height: 15),
-                        WidgetGroupsFilter(groupsFiltered: (newGroups) {
-                          filters = newGroups;
-                          setState(() {});
-                        }),
-                        const SizedBox(height: 15),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 15),
+                      WidgetGroupsFilter(groupsFiltered: (newGroups) {
+                        filters = newGroups;
+                        setState(() {});
+                      }),
+                      const SizedBox(height: 15),
+                    ],
                   ),
-                  const SizedBox(height: 15),
-                  WidgetDashboardPostsBuilder(filters, inputSearch),
-                ],
-              ),
+                ),
+                const SizedBox(height: 15),
+                WidgetDashboardPostsBuilder(filters, inputSearch),
+              ],
             ),
           ),
-          floatingActionButton: Padding(
-            padding: const EdgeInsets.only(bottom: 70),
-            child: FloatingActionButton(
-              shape: const CircleBorder(),
-              onPressed: () {
-                setState(() {
-                  isFormVisible = true;
-                });
-              },
-              backgroundColor: const Color.fromRGBO(98, 112, 242, 1),
-              child: const Icon(Icons.add_card),
-            ),
-          )),
-      Visibility(
-        visible: isFormVisible,
-        child: FormAddPost('All', isVisible: (value) {
-          isFormVisible = value;
-          setState(() {});
-        }),
-      ),
-    ]);
+        ),
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.only(bottom: 70),
+          child: FloatingActionButton(
+            shape: const CircleBorder(),
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return FormAddPost('All');
+                  });
+            },
+            backgroundColor: const Color.fromRGBO(98, 112, 242, 1),
+            child: const Icon(Icons.add_card),
+          ),
+        ));
   }
 }
 
@@ -132,42 +125,43 @@ class WidgetGroupsFilterState extends State<WidgetGroupsFilter> {
               ),
               const SizedBox(width: 14),
               Expanded(
-                child:
-                  groupIDs.length == 0 ? SizedBox.shrink() :
-                      isDoneBuilding ? ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        shrinkWrap: true,
-                        itemCount: groupIDs.length,
-                        itemBuilder: (BuildContext context, int i) {
-                          return Row(
-                            children: [
-                              NotificationListener<RemoveGroup>(
-                                onNotification: (n) {
-                                  setState(() {
-                                    filters.remove(groupIDs[i]);
-                                    widget.groupsFiltered(filters);
-                                  });
-                                  return true;
-                                },
-                                child: NotificationListener<AddGroup>(
-                                    child: GroupFilter(
-                                        groupIDs[i], groupNames[i], filters),
+                child: groupIDs.length == 0
+                    ? SizedBox.shrink()
+                    : isDoneBuilding
+                        ? ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            itemCount: groupIDs.length,
+                            itemBuilder: (BuildContext context, int i) {
+                              return Row(
+                                children: [
+                                  NotificationListener<RemoveGroup>(
                                     onNotification: (n) {
                                       setState(() {
-                                        filters.add(groupIDs[i]);
+                                        filters.remove(groupIDs[i]);
                                         widget.groupsFiltered(filters);
                                       });
                                       return true;
-                                    }),
-                              ),
-                              const SizedBox(width: 10),
-                            ],
-                          );
-                        },
-                      )
-                    : const Text("Loading your cards...",
-                        style: TextStyle(
-                            color: Color.fromRGBO(235, 235, 235, 0.8))),
+                                    },
+                                    child: NotificationListener<AddGroup>(
+                                        child: GroupFilter(groupIDs[i],
+                                            groupNames[i], filters),
+                                        onNotification: (n) {
+                                          setState(() {
+                                            filters.add(groupIDs[i]);
+                                            widget.groupsFiltered(filters);
+                                          });
+                                          return true;
+                                        }),
+                                  ),
+                                  const SizedBox(width: 10),
+                                ],
+                              );
+                            },
+                          )
+                        : const Text("Loading your cards...",
+                            style: TextStyle(
+                                color: Color.fromRGBO(235, 235, 235, 0.8))),
               ),
             ],
           )),
@@ -210,7 +204,8 @@ class WidgetDashboardPostsBuilder extends StatefulWidget {
   State createState() => WidgetDashboardPostsBuilderState();
 }
 
-class WidgetDashboardPostsBuilderState extends State<WidgetDashboardPostsBuilder> {
+class WidgetDashboardPostsBuilderState
+    extends State<WidgetDashboardPostsBuilder> {
   List<Post> posts = [];
   List<Post> postsFiltered = [];
   bool isDoneBuilding = false;
@@ -223,11 +218,12 @@ class WidgetDashboardPostsBuilderState extends State<WidgetDashboardPostsBuilder
       List groups = (event.snapshot.child('groups').value as Map).keys.toList();
       var userID = event.snapshot.child('userID').value.toString();
       var username = await getUsername(userID);
-      DatabaseReference ref2 = FirebaseDatabase.instance.ref("Users/${getUID()}/groups");
+      DatabaseReference ref2 =
+          FirebaseDatabase.instance.ref("Users/${getUID()}/groups");
       DataSnapshot snapshot = await ref2.get();
-      if (snapshot.value != null){
-        for (var group in (snapshot.value as Map).keys.toList()){
-          if (groups.contains(group)){
+      if (snapshot.value != null) {
+        for (var group in (snapshot.value as Map).keys.toList()) {
+          if (groups.contains(group)) {
             posts.add(Post(
                 event.snapshot.key.toString(),
                 event.snapshot.child('title').value.toString(),
@@ -264,54 +260,56 @@ class WidgetDashboardPostsBuilderState extends State<WidgetDashboardPostsBuilder
     return Expanded(
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: posts.length == 0 ? SizedBox.shrink() :
-            isDoneBuilding
-                ? ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: posts.length + 1,
-                    itemBuilder: (BuildContext context, int i) {
-                      bool isPrint = true;
-                      if (i == posts.length){
-                        return SizedBox(height: 75);
-                      }
-                      if (widget.filters.isNotEmpty) {
-                        for (var filter in widget.filters) {
-                          isPrint = posts[i].groups.contains(filter);
-                          if (posts[i].groups.contains(filter)) {
+            child: posts.length == 0
+                ? SizedBox.shrink()
+                : isDoneBuilding
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: posts.length + 1,
+                        itemBuilder: (BuildContext context, int i) {
+                          bool isPrint = true;
+                          if (i == posts.length) {
+                            return SizedBox(height: 75);
+                          }
+                          if (widget.filters.isNotEmpty) {
+                            for (var filter in widget.filters) {
+                              isPrint = posts[i].groups.contains(filter);
+                              if (posts[i].groups.contains(filter)) {
+                                if (widget.inputSearch.text.isNotEmpty) {
+                                  isPrint = posts[i]
+                                      .title
+                                      .toLowerCase()
+                                      .contains(widget.inputSearch.text
+                                          .toLowerCase());
+                                } else {
+                                  isPrint = true;
+                                }
+                              } else {
+                                isPrint = false;
+                              }
+                            }
+                          } else {
                             if (widget.inputSearch.text.isNotEmpty) {
                               isPrint = posts[i].title.toLowerCase().contains(
                                   widget.inputSearch.text.toLowerCase());
-                            } else {
-                              isPrint = true;
                             }
-                          } else {
-                            isPrint = false;
                           }
-                        }
-                      } else {
-                        if (widget.inputSearch.text.isNotEmpty) {
-                          isPrint = posts[i]
-                              .title
-                              .toLowerCase()
-                              .contains(widget.inputSearch.text.toLowerCase());
-                        }
-                      }
-                      if (isPrint) {
-                        return CardPost(
-                            posts[i].postID,
-                            posts[i].title,
-                            posts[i].content,
-                            posts[i].userID,
-                            posts[i].username,
-                            posts[i].timeStart);
-                      } else {
-                        return const SizedBox.shrink();
-                      }
-                    },
-                  )
-                : Center(
-                    child: CircularProgressIndicator(),
-                  )));
+                          if (isPrint) {
+                            return CardPost(
+                                posts[i].postID,
+                                posts[i].title,
+                                posts[i].content,
+                                posts[i].userID,
+                                posts[i].username,
+                                posts[i].timeStart);
+                          } else {
+                            return const SizedBox.shrink();
+                          }
+                        },
+                      )
+                    : Center(
+                        child: CircularProgressIndicator(),
+                      )));
   }
 }
 
@@ -323,13 +321,11 @@ class Post {
       this.timeStart, this.groups);
 }
 
-
 class FormAddPost extends StatefulWidget {
-  final ValueChanged<bool> isVisible;
   var groupID;
   var groupsToPost = [];
 
-  FormAddPost(this.groupID, {super.key, required this.isVisible});
+  FormAddPost(this.groupID);
 
   @override
   State<StatefulWidget> createState() => _FormAddPostState();
@@ -340,6 +336,7 @@ class _FormAddPostState extends State<FormAddPost> {
   final _inputCardTitle = TextEditingController();
   final _inputCardContent = TextEditingController();
   final _inputCardTimeStart = TextEditingController();
+  final _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -348,50 +345,67 @@ class _FormAddPostState extends State<FormAddPost> {
         child: Row(children: [
           Expanded(
               child: Stack(
-                children: [
-                  Container(
-                    color: Colors.black54,
-                  ),
-                  Center(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 5.0,
-                                  ),
-                                ],
+            children: [
+              Center(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 5.0,
                               ),
-                              child: Card(
-                                color: const Color.fromRGBO(32, 35, 43, 1),
-                                child: Container(
-                                  height: 350,
-                                  child: Stack(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            30, 10, 30, 10),
-                                        child: ListView(children:[Form(
+                            ],
+                          ),
+                          child: Card(
+                            color: const Color.fromRGBO(32, 35, 43, 1),
+                            child: Container(
+                              height: 350,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(30, 20, 30, 20),
+                                child: RawScrollbar(
+                                  thumbColor:
+                                      Color.fromRGBO(235, 235, 235, 0.1),
+                                  thumbVisibility: true,
+                                  thickness: 10,
+                                  controller: _scrollController,
+                                  child: ListView(
+                                      controller: _scrollController,
+                                      children: [
+                                        Form(
                                           key: _formAddPostKey,
                                           child: Column(
                                             mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                                MainAxisAlignment.center,
                                             children: [
-                                              const SizedBox(height: 20),
-                                              const Text("Add Card",
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 24,
-                                                      fontWeight: FontWeight.w700)),
                                               const SizedBox(height: 10),
+                                              Icon(Icons.add_card, color: Color.fromRGBO(98, 112, 242, 1), size: 32),
+                                              const SizedBox(height: 10),
+                                              const Text("Create a New Card",
+                                                  style: TextStyle(
+                                                    color: Color.fromRGBO(245, 245, 245, 1),
+                                                    fontWeight: FontWeight.w700,
+                                                    fontSize: 16,
+                                                  )
+                                              ),
+                                              const SizedBox(height: 20),
+                                              Text("CARD INFORMATION",
+                                                  style: TextStyle(
+                                                    color: Color.fromRGBO(
+                                                        245, 245, 245, 0.6),
+                                                    fontSize: 11,
+                                                    letterSpacing: 2.5,
+                                                  )),
+                                              const SizedBox(height: 5),
                                               TextFormField(
                                                 controller: _inputCardTitle,
-                                                decoration: const InputDecoration(
+                                                decoration:
+                                                    const InputDecoration(
                                                   border: OutlineInputBorder(),
                                                   labelText: 'Card Title',
                                                   labelStyle: TextStyle(
@@ -405,25 +419,27 @@ class _FormAddPostState extends State<FormAddPost> {
                                                       fontSize: 14),
                                                   isDense: true,
                                                   filled: true,
-                                                  fillColor:
-                                                  Color.fromRGBO(22, 23, 27, 1),
+                                                  fillColor: Color.fromRGBO(
+                                                      22, 23, 27, 1),
                                                 ),
                                                 style: const TextStyle(
                                                     fontSize: 14,
                                                     color: Color.fromRGBO(
                                                         235, 235, 235, 0.8)),
                                                 validator: (String? value) {
-                                                  return _verifyCardTitle(value);
+                                                  return _verifyCardTitle(
+                                                      value);
                                                 },
                                               ),
                                               const SizedBox(height: 10),
                                               TextFormField(
                                                 controller: _inputCardContent,
                                                 keyboardType:
-                                                TextInputType.multiline,
+                                                    TextInputType.multiline,
                                                 minLines: 3,
                                                 maxLines: 3,
-                                                decoration: const InputDecoration(
+                                                decoration:
+                                                    const InputDecoration(
                                                   border: OutlineInputBorder(),
                                                   labelText: 'Card Content',
                                                   labelStyle: TextStyle(
@@ -431,15 +447,15 @@ class _FormAddPostState extends State<FormAddPost> {
                                                           235, 235, 235, 0.6),
                                                       fontSize: 14),
                                                   hintText:
-                                                  'Enter additional information here.',
+                                                      'Enter additional information here.',
                                                   hintStyle: TextStyle(
                                                       color: Color.fromRGBO(
                                                           235, 235, 235, 0.2),
                                                       fontSize: 14),
                                                   isDense: true,
                                                   filled: true,
-                                                  fillColor:
-                                                  Color.fromRGBO(22, 23, 27, 1),
+                                                  fillColor: Color.fromRGBO(
+                                                      22, 23, 27, 1),
                                                 ),
                                                 style: const TextStyle(
                                                     fontSize: 14,
@@ -453,31 +469,46 @@ class _FormAddPostState extends State<FormAddPost> {
                                                 onTap: () {
                                                   DatePicker.showDateTimePicker(
                                                       context,
-                                                      theme: const DatePickerTheme(
+                                                      theme:
+                                                          const DatePickerTheme(
                                                         cancelStyle: TextStyle(
-                                                            color: Color.fromRGBO(
-                                                                255, 167, 167, 1)),
+                                                            color:
+                                                                Color.fromRGBO(
+                                                                    255,
+                                                                    167,
+                                                                    167,
+                                                                    1)),
                                                         itemStyle: TextStyle(
-                                                            color: Color.fromRGBO(
-                                                                235, 235, 235, 1)),
+                                                            color:
+                                                                Color.fromRGBO(
+                                                                    235,
+                                                                    235,
+                                                                    235,
+                                                                    1)),
                                                         doneStyle: TextStyle(
-                                                            color: Color.fromRGBO(
-                                                                98, 112, 242, 1)),
+                                                            color:
+                                                                Color.fromRGBO(
+                                                                    98,
+                                                                    112,
+                                                                    242,
+                                                                    1)),
                                                         backgroundColor:
-                                                        Color.fromRGBO(
-                                                            32, 35, 43, 1),
+                                                            Color.fromRGBO(
+                                                                32, 35, 43, 1),
                                                       ),
                                                       showTitleActions: true,
                                                       minTime: DateTime.now(),
                                                       onConfirm: (date) {
-                                                        String formattedDate = DateFormat(
-                                                            'EEEE, MMMM d, y HH:mm')
+                                                    String formattedDate =
+                                                        DateFormat(
+                                                                'EEEE, MMMM d, y HH:mm')
                                                             .format(date);
-                                                        _inputCardTimeStart.text =
-                                                            formattedDate;
-                                                      }, locale: LocaleType.en);
+                                                    _inputCardTimeStart.text =
+                                                        formattedDate;
+                                                  }, locale: LocaleType.en);
                                                 },
-                                                decoration: const InputDecoration(
+                                                decoration:
+                                                    const InputDecoration(
                                                   border: OutlineInputBorder(),
                                                   labelText: 'Start Time',
                                                   labelStyle: TextStyle(
@@ -486,8 +517,8 @@ class _FormAddPostState extends State<FormAddPost> {
                                                       fontSize: 14),
                                                   isDense: true,
                                                   filled: true,
-                                                  fillColor:
-                                                  Color.fromRGBO(22, 23, 27, 1),
+                                                  fillColor: Color.fromRGBO(
+                                                      22, 23, 27, 1),
                                                 ),
                                                 style: const TextStyle(
                                                     fontSize: 14,
@@ -497,23 +528,61 @@ class _FormAddPostState extends State<FormAddPost> {
                                                   return _verifyCardDate(value);
                                                 },
                                               ),
-                                              const SizedBox(height: 15),
-                                              widget.groupID == 'All' ? GroupSelector(
-                                                groupsSelected: (newGroups) {
-                                                  widget.groupsToPost = newGroups;
-                                                },
-                                              ) : SizedBox.shrink(),
+                                              const SizedBox(height: 20),
+                                              widget.groupID == 'All'
+                                                  ? Text("CARD VISIBILITY",
+                                                      style: TextStyle(
+                                                        color: Color.fromRGBO(
+                                                            245, 245, 245, 0.6),
+                                                        fontSize: 11,
+                                                        letterSpacing: 2.5,
+                                                      ))
+                                                  : SizedBox.shrink(),
+                                              const SizedBox(height: 5),
+                                              widget.groupID == 'All'
+                                                  ? Column(children: [
+                                                      GroupSelector(
+                                                        groupsSelected:
+                                                            (newGroups) {
+                                                          widget.groupsToPost =
+                                                              newGroups;
+                                                        },
+                                                      ),
+                                                      const SizedBox(
+                                                          height: 20),
+                                                    ])
+                                                  : SizedBox.shrink(),
+                                              Text(
+                                                "CARD VISUAL",
+                                                style: TextStyle(
+                                                  color: Color.fromRGBO(
+                                                      245,
+                                                      245,
+                                                      245,
+                                                      0.6),
+                                                  fontSize: 11,
+                                                  letterSpacing: 2.5,
+                                                ),
+                                              ),
                                               const SizedBox(height: 15),
                                               ElevatedButton(
-                                                style: const ButtonStyle(
+                                                style: ButtonStyle(
                                                   backgroundColor:
-                                                  MaterialStatePropertyAll<
-                                                      Color>(
-                                                      Color.fromRGBO(
-                                                          98, 112, 242, 1)),
+                                                      MaterialStatePropertyAll<
+                                                              Color>(
+                                                          Color.fromRGBO(
+                                                              98, 112, 242, 1)),
+                                                  shape: MaterialStateProperty
+                                                      .all<RoundedRectangleBorder>(
+                                                          RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8.0),
+                                                  )),
                                                 ),
                                                 onPressed: () async {
-                                                  if (_formAddPostKey.currentState!
+                                                  if (_formAddPostKey
+                                                      .currentState!
                                                       .validate()) {
                                                     _writePost(
                                                       context,
@@ -521,43 +590,34 @@ class _FormAddPostState extends State<FormAddPost> {
                                                       _inputCardContent.text,
                                                       getUID(),
                                                       _inputCardTimeStart.text,
-                                                      widget.groupID == 'All' ? widget.groupsToPost : ["${widget.groupID}"],
+                                                      widget.groupID == 'All'
+                                                          ? widget.groupsToPost
+                                                          : [
+                                                              "${widget.groupID}"
+                                                            ],
                                                     );
                                                   }
                                                 },
-                                                child: const Text('Add Card',
+                                                child: const Text('Create Card',
                                                     style: TextStyle(
                                                         color: Colors.white)),
                                               ),
                                             ],
                                           ),
-                                        )]),
-                                      ),
-                                      Positioned(
-                                        right: 0,
-                                        top: 0,
-                                        child: IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                widget.isVisible(false);
-                                              });
-                                            },
-                                            icon: const Icon(Icons.close_rounded,
-                                                color: Color.fromRGBO(
-                                                    98, 112, 242, 1))),
-                                      ),
-                                    ],
-                                  ),
+                                        )
+                                      ]),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ],
-              )),
+                  ],
+                ),
+              ),
+            ],
+          )),
         ]),
       )
     ]);
@@ -593,16 +653,14 @@ class _FormAddPostState extends State<FormAddPost> {
       });
       for (var group in groups) {
         DatabaseReference ref2 =
-        FirebaseDatabase.instance.ref("Groups/$group/posts");
+            FirebaseDatabase.instance.ref("Groups/$group/posts");
         ref2.update({newPost.key!: true});
       }
 
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Post has been submitted!"),
       ));
-      setState(() {
-
-      });
+      setState(() {});
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text(
@@ -612,14 +670,16 @@ class _FormAddPostState extends State<FormAddPost> {
   }
 }
 
-class GroupSelector extends StatefulWidget{
+class GroupSelector extends StatefulWidget {
   final ValueChanged<List> groupsSelected;
+
   const GroupSelector({super.key, required this.groupsSelected});
+
   @override
   State<GroupSelector> createState() => _GroupSelectorState();
 }
 
-class _GroupSelectorState extends State<GroupSelector>{
+class _GroupSelectorState extends State<GroupSelector> {
   bool isDoneBuilding = false;
   var groups = [];
   var items;
@@ -633,67 +693,88 @@ class _GroupSelectorState extends State<GroupSelector>{
 
   @override
   Widget build(BuildContext context) {
-    return groups.length == 0 ?
-      Text("Join a class to submit a card!", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))) :
-      isDoneBuilding ? Column(
-      children: <Widget>[
-        MultiSelectBottomSheetField(
-          decoration: const BoxDecoration(
-            shape: BoxShape.rectangle,
-            color: Color.fromRGBO(22, 23, 27, 1),
-          ),
-          searchTextStyle: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.6)),
-          backgroundColor: Color.fromRGBO(41, 44, 50, 1),
-          buttonIcon: const Icon(Icons.new_label_outlined, color: Color.fromRGBO(235, 235, 235, 0.6)),
-          initialChildSize: 0.37,
-          itemsTextStyle: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.8)),
-          selectedItemsTextStyle: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.8)),
-          checkColor: Color.fromRGBO(235, 235, 235, 0.8),
-          selectedColor: Color.fromRGBO(98, 112, 242, 1),
-          unselectedColor:  Color.fromRGBO(63, 69, 84, 1),
-          listType: MultiSelectListType.CHIP,
-          searchable: true,
-          searchHintStyle: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.6)),
-          searchIcon: Icon(Icons.search, color: Color.fromRGBO(235, 235, 235, 0.6)),
-          closeSearchIcon: Icon(Icons.close, color: Color.fromRGBO(235, 235, 235, 0.6)),
-          buttonText: const Text("Select a class to post", style: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.8))),
-          items: items,
-          title: Text("Search a class", style: TextStyle(color: Color.fromRGBO(225, 225, 225, 1))),
-          onConfirm: (values) {
-            selectedGroups = values;
-          },
-          onSelectionChanged: (values) {
-            widget.groupsSelected(values);
-          },
-          chipDisplay: MultiSelectChipDisplay(
-            chipColor: Color.fromRGBO(98, 112, 242, 1),
-            textStyle: TextStyle(color: Colors.white, fontSize: 12),
-            onTap: (value) {
-              setState(() {
-                selectedGroups.remove(value);
-              });
-            },
-          ),
-        ),
-        selectedGroups.isEmpty
-            ? Container(
-            padding: const EdgeInsets.all(10),
-            alignment: Alignment.centerLeft,
-            child: const Text(
-              "None selected",
-              style: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.4)),
-            ))
-            : SizedBox.shrink(),
-      ],
-    ) : const Padding(
-        padding: EdgeInsets.symmetric(vertical: 12),
-        child: Text("Loading Classes...", style: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.6)),
-    ));
+    return groups.length == 0
+        ? Column(children: [
+            SizedBox(height: 12),
+            Text("Join a class to submit a card!",
+                style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+            SizedBox(height: 12),
+          ])
+        : isDoneBuilding
+            ? Column(
+                children: <Widget>[
+                  MultiSelectBottomSheetField(
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      color: Color.fromRGBO(22, 23, 27, 1),
+                    ),
+                    searchTextStyle:
+                        TextStyle(color: Color.fromRGBO(235, 235, 235, 0.6)),
+                    backgroundColor: Color.fromRGBO(41, 44, 50, 1),
+                    buttonIcon: const Icon(Icons.new_label_outlined,
+                        color: Color.fromRGBO(235, 235, 235, 0.6)),
+                    initialChildSize: 0.37,
+                    itemsTextStyle:
+                        TextStyle(color: Color.fromRGBO(235, 235, 235, 0.8)),
+                    selectedItemsTextStyle:
+                        TextStyle(color: Color.fromRGBO(235, 235, 235, 0.8)),
+                    checkColor: Color.fromRGBO(235, 235, 235, 0.8),
+                    selectedColor: Color.fromRGBO(98, 112, 242, 1),
+                    unselectedColor: Color.fromRGBO(63, 69, 84, 1),
+                    listType: MultiSelectListType.CHIP,
+                    searchable: true,
+                    searchHintStyle:
+                        TextStyle(color: Color.fromRGBO(235, 235, 235, 0.6)),
+                    searchIcon: Icon(Icons.search,
+                        color: Color.fromRGBO(235, 235, 235, 0.6)),
+                    closeSearchIcon: Icon(Icons.close,
+                        color: Color.fromRGBO(235, 235, 235, 0.6)),
+                    buttonText: const Text("Select a class to post",
+                        style: TextStyle(
+                            color: Color.fromRGBO(235, 235, 235, 0.8))),
+                    items: items,
+                    title: Text("Search a class",
+                        style:
+                            TextStyle(color: Color.fromRGBO(225, 225, 225, 1))),
+                    onConfirm: (values) {
+                      selectedGroups = values;
+                    },
+                    onSelectionChanged: (values) {
+                      widget.groupsSelected(values);
+                    },
+                    chipDisplay: MultiSelectChipDisplay(
+                      chipColor: Color.fromRGBO(98, 112, 242, 1),
+                      textStyle: TextStyle(color: Colors.white, fontSize: 12),
+                      onTap: (value) {
+                        setState(() {
+                          selectedGroups.remove(value);
+                        });
+                      },
+                    ),
+                  ),
+                  selectedGroups.isEmpty
+                      ? Container(
+                          padding: const EdgeInsets.all(10),
+                          alignment: Alignment.centerLeft,
+                          child: const Text(
+                            "None selected",
+                            style: TextStyle(
+                                color: Color.fromRGBO(235, 235, 235, 0.4)),
+                          ))
+                      : SizedBox.shrink(),
+                ],
+              )
+            : const Padding(
+                padding: EdgeInsets.symmetric(vertical: 12),
+                child: Text(
+                  "Loading Classes...",
+                  style: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.6)),
+                ));
   }
 
   void getGroups() async {
-    DatabaseReference ref = FirebaseDatabase.instance.ref(
-        "Users/${getUID()}/groups");
+    DatabaseReference ref =
+        FirebaseDatabase.instance.ref("Users/${getUID()}/groups");
     DataSnapshot snapshot = await ref.get();
     if (snapshot.value == null) {
       setState(() {
@@ -704,13 +785,16 @@ class _GroupSelectorState extends State<GroupSelector>{
     Map value = snapshot.value as Map;
     value.forEach((a, b) => groups.add(a));
     var groupNames = [];
-    for(var group in groups){
-      DatabaseReference ref2 = FirebaseDatabase.instance.ref(
-          "Groups/$group/name");
+    for (var group in groups) {
+      DatabaseReference ref2 =
+          FirebaseDatabase.instance.ref("Groups/$group/name");
       DataSnapshot snapshot = await ref2.get();
       groupNames.add(snapshot.value);
     }
-    items = groups.map((group) => MultiSelectItem(group, groupNames[groups.indexOf(group)])).toList();
+    items = groups
+        .map((group) =>
+            MultiSelectItem(group, groupNames[groups.indexOf(group)]))
+        .toList();
     selectedGroups = groups;
     if (mounted) {
       setState(() {
@@ -726,4 +810,3 @@ getUID() {
     return user.uid;
   }
 }
-

@@ -17,7 +17,6 @@ class _GroupsPageState extends State<GroupsPage> {
   final inputSearch = TextEditingController();
   var groups = [];
   bool isDoneBuilding = false;
-  bool isFormVisible = false;
 
   @override
   void initState() {
@@ -27,9 +26,7 @@ class _GroupsPageState extends State<GroupsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
+    return Scaffold(
           backgroundColor: const Color.fromRGBO(32, 35, 43, 1),
           body: SafeArea(
             child: Center(
@@ -86,24 +83,17 @@ class _GroupsPageState extends State<GroupsPage> {
             child: FloatingActionButton(
               shape: const CircleBorder(),
               onPressed: () {
-                setState(() {
-                  isFormVisible = true;
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return FormAddGroup();
                 });
               },
               backgroundColor: const Color.fromRGBO(98, 112, 242, 1),
               child: const Icon(Icons.new_label_outlined),
             ),
           ),
-        ),
-        Visibility(
-          visible: isFormVisible,
-          child: FormAddGroup(isVisible: (value) {
-            isFormVisible = value;
-            setState(() {});
-          }),
-        ),
-      ],
-    );
+        );
   }
 
   void getGroups() async {
@@ -135,9 +125,7 @@ class _GroupsPageState extends State<GroupsPage> {
 }
 
 class FormAddGroup extends StatefulWidget {
-  final ValueChanged<bool> isVisible;
-
-  const FormAddGroup({super.key, required this.isVisible});
+  const FormAddGroup({super.key});
 
   @override
   State<StatefulWidget> createState() => _FormAddGroupState();
@@ -154,12 +142,7 @@ class _FormAddGroupState extends State<FormAddGroup> {
       Expanded(
         child: Row(children: [
           Expanded(
-              child: Stack(
-            children: [
-              Container(
-                color: Colors.black54,
-              ),
-              Center(
+              child: Center(
                 child: Row(
                   children: [
                     Expanded(
@@ -177,26 +160,37 @@ class _FormAddGroupState extends State<FormAddGroup> {
                           child: Card(
                             color: const Color.fromRGBO(32, 35, 43, 1),
                             child: Container(
-                              height: 300,
+                              height: 330,
                               child: Stack(
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(
-                                        30, 10, 30, 10),
+                                        30, 20, 30, 20),
                                     child: ListView(children: [Form(
                                         key: _formAddGroupKey,
                                         child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             children: [
-                                              const SizedBox(height: 20),
-                                              const Text("Add Class",
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 24,
-                                                      fontWeight:
-                                                          FontWeight.w700)),
                                               const SizedBox(height: 10),
+                                              Icon(Icons.new_label_outlined, color: Color.fromRGBO(98, 112, 242, 1), size: 32),
+                                              const SizedBox(height: 10),
+                                              const Text("Create a New Class",
+                                                  style: TextStyle(
+                                                    color: Color.fromRGBO(245, 245, 245, 1),
+                                                    fontWeight: FontWeight.w700,
+                                                    fontSize: 16,
+                                                  )
+                                              ),
+                                              const SizedBox(height: 20),
+                                              Text("CLASS INFORMATION",
+                                                  style: TextStyle(
+                                                    color: Color.fromRGBO(
+                                                        245, 245, 245, 0.6),
+                                                    fontSize: 11,
+                                                    letterSpacing: 2.5,
+                                                  )),
+                                              const SizedBox(height: 5),
                                               TextFormField(
                                                 controller: _inputGroupName,
                                                 decoration:
@@ -260,12 +254,19 @@ class _FormAddGroupState extends State<FormAddGroup> {
                                               ),
                                               const SizedBox(height: 10),
                                               ElevatedButton(
-                                                style: const ButtonStyle(
+                                                style: ButtonStyle(
                                                   backgroundColor:
-                                                      MaterialStatePropertyAll<
-                                                              Color>(
-                                                          Color.fromRGBO(
-                                                              98, 112, 242, 1)),
+                                                  MaterialStatePropertyAll<
+                                                      Color>(
+                                                      Color.fromRGBO(
+                                                          98, 112, 242, 1)),
+                                                  shape: MaterialStateProperty
+                                                      .all<RoundedRectangleBorder>(
+                                                      RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(
+                                                            8.0),
+                                                      )),
                                                 ),
                                                 onPressed: () async {
                                                   if (_formAddGroupKey
@@ -280,26 +281,13 @@ class _FormAddGroupState extends State<FormAddGroup> {
                                                   }
                                                 },
                                                 child: const Text(
-                                                  'Add Class',
+                                                  'Create Class',
                                                   style: TextStyle(
                                                       color: Colors.white),
                                                 ),
                                               ),
                                             ])
                                     )]),
-                                  ),
-                                  Positioned(
-                                    right: 0,
-                                    top: 0,
-                                    child: IconButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            widget.isVisible(false);
-                                          });
-                                        },
-                                        icon: const Icon(Icons.close_rounded,
-                                            color: Color.fromRGBO(
-                                                98, 112, 242, 1))),
                                   ),
                                 ],
                               ),
@@ -311,8 +299,7 @@ class _FormAddGroupState extends State<FormAddGroup> {
                   ],
                 ),
               ),
-            ],
-          )),
+          ),
         ]),
       )
     ]);
