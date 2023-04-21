@@ -204,8 +204,7 @@ class WidgetDashboardPostsBuilder extends StatefulWidget {
   State createState() => WidgetDashboardPostsBuilderState();
 }
 
-class WidgetDashboardPostsBuilderState
-    extends State<WidgetDashboardPostsBuilder> {
+class WidgetDashboardPostsBuilderState extends State<WidgetDashboardPostsBuilder> {
   List<Post> posts = [];
   List<Post> postsFiltered = [];
   bool isDoneBuilding = false;
@@ -218,20 +217,23 @@ class WidgetDashboardPostsBuilderState
       List groups = (event.snapshot.child('groups').value as Map).keys.toList();
       var userID = event.snapshot.child('userID').value.toString();
       var username = await getUsername(userID);
-      DatabaseReference ref2 =
-          FirebaseDatabase.instance.ref("Users/${getUID()}/groups");
+      DatabaseReference ref2 = FirebaseDatabase.instance.ref("Users/${getUID()}/groups");
       DataSnapshot snapshot = await ref2.get();
       if (snapshot.value != null) {
         for (var group in (snapshot.value as Map).keys.toList()) {
           if (groups.contains(group)) {
-            posts.add(Post(
+            posts.add(
+              Post(
                 event.snapshot.key.toString(),
                 event.snapshot.child('title').value.toString(),
                 event.snapshot.child('content').value.toString(),
                 userID,
                 username,
                 event.snapshot.child('timeStart').value.toString(),
-                groups));
+                groups,
+                event.snapshot.child('emoji').value.toString(),
+              )
+            );
             break;
           }
         }
@@ -260,10 +262,8 @@ class WidgetDashboardPostsBuilderState
     return Expanded(
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: posts.length == 0
-                ? SizedBox.shrink()
-                : isDoneBuilding
-                    ? ListView.builder(
+            child: posts.length == 0 ? SizedBox.shrink()
+                : isDoneBuilding ? ListView.builder(
                         shrinkWrap: true,
                         itemCount: posts.length + 1,
                         itemBuilder: (BuildContext context, int i) {
@@ -301,7 +301,9 @@ class WidgetDashboardPostsBuilderState
                                 posts[i].content,
                                 posts[i].userID,
                                 posts[i].username,
-                                posts[i].timeStart);
+                                posts[i].timeStart,
+                                posts[i].emoji,
+                            );
                           } else {
                             return const SizedBox.shrink();
                           }
@@ -314,11 +316,11 @@ class WidgetDashboardPostsBuilderState
 }
 
 class Post {
-  String postID, title, content, username, userID, timeStart;
+  String postID, title, content, username, userID, timeStart, emoji;
   List groups = [];
 
   Post(this.postID, this.title, this.content, this.userID, this.username,
-      this.timeStart, this.groups);
+      this.timeStart, this.groups, this.emoji);
 }
 
 class FormAddPost extends StatefulWidget {
@@ -338,6 +340,8 @@ class _FormAddPostState extends State<FormAddPost> {
   final _inputCardTimeStart = TextEditingController();
   final _emojiController = TextEditingController();
   final _scrollController = ScrollController();
+
+  Emoji? emojiSelected = null;
   bool emojiShowing = false;
 
   @override
@@ -386,15 +390,18 @@ class _FormAddPostState extends State<FormAddPost> {
                                                 MainAxisAlignment.center,
                                             children: [
                                               const SizedBox(height: 10),
-                                              Icon(Icons.add_card, color: Color.fromRGBO(98, 112, 242, 1), size: 32),
+                                              Icon(Icons.add_card,
+                                                  color: Color.fromRGBO(
+                                                      98, 112, 242, 1),
+                                                  size: 32),
                                               const SizedBox(height: 10),
                                               const Text("Create a New Card",
                                                   style: TextStyle(
-                                                    color: Color.fromRGBO(245, 245, 245, 1),
+                                                    color: Color.fromRGBO(
+                                                        245, 245, 245, 1),
                                                     fontWeight: FontWeight.w700,
                                                     fontSize: 16,
-                                                  )
-                                              ),
+                                                  )),
                                               const SizedBox(height: 20),
                                               Text("CARD INFORMATION",
                                                   style: TextStyle(
@@ -502,30 +509,24 @@ class _FormAddPostState extends State<FormAddPost> {
                                                       minTime: DateTime.now(),
                                                       onConfirm: (date) {
                                                     String formattedDate =
-                                                        DateFormat(
-                                                                'EEEE, MMMM d, y HH:mm')
-                                                            .format(date);
-                                                    _inputCardTimeStart.text =
-                                                        formattedDate;
+                                                        DateFormat('EEEE, MMMM d, y HH:mm').format(date);
+                                                    _inputCardTimeStart.text = formattedDate;
                                                   }, locale: LocaleType.en);
                                                 },
                                                 decoration:
-                                                    const InputDecoration(
-                                                  border: OutlineInputBorder(),
-                                                  labelText: 'Start Time',
-                                                  labelStyle: TextStyle(
-                                                      color: Color.fromRGBO(
-                                                          235, 235, 235, 0.6),
+                                                  const InputDecoration(
+                                                    border: OutlineInputBorder(),
+                                                    labelText: 'Start Time',
+                                                    labelStyle: TextStyle(
+                                                      color: Color.fromRGBO(235, 235, 235, 0.6),
                                                       fontSize: 14),
                                                   isDense: true,
                                                   filled: true,
-                                                  fillColor: Color.fromRGBO(
-                                                      22, 23, 27, 1),
+                                                  fillColor: Color.fromRGBO(22, 23, 27, 1),
                                                 ),
                                                 style: const TextStyle(
                                                     fontSize: 14,
-                                                    color: Color.fromRGBO(
-                                                        235, 235, 235, 0.8)),
+                                                    color: Color.fromRGBO(235, 235, 235, 0.8)),
                                                 validator: (String? value) {
                                                   return _verifyCardDate(value);
                                                 },
@@ -534,8 +535,7 @@ class _FormAddPostState extends State<FormAddPost> {
                                               widget.groupID == 'All'
                                                   ? Text("CARD VISIBILITY",
                                                       style: TextStyle(
-                                                        color: Color.fromRGBO(
-                                                            245, 245, 245, 0.6),
+                                                        color: Color.fromRGBO(245, 245, 245, 0.6),
                                                         fontSize: 11,
                                                         letterSpacing: 2.5,
                                                       ))
@@ -550,55 +550,74 @@ class _FormAddPostState extends State<FormAddPost> {
                                                               newGroups;
                                                         },
                                                       ),
+                                                    TextFormField(
+                                                      decoration: InputDecoration(
+                                                        isDense: true,
+                                                        contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                                        border: InputBorder.none,
+                                                      ),
+                                                      readOnly: true,
+                                                      validator: (value) {
+                                                        if (widget.groupsToPost.isEmpty) {
+                                                          return 'Please select a group to post';
+                                                        }
+                                                        return null;
+                                                      },
+                                                    ),
                                                       const SizedBox(
                                                           height: 20),
                                                     ])
                                                   : SizedBox.shrink(),
                                               Text(
-                                                "CARD VISUAL",
+                                                "CARD APPEARANCE",
                                                 style: TextStyle(
-                                                  color: Color.fromRGBO(
-                                                      245,
-                                                      245,
-                                                      245,
-                                                      0.6),
+                                                  color: Color.fromRGBO(245, 245, 245, 0.6),
                                                   fontSize: 11,
                                                   letterSpacing: 2.5,
                                                 ),
                                               ),
                                               const SizedBox(height: 5),
                                               Row(
-                                                children:[
-                                                  Expanded(child: ElevatedButton(
-                                                    style: ButtonStyle(
-                                                      padding: MaterialStateProperty.all<EdgeInsets>(
-                                                          EdgeInsets.fromLTRB(10, 22, 0, 22)),
-                                                      backgroundColor:
-                                                      MaterialStatePropertyAll<
-                                                          Color>(
-                                                          Color.fromRGBO(20, 20, 20, 1)),
-                                                      shape: MaterialStateProperty
-                                                          .all<RoundedRectangleBorder>(
+                                                children: [
+                                                  Expanded(
+                                                    child: ElevatedButton(
+                                                      style: ButtonStyle(
+                                                        padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.fromLTRB(10, 15, 10, 15)),
+                                                        backgroundColor: MaterialStatePropertyAll<Color>(Color.fromRGBO(20, 20, 20, 1)),
+                                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                                           RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius.circular(0),
-                                                          )),
+                                                            borderRadius: BorderRadius.circular(0),
+                                                          )
+                                                        ),
                                                     ),
-
                                                     onPressed: () {
                                                       setState(() {
                                                         emojiShowing = !emojiShowing;
                                                       });
                                                     },
                                                     child: Align(
-                                                      alignment: Alignment.centerLeft,
-                                                      child: Text( emojiShowing ? 'Select an Emoji (Hide Picker)' : 'Select an Emoji (Show Picker)',
-                                                        style: TextStyle(
-                                                            color: Color.fromRGBO(235, 235, 235, 0.8)
-                                                        ),
-                                                        textAlign: TextAlign.left,
-                                                      ),
-                                                    ),
+                                                        alignment: Alignment.centerLeft,
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              'Select an emoji',
+                                                              style: TextStyle(
+                                                                  color: Color.fromRGBO(235, 235, 235, 0.8)),
+                                                              textAlign: TextAlign.left,
+                                                            ),
+                                                            Spacer(),
+                                                            emojiSelected == null ? Icon(Icons.mood,
+                                                              color: Color.fromRGBO(235, 235, 235, 0.8),
+                                                              size: 29,
+                                                            ) : Text(emojiSelected!.emoji,
+                                                                style: GoogleFonts.notoColorEmoji(
+                                                                    textStyle: const TextStyle(
+                                                                      fontSize: 20,
+                                                                    )
+                                                                )
+                                                            ),
+                                                          ],
+                                                        )),
                                                   )),
                                                 ],
                                               ),
@@ -607,39 +626,127 @@ class _FormAddPostState extends State<FormAddPost> {
                                                 child: SizedBox(
                                                     height: 250,
                                                     child: EmojiPicker(
-                                                      textEditingController: _emojiController,
+                                                      onEmojiSelected: (Category? category, Emoji emoji) {
+                                                        setState(() {
+                                                          emojiSelected = emoji;
+                                                        });
+                                                      },
+                                                      onBackspacePressed: () {
+                                                        setState(() {
+                                                          emojiSelected = null;
+                                                        });
+                                                      },
+                                                      textEditingController:
+                                                          _emojiController,
                                                       config: Config(
                                                         columns: 7,
                                                         // Issue: https://github.com/flutter/flutter/issues/28894
                                                         emojiSizeMax: 24,
                                                         verticalSpacing: 0,
                                                         horizontalSpacing: 0,
-                                                        gridPadding: EdgeInsets.zero,
-                                                        initCategory: Category.RECENT,
-                                                        bgColor: const Color.fromRGBO(30, 38, 49, 1),
-                                                        indicatorColor: const Color.fromRGBO(93, 111, 238, 1),
+                                                        gridPadding:
+                                                            EdgeInsets.zero,
+                                                        initCategory:
+                                                            Category.RECENT,
+                                                        bgColor: const Color
+                                                                .fromRGBO(
+                                                            30, 38, 49, 1),
+                                                        indicatorColor:
+                                                            const Color
+                                                                    .fromRGBO(
+                                                                93,
+                                                                111,
+                                                                238,
+                                                                1),
                                                         iconColor: Colors.grey,
-                                                        iconColorSelected: const Color.fromRGBO(93, 111, 238, 1),
-                                                        backspaceColor: const Color.fromRGBO(93, 111, 238, 1),
-                                                        skinToneDialogBgColor: Color.fromRGBO(30, 38, 49, 1),
-                                                        skinToneIndicatorColor: Color.fromRGBO(235, 235, 235, 0.8),
+                                                        iconColorSelected:
+                                                            const Color
+                                                                    .fromRGBO(
+                                                                93,
+                                                                111,
+                                                                238,
+                                                                1),
+                                                        backspaceColor:
+                                                            const Color
+                                                                    .fromRGBO(
+                                                                93,
+                                                                111,
+                                                                238,
+                                                                1),
+                                                        skinToneDialogBgColor:
+                                                            Color.fromRGBO(
+                                                                30, 38, 49, 1),
+                                                        skinToneIndicatorColor:
+                                                            Color.fromRGBO(235,
+                                                                235, 235, 0.8),
                                                         enableSkinTones: true,
                                                         showRecentsTab: true,
                                                         recentsLimit: 28,
-                                                        replaceEmojiOnLimitExceed: true,
+                                                        replaceEmojiOnLimitExceed:
+                                                            true,
                                                         noRecents: const Text(
                                                           'No Recents',
-                                                          style: TextStyle(fontSize: 20, color: Colors.black26),
-                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                              fontSize: 20,
+                                                              color: Color.fromRGBO(235, 235, 235, 0.8)),
+                                                          textAlign:
+                                                              TextAlign.center,
                                                         ),
-                                                        loadingIndicator: const SizedBox.shrink(),
-                                                        tabIndicatorAnimDuration: kTabScrollDuration,
-                                                        categoryIcons: const CategoryIcons(),
-                                                        buttonMode: ButtonMode.MATERIAL,
-                                                        checkPlatformCompatibility: false,
-                                                        emojiTextStyle: GoogleFonts.notoColorEmoji(),
+                                                        loadingIndicator:
+                                                            const SizedBox
+                                                                .shrink(),
+                                                        tabIndicatorAnimDuration:
+                                                            kTabScrollDuration,
+                                                        categoryIcons:
+                                                            const CategoryIcons(),
+                                                        buttonMode:
+                                                            ButtonMode.MATERIAL,
+                                                        checkPlatformCompatibility:
+                                                            false,
+                                                        emojiTextStyle:
+                                                            GoogleFonts
+                                                                .notoColorEmoji(),
                                                       ),
                                                     )),
+                                              ),
+                                              Offstage(
+                                                offstage: emojiSelected == null,
+                                                child: Column(
+                                                  children:[
+                                                    SizedBox(height: 10),
+                                                    Text("Preview Emoji in Card",
+                                                      style: TextStyle(
+                                                        color: Color.fromRGBO(245, 245, 245, 0.8),
+                                                        fontWeight: FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    Text("${emojiSelected?.name}", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.6))),
+                                                    Image.network(getEmojiLink(emojiSelected),
+                                                      errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                                                        return Column(
+                                                          children: [
+                                                            SizedBox(height: 10),
+                                                            Padding(
+                                                            padding: EdgeInsets.symmetric(horizontal: 15),
+                                                            child: Row(
+                                                              children:[
+                                                                Icon(Icons.error, color: Color.fromRGBO(255, 94, 97, 1)),
+                                                                SizedBox(width: 10),
+                                                                Expanded(
+                                                                  child: Text("Unfortunately, this emoji cannot be used for this card's appearance.",
+                                                                  style: TextStyle(color: Color.fromRGBO(255, 94, 97, 1)),
+                                                                ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            ),
+                                                            SizedBox(height: 10),
+                                                          ],
+                                                        );
+                                                      },
+                                                    ),
+                                                  ]
+                                                ),
                                               ),
                                               const SizedBox(height: 15),
                                               ElevatedButton(
@@ -667,11 +774,8 @@ class _FormAddPostState extends State<FormAddPost> {
                                                       _inputCardContent.text,
                                                       getUID(),
                                                       _inputCardTimeStart.text,
-                                                      widget.groupID == 'All'
-                                                          ? widget.groupsToPost
-                                                          : [
-                                                              "${widget.groupID}"
-                                                            ],
+                                                      widget.groupID == 'All' ? widget.groupsToPost : ["${widget.groupID}"],
+                                                      getEmojiLink(emojiSelected),
                                                     );
                                                   }
                                                 },
@@ -715,7 +819,7 @@ class _FormAddPostState extends State<FormAddPost> {
   }
 
   void _writePost(
-      BuildContext context, title, content, userID, timeStart, groups) {
+      BuildContext context, String title, String content, String userID, String timeStart, groups, String emoji) {
     try {
       Map groupMap = {};
       groups.forEach((group) => groupMap["$group"] = true);
@@ -727,6 +831,7 @@ class _FormAddPostState extends State<FormAddPost> {
         'userID': userID,
         'timeStart': timeStart,
         'groups': groupMap,
+        'emoji' : emoji,
       });
       for (var group in groups) {
         DatabaseReference ref2 =
@@ -743,6 +848,22 @@ class _FormAddPostState extends State<FormAddPost> {
         content: Text(
             "There was an error submitting your post. Please try again later."),
       ));
+    }
+  }
+
+  String getEmojiLink(Emoji? emoji) {
+    if (emoji == null) {
+      return 'No Emoji';
+    } else {
+      if (emoji.hasSkinTone){
+        return 'https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/'
+            '${emoji.name[0].toUpperCase()}${emoji.name.substring(1).toLowerCase().replaceAll(RegExp(' '), '%20').replaceAll(RegExp('[^a-z^A-Z^0-9\^-\^%]+'),'')}/Default/3D/'
+            '${emoji.name.toLowerCase().replaceAll(RegExp(' '), '_').replaceAll(RegExp('[^a-z^A-Z^0-9\^-\^_\^%]+'),'')}_3d_default.png';
+      } else {
+        return 'https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/'
+            '${emoji.name[0].toUpperCase()}${emoji.name.substring(1).toLowerCase().replaceAll(RegExp(' '), '%20').replaceAll(RegExp('[^a-z^A-Z^0-9\^-\^%]+'),'')}/3D/'
+            '${emoji.name.toLowerCase().replaceAll(RegExp(' '), '_').replaceAll(RegExp('[^a-z^A-Z^0-9\^-\^_\^%]+'),'')}_3d.png';
+      }
     }
   }
 }
@@ -793,8 +914,7 @@ class _GroupSelectorState extends State<GroupSelector> {
                     initialChildSize: 0.37,
                     itemsTextStyle:
                         TextStyle(color: Color.fromRGBO(235, 235, 235, 0.8)),
-                    selectedItemsTextStyle:
-                        TextStyle(color: Colors.black),
+                    selectedItemsTextStyle: TextStyle(color: Colors.black),
                     checkColor: Color.fromRGBO(235, 235, 235, 0.8),
                     selectedColor: Color.fromRGBO(210, 210, 210, 1),
                     unselectedColor: Color.fromRGBO(63, 69, 84, 1),

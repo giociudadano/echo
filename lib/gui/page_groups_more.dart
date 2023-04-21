@@ -319,7 +319,8 @@ class WidgetGroupsMorePostsBuilderState
           userID,
           username,
           postMetadata['timeStart'].toString(),
-          postMetadata['groups'].keys.toList()
+          postMetadata['groups'].keys.toList(),
+          postMetadata['emoji'].toString(),
       ));
       if (mounted) {
         setState(() {
@@ -372,7 +373,8 @@ class WidgetGroupsMorePostsBuilderState
                             posts[i].content,
                             posts[i].userID,
                             posts[i].username,
-                            posts[i].timeStart);
+                            posts[i].timeStart,
+                            posts[i].emoji,);
                       } else {
                         return const SizedBox.shrink();
                       }

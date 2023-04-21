@@ -10,21 +10,15 @@ class CardPost extends StatefulWidget {
   String userID;
   String username;
   String timeStart;
+  String emoji;
 
-  CardPost(this.postID, this.title, this.content, this.userID, this.username, this.timeStart);
+  CardPost(this.postID, this.title, this.content, this.userID, this.username, this.timeStart, this.emoji);
 
   @override
   State<CardPost> createState() => _CardPostState();
 }
 
 class _CardPostState extends State<CardPost> {
-
-  //TODO PLACEHOLDER VARIABLES
-  final _random2 = Random().nextInt(6);
-  var emojis = [
-    "cry.png", "cry-laugh.png", "dove.png", "face-with-peeking-eye.png", "fish.png", "shark.png"
-  ];
-
   bool isDone = false;
   bool isVisible = true;
   bool isCardFront = true;
@@ -74,17 +68,22 @@ class _CardPostState extends State<CardPost> {
               padding: const EdgeInsets.fromLTRB(20, 10, 10, 0),
               child: Stack(
                 children: [
+                  (widget.emoji == 'No Emoji' || widget.emoji == 'Unreferenced Emoji') ? SizedBox.shrink() :
                   Positioned(
                     top: 40,
                     right: 0,
                     child: Transform(
                       transform: Matrix4.identity()..rotateZ(15 * 3.1415927 / 180),
                       alignment: FractionalOffset.center,
-                      child: Image.asset(
-                        'lib/assets/images/emoji/${emojis[_random2]}',
+                      child: Image.network(widget.emoji,
                         width: 120,
                         height: 120,
                         opacity: const AlwaysStoppedAnimation(.4),
+                        errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                          DatabaseReference ref = FirebaseDatabase.instance.ref("Posts/${widget.postID}");
+                          ref.update({"emoji":"Unreferenced Emoji"});
+                          return SizedBox.shrink();
+                        }
                       ),
                     ),
                   ),
