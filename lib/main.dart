@@ -153,7 +153,7 @@ class _MyAppPageState extends State<MyAppPage> with TickerProviderStateMixin {
                 BottomNavigationBarItem(
                   icon: Padding(
                     padding: EdgeInsets.fromLTRB(0, 8, 40, 8),
-                    child: Icon(Icons.account_circle),
+                    child: Icon(Icons.account_circle_outlined),
                   ),
                   label: 'Debug',
                 ),

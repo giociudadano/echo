@@ -147,7 +147,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
               });
             },
             backgroundColor: const Color.fromRGBO(98, 112, 242, 1),
-            child: const Icon(Icons.add_card),
+            child: const Icon(Icons.note_add_outlined),
           ),
         );
   }
@@ -167,7 +167,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          icon: Icon(Icons.label_off,
+          icon: Icon(Icons.group_remove_outlined,
               color: Color.fromRGBO(238, 94, 94, 1), size: 32),
           backgroundColor: Color.fromRGBO(32, 35, 43, 1),
           shape: RoundedRectangleBorder(

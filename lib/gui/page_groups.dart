@@ -90,7 +90,7 @@ class _GroupsPageState extends State<GroupsPage> {
                 });
               },
               backgroundColor: const Color.fromRGBO(98, 112, 242, 1),
-              child: const Icon(Icons.new_label_outlined),
+              child: const Icon(Icons.group_add_outlined),
             ),
           ),
         );
@@ -173,7 +173,7 @@ class _FormAddGroupState extends State<FormAddGroup> {
                                                 MainAxisAlignment.start,
                                             children: [
                                               const SizedBox(height: 10),
-                                              Icon(Icons.new_label_outlined, color: Color.fromRGBO(98, 112, 242, 1), size: 32),
+                                              Icon(Icons.group_add_outlined, color: Color.fromRGBO(98, 112, 242, 1), size: 32),
                                               const SizedBox(height: 10),
                                               const Text("Create a New Class",
                                                   style: TextStyle(

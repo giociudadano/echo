@@ -125,7 +125,7 @@ class _CardPostState extends State<CardPost> {
                                   const SizedBox(height: 10),
                                   Row(
                                     children: [
-                                      const Icon(Icons.calendar_month,
+                                      const Icon(Icons.calendar_month_outlined,
                                           color: Color.fromRGBO(245, 245, 245, 0.8)),
                                       const SizedBox(width: 5),
                                       Text(
@@ -192,26 +192,44 @@ class _CardPostState extends State<CardPost> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  isAuthor ?
-                    ElevatedButton.icon(
+                  isAuthor ? ElevatedButton.icon(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            side: BorderSide(color: Color.fromRGBO(245, 245, 245, 0.8), width: 1.5),
+                          )
+                      ),
+                    ),
+                    onPressed: (){
+                    },
+                    icon: Icon(Icons.edit_note_outlined,
+                        color: Colors.white),
+                    label: Text("Edit Card", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+                  ) : SizedBox.shrink(),
+                  isAuthor ? SizedBox(height: 20) : SizedBox.shrink(),
+                  isAuthor ? ElevatedButton.icon(
                       style: ButtonStyle(
                         backgroundColor: MaterialStatePropertyAll<Color>(
                             Color.fromRGBO(238, 94, 94, 1)
                         ),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        shape: MaterialStateProperty.all<
+                            RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             )
                         ),
                       ),
-                      onPressed: (){
+                      onPressed: () {
                         AlertDeleteCard(widget.postID);
                       },
-                      icon: Icon(Icons.cancel_presentation_outlined, color: Colors.white),
-                      label: Text("Delete Card", style: TextStyle(color: Colors.white)),
-                    )
-                  :
-                  ElevatedButton.icon(
+                      icon: Icon(Icons.delete_sweep_outlined,
+                          color: Colors.white),
+                      label: Text("Delete Card", style: TextStyle(color: Colors
+                          .white)),
+                    ) : SizedBox.shrink(),
+                  !isAuthor ? ElevatedButton.icon(
                     style: ButtonStyle(
                       backgroundColor: MaterialStatePropertyAll<Color>(
                           Color.fromRGBO(238, 94, 94, 1)),
@@ -226,7 +244,7 @@ class _CardPostState extends State<CardPost> {
                     },
                     icon: Icon(Icons.flag, color: Colors.white),
                     label: Text("Report Author", style: TextStyle(color: Colors.white)),
-                  )
+                  ) : SizedBox.shrink(),
                 ],
               ),
             ),
@@ -253,7 +271,7 @@ class _CardPostState extends State<CardPost> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            icon: Icon(Icons.cancel_presentation_outlined, color: Color.fromRGBO(238, 94, 94, 1), size: 32),
+            icon: Icon(Icons.delete_sweep_outlined, color: Color.fromRGBO(238, 94, 94, 1), size: 32),
             backgroundColor: Color.fromRGBO(32, 35, 43, 1),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -352,7 +370,7 @@ class _CardPostState extends State<CardPost> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-              icon: Icon(Icons.flag, color: Color.fromRGBO(238, 94, 94, 1), size: 32),
+              icon: Icon(Icons.flag_outlined, color: Color.fromRGBO(238, 94, 94, 1), size: 32),
               backgroundColor: Color.fromRGBO(32, 35, 43, 1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),

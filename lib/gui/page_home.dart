@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
                   });
             },
             backgroundColor: const Color.fromRGBO(98, 112, 242, 1),
-            child: const Icon(Icons.add_card),
+            child: const Icon(Icons.note_add_outlined),
           ),
         ));
   }
@@ -112,7 +112,7 @@ class WidgetGroupsFilterState extends State<WidgetGroupsFilter> {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Row(
             children: [
-              const Icon(Icons.filter_alt_sharp,
+              const Icon(Icons.filter_alt_outlined,
                   color: Color.fromRGBO(230, 230, 230, 1), size: 14),
               const SizedBox(width: 5),
               const Text(
@@ -390,7 +390,7 @@ class _FormAddPostState extends State<FormAddPost> {
                                                 MainAxisAlignment.center,
                                             children: [
                                               const SizedBox(height: 10),
-                                              Icon(Icons.add_card,
+                                              Icon(Icons.note_add_outlined,
                                                   color: Color.fromRGBO(
                                                       98, 112, 242, 1),
                                                   size: 32),
@@ -564,8 +564,6 @@ class _FormAddPostState extends State<FormAddPost> {
                                                         return null;
                                                       },
                                                     ),
-                                                      const SizedBox(
-                                                          height: 20),
                                                     ])
                                                   : SizedBox.shrink(),
                                               Text(
@@ -749,6 +747,25 @@ class _FormAddPostState extends State<FormAddPost> {
                                                 ),
                                               ),
                                               const SizedBox(height: 15),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                              children:[
+                                                ElevatedButton(
+                                                  style: ButtonStyle(
+                                                    backgroundColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+                                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                        RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(8.0),
+                                                          side: BorderSide(color: Color.fromRGBO(245, 245, 245, 0.8), width: 1.5),
+                                                        )
+                                                    ),
+                                                  ),
+                                                  onPressed: (){
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: Text("Cancel", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+                                                ),
+                                              SizedBox(width: 10),
                                               ElevatedButton(
                                                 style: ButtonStyle(
                                                   backgroundColor:
@@ -783,6 +800,8 @@ class _FormAddPostState extends State<FormAddPost> {
                                                     style: TextStyle(
                                                         color: Colors.white)),
                                               ),
+
+                                              ],),
                                             ],
                                           ),
                                         )
@@ -909,7 +928,7 @@ class _GroupSelectorState extends State<GroupSelector> {
                     searchTextStyle:
                         TextStyle(color: Color.fromRGBO(235, 235, 235, 0.6)),
                     backgroundColor: Color.fromRGBO(41, 44, 50, 1),
-                    buttonIcon: const Icon(Icons.new_label_outlined,
+                    buttonIcon: const Icon(Icons.group_add_outlined,
                         color: Color.fromRGBO(235, 235, 235, 0.6)),
                     initialChildSize: 0.37,
                     itemsTextStyle:
