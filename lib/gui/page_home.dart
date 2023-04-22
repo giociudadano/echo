@@ -436,7 +436,7 @@ class _FormAddPostState extends State<FormAddPost> {
                                                     color: Color.fromRGBO(
                                                         235, 235, 235, 0.8)),
                                                 validator: (String? value) {
-                                                  return _verifyCardTitle(
+                                                  return verifyCardTitle(
                                                       value);
                                                 },
                                               ),
@@ -528,7 +528,7 @@ class _FormAddPostState extends State<FormAddPost> {
                                                     fontSize: 14,
                                                     color: Color.fromRGBO(235, 235, 235, 0.8)),
                                                 validator: (String? value) {
-                                                  return _verifyCardDate(value);
+                                                  return verifyCardDate(value);
                                                 },
                                               ),
                                               const SizedBox(height: 20),
@@ -782,6 +782,7 @@ class _FormAddPostState extends State<FormAddPost> {
                                                   )),
                                                 ),
                                                 onPressed: () async {
+                                                  Navigator.of(context).pop();
                                                   if (_formAddPostKey
                                                       .currentState!
                                                       .validate()) {
@@ -823,14 +824,14 @@ class _FormAddPostState extends State<FormAddPost> {
     ]);
   }
 
-  _verifyCardTitle(String? value) {
+  verifyCardTitle(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter a title';
     }
     return null;
   }
 
-  _verifyCardDate(String? value) {
+  verifyCardDate(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter a start date';
     }
