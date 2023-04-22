@@ -207,7 +207,7 @@ class _CardPostState extends State<CardPost> {
                       ),
                     ),
                     onPressed: (){
-                        AlertEditCard(widget.title, widget.content, widget.timeStart, widget.emojiData);
+                        AlertEditCard(widget.title, widget.content, widget.timeStart, widget.groups, widget.emojiData);
                     },
                     icon: Icon(Icons.edit_note_outlined,
                         color: Colors.white),
@@ -271,11 +271,11 @@ class _CardPostState extends State<CardPost> {
     }
   }
 
-  void AlertEditCard(title, content, timeStart, emojiData){
+  void AlertEditCard(title, content, timeStart, groups, emojiData){
     showDialog(
       context: context,
       builder: (BuildContext context){
-        return FormEditPost(title, content, timeStart, emojiData);
+        return FormEditPost(title, content, timeStart, groups, emojiData);
       },
     );
   }
@@ -483,12 +483,12 @@ class _CardPostState extends State<CardPost> {
 
 class FormEditPost extends StatefulWidget {
   var groupsToPost = [];
-  String title;
-  String content;
-  String timeStart;
+  String title, content, timeStart;
   Map emojiData;
 
-  FormEditPost(this.title, this.content, this.timeStart, this.emojiData);
+  FormEditPost(this.title, this.content, this.timeStart, groups, this.emojiData) {
+    this.groupsToPost = groups;
+  }
 
   @override
   State<StatefulWidget> createState() => _FormEditPostState();
@@ -716,6 +716,7 @@ class _FormEditPostState extends State<FormEditPost> {
                                                       groupsSelected: (newGroups) {
                                                         widget.groupsToPost = newGroups;
                                                       },
+                                                      initGroups: widget.groupsToPost,
                                                     ),
                                                     TextFormField(
                                                       decoration: InputDecoration(

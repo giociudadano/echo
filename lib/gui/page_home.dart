@@ -520,10 +520,8 @@ class _FormAddPostState extends State<FormAddPost> {
                                               widget.groupID == 'All'
                                                   ? Column(children: [
                                                       GroupSelector(
-                                                        groupsSelected:
-                                                            (newGroups) {
-                                                          widget.groupsToPost =
-                                                              newGroups;
+                                                        groupsSelected: (newGroups) {
+                                                          widget.groupsToPost = newGroups;
                                                         },
                                                       ),
                                                     TextFormField(
@@ -868,8 +866,9 @@ class _FormAddPostState extends State<FormAddPost> {
 
 class GroupSelector extends StatefulWidget {
   final ValueChanged<List> groupsSelected;
+  List initGroups = [];
 
-  const GroupSelector({super.key, required this.groupsSelected});
+  GroupSelector({super.key, required this.groupsSelected, this.initGroups = const []});
 
   @override
   State<GroupSelector> createState() => _GroupSelectorState();
@@ -885,6 +884,7 @@ class _GroupSelectorState extends State<GroupSelector> {
   void initState() {
     super.initState();
     getGroups();
+    selectedGroups = widget.initGroups;
   }
 
   @override
@@ -933,10 +933,12 @@ class _GroupSelectorState extends State<GroupSelector> {
                             TextStyle(color: Color.fromRGBO(225, 225, 225, 1))),
                     onConfirm: (values) {
                       selectedGroups = values;
+                      print(selectedGroups);
                     },
                     onSelectionChanged: (values) {
                       widget.groupsSelected(values);
                     },
+                    initialValue: selectedGroups,
                     chipDisplay: MultiSelectChipDisplay(
                       chipColor: Color.fromRGBO(210, 210, 210, 1),
                       textStyle: TextStyle(color: Colors.black, fontSize: 12),
@@ -947,16 +949,6 @@ class _GroupSelectorState extends State<GroupSelector> {
                       },
                     ),
                   ),
-                  selectedGroups.isEmpty
-                      ? Container(
-                          padding: const EdgeInsets.all(10),
-                          alignment: Alignment.centerLeft,
-                          child: const Text(
-                            "None selected",
-                            style: TextStyle(
-                                color: Color.fromRGBO(235, 235, 235, 0.4)),
-                          ))
-                      : SizedBox.shrink(),
                 ],
               )
             : const Padding(
@@ -968,8 +960,7 @@ class _GroupSelectorState extends State<GroupSelector> {
   }
 
   void getGroups() async {
-    DatabaseReference ref =
-        FirebaseDatabase.instance.ref("Users/${getUID()}/groups");
+    DatabaseReference ref = FirebaseDatabase.instance.ref("Users/${getUID()}/groups");
     DataSnapshot snapshot = await ref.get();
     if (snapshot.value == null) {
       setState(() {
@@ -986,11 +977,7 @@ class _GroupSelectorState extends State<GroupSelector> {
       DataSnapshot snapshot = await ref2.get();
       groupNames.add(snapshot.value);
     }
-    items = groups
-        .map((group) =>
-            MultiSelectItem(group, groupNames[groups.indexOf(group)]))
-        .toList();
-    selectedGroups = groups;
+    items = groups.map((group) => MultiSelectItem(group, groupNames[groups.indexOf(group)])).toList();
     if (mounted) {
       setState(() {
         isDoneBuilding = true;
