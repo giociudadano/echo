@@ -231,7 +231,8 @@ class WidgetDashboardPostsBuilderState extends State<WidgetDashboardPostsBuilder
                 username,
                 event.snapshot.child('timeStart').value.toString(),
                 groups,
-                event.snapshot.child('emoji').value.toString(),
+                event.snapshot.child('emojiData').value,
+                event.snapshot.child('emojiLink').value.toString(),
               )
             );
             break;
@@ -302,7 +303,9 @@ class WidgetDashboardPostsBuilderState extends State<WidgetDashboardPostsBuilder
                                 posts[i].userID,
                                 posts[i].username,
                                 posts[i].timeStart,
-                                posts[i].emoji,
+                                posts[i].groups,
+                                posts[i].emojiData,
+                                posts[i].emojiLink,
                             );
                           } else {
                             return const SizedBox.shrink();
@@ -316,11 +319,12 @@ class WidgetDashboardPostsBuilderState extends State<WidgetDashboardPostsBuilder
 }
 
 class Post {
-  String postID, title, content, username, userID, timeStart, emoji;
+  String postID, title, content, username, userID, timeStart, emojiLink;
+  var emojiData;
   List groups = [];
 
   Post(this.postID, this.title, this.content, this.userID, this.username,
-      this.timeStart, this.groups, this.emoji);
+      this.timeStart, this.groups, this.emojiData, this.emojiLink);
 }
 
 class FormAddPost extends StatefulWidget {
@@ -350,7 +354,7 @@ class _FormAddPostState extends State<FormAddPost> {
       Expanded(
         child: Row(children: [
           Expanded(
-              child: Stack(
+            child: Stack(
             children: [
               Center(
                 child: Row(
@@ -372,11 +376,9 @@ class _FormAddPostState extends State<FormAddPost> {
                             child: Container(
                               height: 350,
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(30, 20, 30, 20),
+                                padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
                                 child: RawScrollbar(
-                                  thumbColor:
-                                      Color.fromRGBO(235, 235, 235, 0.1),
+                                  thumbColor: Color.fromRGBO(235, 235, 235, 0.1),
                                   thumbVisibility: true,
                                   thickness: 10,
                                   controller: _scrollController,
@@ -386,22 +388,21 @@ class _FormAddPostState extends State<FormAddPost> {
                                         Form(
                                           key: _formAddPostKey,
                                           child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               const SizedBox(height: 10),
                                               Icon(Icons.note_add_outlined,
-                                                  color: Color.fromRGBO(
-                                                      98, 112, 242, 1),
-                                                  size: 32),
+                                                  color: Color.fromRGBO(98, 112, 242, 1),
+                                                  size: 32
+                                              ),
                                               const SizedBox(height: 10),
                                               const Text("Create a New Card",
                                                   style: TextStyle(
-                                                    color: Color.fromRGBO(
-                                                        245, 245, 245, 1),
+                                                    color: Color.fromRGBO(245, 245, 245, 1),
                                                     fontWeight: FontWeight.w700,
                                                     fontSize: 16,
-                                                  )),
+                                                  ),
+                                              ),
                                               const SizedBox(height: 20),
                                               Text("CARD INFORMATION",
                                                   style: TextStyle(
@@ -409,67 +410,57 @@ class _FormAddPostState extends State<FormAddPost> {
                                                         245, 245, 245, 0.6),
                                                     fontSize: 11,
                                                     letterSpacing: 2.5,
-                                                  )),
+                                                  ),
+                                              ),
                                               const SizedBox(height: 5),
                                               TextFormField(
                                                 controller: _inputCardTitle,
-                                                decoration:
-                                                    const InputDecoration(
+                                                decoration: const InputDecoration(
                                                   border: OutlineInputBorder(),
                                                   labelText: 'Card Title',
                                                   labelStyle: TextStyle(
-                                                      color: Color.fromRGBO(
-                                                          235, 235, 235, 0.6),
-                                                      fontSize: 14),
+                                                      color: Color.fromRGBO(235, 235, 235, 0.6),
+                                                      fontSize: 14
+                                                  ),
                                                   hintText: 'Enter card title',
                                                   hintStyle: TextStyle(
-                                                      color: Color.fromRGBO(
-                                                          235, 235, 235, 0.2),
-                                                      fontSize: 14),
+                                                      color: Color.fromRGBO(235, 235, 235, 0.2),
+                                                      fontSize: 14
+                                                  ),
                                                   isDense: true,
                                                   filled: true,
-                                                  fillColor: Color.fromRGBO(
-                                                      22, 23, 27, 1),
+                                                  fillColor: Color.fromRGBO(22, 23, 27, 1),
                                                 ),
                                                 style: const TextStyle(
                                                     fontSize: 14,
-                                                    color: Color.fromRGBO(
-                                                        235, 235, 235, 0.8)),
+                                                    color: Color.fromRGBO(235, 235, 235, 0.8)),
                                                 validator: (String? value) {
-                                                  return verifyCardTitle(
-                                                      value);
+                                                  return verifyCardTitle(value);
                                                 },
                                               ),
                                               const SizedBox(height: 10),
                                               TextFormField(
                                                 controller: _inputCardContent,
-                                                keyboardType:
-                                                    TextInputType.multiline,
+                                                keyboardType: TextInputType.multiline,
                                                 minLines: 3,
                                                 maxLines: 3,
-                                                decoration:
-                                                    const InputDecoration(
+                                                decoration: const InputDecoration(
                                                   border: OutlineInputBorder(),
                                                   labelText: 'Card Content',
                                                   labelStyle: TextStyle(
-                                                      color: Color.fromRGBO(
-                                                          235, 235, 235, 0.6),
+                                                      color: Color.fromRGBO(235, 235, 235, 0.6),
                                                       fontSize: 14),
-                                                  hintText:
-                                                      'Enter additional information here.',
+                                                  hintText: 'Enter additional information here.',
                                                   hintStyle: TextStyle(
-                                                      color: Color.fromRGBO(
-                                                          235, 235, 235, 0.2),
+                                                      color: Color.fromRGBO(235, 235, 235, 0.2),
                                                       fontSize: 14),
                                                   isDense: true,
                                                   filled: true,
-                                                  fillColor: Color.fromRGBO(
-                                                      22, 23, 27, 1),
+                                                  fillColor: Color.fromRGBO(22, 23, 27, 1),
                                                 ),
                                                 style: const TextStyle(
                                                     fontSize: 14,
-                                                    color: Color.fromRGBO(
-                                                        235, 235, 235, 0.8)),
+                                                    color: Color.fromRGBO(235, 235, 235, 0.8)),
                                               ),
                                               const SizedBox(height: 10),
                                               TextFormField(
@@ -481,35 +472,20 @@ class _FormAddPostState extends State<FormAddPost> {
                                                       theme:
                                                           const DatePickerTheme(
                                                         cancelStyle: TextStyle(
-                                                            color:
-                                                                Color.fromRGBO(
-                                                                    255,
-                                                                    167,
-                                                                    167,
-                                                                    1)),
+                                                            color: Color.fromRGBO(255, 167, 167, 1)
+                                                        ),
                                                         itemStyle: TextStyle(
-                                                            color:
-                                                                Color.fromRGBO(
-                                                                    235,
-                                                                    235,
-                                                                    235,
-                                                                    1)),
+                                                            color: Color.fromRGBO(235,235,235,1)
+                                                        ),
                                                         doneStyle: TextStyle(
-                                                            color:
-                                                                Color.fromRGBO(
-                                                                    98,
-                                                                    112,
-                                                                    242,
-                                                                    1)),
-                                                        backgroundColor:
-                                                            Color.fromRGBO(
-                                                                32, 35, 43, 1),
+                                                            color: Color.fromRGBO(98, 112, 242, 1)
+                                                        ),
+                                                        backgroundColor: Color.fromRGBO(32, 35, 43, 1),
                                                       ),
                                                       showTitleActions: true,
                                                       minTime: DateTime.now(),
                                                       onConfirm: (date) {
-                                                    String formattedDate =
-                                                        DateFormat('EEEE, MMMM d, y HH:mm').format(date);
+                                                    String formattedDate = DateFormat('EEEE, MMMM d, y HH:mm').format(date);
                                                     _inputCardTimeStart.text = formattedDate;
                                                   }, locale: LocaleType.en);
                                                 },
@@ -793,6 +769,7 @@ class _FormAddPostState extends State<FormAddPost> {
                                                       getUID(),
                                                       _inputCardTimeStart.text,
                                                       widget.groupID == 'All' ? widget.groupsToPost : ["${widget.groupID}"],
+                                                      emojiSelected!.toJson(),
                                                       getEmojiLink(emojiSelected),
                                                     );
                                                   }
@@ -839,7 +816,7 @@ class _FormAddPostState extends State<FormAddPost> {
   }
 
   void _writePost(
-      BuildContext context, String title, String content, String userID, String timeStart, groups, String emoji) {
+      BuildContext context, String title, String content, String userID, String timeStart, groups, Map emojiData, String emojiLink) {
     try {
       Map groupMap = {};
       groups.forEach((group) => groupMap["$group"] = true);
@@ -851,7 +828,8 @@ class _FormAddPostState extends State<FormAddPost> {
         'userID': userID,
         'timeStart': timeStart,
         'groups': groupMap,
-        'emoji' : emoji,
+        'emojiData' : emojiData,
+        'emojiLink' : emojiLink,
       });
       for (var group in groups) {
         DatabaseReference ref2 =

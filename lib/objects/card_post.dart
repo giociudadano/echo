@@ -3,22 +3,20 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
 
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class CardPost extends StatefulWidget {
-  String postID;
-  String title;
-  String content;
-  String userID;
-  String username;
-  String timeStart;
-  String emoji;
+  String postID, title, content, userID, username, timeStart, emojiLink;
+  List groups;
+  Map emojiData;
 
-  CardPost(this.postID, this.title, this.content, this.userID, this.username, this.timeStart, this.emoji);
+  CardPost(
+      this.postID, this.title, this.content,
+      this.userID, this.username, this.timeStart,
+      this.groups, this.emojiData, this.emojiLink);
 
   @override
   State<CardPost> createState() => _CardPostState();
@@ -74,20 +72,20 @@ class _CardPostState extends State<CardPost> {
               padding: const EdgeInsets.fromLTRB(20, 10, 10, 0),
               child: Stack(
                 children: [
-                  (widget.emoji == 'No Emoji' || widget.emoji == 'Unreferenced Emoji') ? SizedBox.shrink() :
+                  (widget.emojiLink == 'No Emoji Link' || widget.emojiLink == 'Unreferenced Emoji Link') ? SizedBox.shrink() :
                   Positioned(
                     top: 40,
                     right: 0,
                     child: Transform(
                       transform: Matrix4.identity()..rotateZ(15 * 3.1415927 / 180),
                       alignment: FractionalOffset.center,
-                      child: Image.network(widget.emoji,
+                      child: Image.network(widget.emojiLink,
                         width: 120,
                         height: 120,
                         opacity: const AlwaysStoppedAnimation(.4),
                         errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
                           DatabaseReference ref = FirebaseDatabase.instance.ref("Posts/${widget.postID}");
-                          ref.update({"emoji":"Unreferenced Emoji"});
+                          ref.update({"emojiLink":"Unreferenced Emoji Link"});
                           return SizedBox.shrink();
                         }
                       ),
@@ -209,7 +207,7 @@ class _CardPostState extends State<CardPost> {
                       ),
                     ),
                     onPressed: (){
-                        AlertEditCard(widget.title, widget.content, widget.timeStart);
+                        AlertEditCard(widget.title, widget.content, widget.timeStart, widget.emojiData);
                     },
                     icon: Icon(Icons.edit_note_outlined,
                         color: Colors.white),
@@ -273,11 +271,11 @@ class _CardPostState extends State<CardPost> {
     }
   }
 
-  void AlertEditCard(title, content, timeStart){
+  void AlertEditCard(title, content, timeStart, emojiData){
     showDialog(
       context: context,
       builder: (BuildContext context){
-        return FormEditPost(title, content, timeStart);
+        return FormEditPost(title, content, timeStart, emojiData);
       },
     );
   }
@@ -488,8 +486,9 @@ class FormEditPost extends StatefulWidget {
   String title;
   String content;
   String timeStart;
+  Map emojiData;
 
-  FormEditPost(this.title, this.content, this.timeStart);
+  FormEditPost(this.title, this.content, this.timeStart, this.emojiData);
 
   @override
   State<StatefulWidget> createState() => _FormEditPostState();
@@ -503,7 +502,7 @@ class _FormEditPostState extends State<FormEditPost> {
   final _emojiController = TextEditingController();
   final _scrollController = ScrollController();
 
-  Emoji? emojiSelected = null;
+  Emoji? emojiSelected;
   bool emojiShowing = false;
 
   @override
@@ -513,6 +512,7 @@ class _FormEditPostState extends State<FormEditPost> {
       _inputCardTitle.text = widget.title;
       _inputCardContent.text = widget.content;
       _inputCardTimeStart.text = widget.timeStart;
+      emojiSelected = Emoji.fromJson(widget.emojiData as Map<String, dynamic>);
     });
   }
 
