@@ -524,20 +524,7 @@ class _FormAddPostState extends State<FormAddPost> {
                                                           widget.groupsToPost = newGroups;
                                                         },
                                                       ),
-                                                    TextFormField(
-                                                      decoration: InputDecoration(
-                                                        isDense: true,
-                                                        contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                        border: InputBorder.none,
-                                                      ),
-                                                      readOnly: true,
-                                                      validator: (value) {
-                                                        if (widget.groupsToPost.isEmpty) {
-                                                          return 'Please select a group to post';
-                                                        }
-                                                        return null;
-                                                      },
-                                                    ),
+                                                      const SizedBox(height: 20),
                                                     ])
                                                   : SizedBox.shrink(),
                                               Text(
@@ -756,10 +743,10 @@ class _FormAddPostState extends State<FormAddPost> {
                                                   )),
                                                 ),
                                                 onPressed: () async {
-                                                  Navigator.of(context).pop();
                                                   if (_formAddPostKey
                                                       .currentState!
                                                       .validate()) {
+                                                    Navigator.of(context).pop();
                                                     _writePost(
                                                       context,
                                                       _inputCardTitle.text,
@@ -900,6 +887,12 @@ class _GroupSelectorState extends State<GroupSelector> {
             ? Column(
                 children: <Widget>[
                   MultiSelectBottomSheetField(
+                    validator: (value) {
+                      if (selectedGroups.isEmpty) {
+                        return 'Please select a group to post';
+                      }
+                      return null;
+                    },
                     decoration: const BoxDecoration(
                       shape: BoxShape.rectangle,
                       color: Color.fromRGBO(22, 23, 27, 1),
@@ -933,7 +926,6 @@ class _GroupSelectorState extends State<GroupSelector> {
                             TextStyle(color: Color.fromRGBO(225, 225, 225, 1))),
                     onConfirm: (values) {
                       selectedGroups = values;
-                      print(selectedGroups);
                     },
                     onSelectionChanged: (values) {
                       widget.groupsSelected(values);

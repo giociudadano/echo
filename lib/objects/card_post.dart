@@ -207,7 +207,7 @@ class _CardPostState extends State<CardPost> {
                       ),
                     ),
                     onPressed: (){
-                        AlertEditCard(widget.title, widget.content, widget.timeStart, widget.groups, widget.emojiData);
+                        AlertEditCard(widget.postID, widget.title, widget.content, widget.timeStart, widget.groups, widget.emojiData);
                     },
                     icon: Icon(Icons.edit_note_outlined,
                         color: Colors.white),
@@ -271,11 +271,11 @@ class _CardPostState extends State<CardPost> {
     }
   }
 
-  void AlertEditCard(title, content, timeStart, groups, emojiData){
+  void AlertEditCard(postID, title, content, timeStart, groups, emojiData){
     showDialog(
       context: context,
       builder: (BuildContext context){
-        return FormEditPost(title, content, timeStart, groups, emojiData);
+        return FormEditPost(postID, title, content, timeStart, groups, emojiData);
       },
     );
   }
@@ -483,10 +483,10 @@ class _CardPostState extends State<CardPost> {
 
 class FormEditPost extends StatefulWidget {
   var groupsToPost = [];
-  String title, content, timeStart;
+  String postID, title, content, timeStart;
   Map emojiData;
 
-  FormEditPost(this.title, this.content, this.timeStart, groups, this.emojiData) {
+  FormEditPost(this.postID, this.title, this.content, this.timeStart, groups, this.emojiData) {
     this.groupsToPost = groups;
   }
 
@@ -718,20 +718,7 @@ class _FormEditPostState extends State<FormEditPost> {
                                                       },
                                                       initGroups: widget.groupsToPost,
                                                     ),
-                                                    TextFormField(
-                                                      decoration: InputDecoration(
-                                                        isDense: true,
-                                                        contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                        border: InputBorder.none,
-                                                      ),
-                                                      readOnly: true,
-                                                      validator: (value) {
-                                                        if (widget.groupsToPost.isEmpty) {
-                                                          return 'Please select a group to post';
-                                                        }
-                                                        return null;
-                                                      },
-                                                    ),
+                                                    const SizedBox(height: 20),
                                                   ]),
                                                   Text(
                                                     "CARD APPEARANCE",
@@ -905,7 +892,6 @@ class _FormEditPostState extends State<FormEditPost> {
                                                                       ],
                                                                     ),
                                                                   ),
-                                                                  SizedBox(height: 10),
                                                                 ],
                                                               );
                                                             },
@@ -949,7 +935,21 @@ class _FormEditPostState extends State<FormEditPost> {
                                                               )),
                                                         ),
                                                         onPressed: () async {
-                                                          Navigator.of(context).pop();
+                                                          if (_formEditPostKey.currentState!.validate()) {
+                                                            Navigator.of(context).pop();
+                                                            _editPost(
+                                                              context,
+                                                              widget.postID,
+                                                              _inputCardTitle.text,
+                                                              _inputCardContent.text,
+                                                              getUID(),
+                                                              _inputCardTimeStart.text,
+                                                              widget.groupsToPost,
+                                                              emojiSelected!.toJson(),
+                                                              getEmojiLink(emojiSelected),
+                                                            );
+                                                            setState(() {});
+                                                          }
                                                         },
                                                         child: const Text('Edit Card',
                                                             style: TextStyle(
@@ -992,35 +992,28 @@ class _FormEditPostState extends State<FormEditPost> {
     return null;
   }
 
-  void _writePost(
-      BuildContext context, String title, String content, String userID, String timeStart, groups, String emoji) {
+  void _editPost(
+    BuildContext context, String postID, String title, String content, String userID, String timeStart, groups, Map emojiData, String emojiLink) {
     try {
       Map groupMap = {};
       groups.forEach((group) => groupMap["$group"] = true);
-      DatabaseReference ref = FirebaseDatabase.instance.ref("Posts");
-      var newPost = ref.push();
-      newPost.update({
+      DatabaseReference ref = FirebaseDatabase.instance.ref("Posts/$postID");
+      ref.update({
         'title': title,
         'content': content,
         'userID': userID,
         'timeStart': timeStart,
         'groups': groupMap,
-        'emoji' : emoji,
+        'emojiData' : emojiData,
+        'emojiLink' : emojiLink,
       });
-      for (var group in groups) {
-        DatabaseReference ref2 =
-        FirebaseDatabase.instance.ref("Groups/$group/posts");
-        ref2.update({newPost.key!: true});
-      }
-
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Post has been submitted!"),
+        content: Text("Post has been edited!"),
       ));
-      setState(() {});
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text(
-            "There was an error submitting your post. Please try again later."),
+            "There was an error editing your post. Please try again later."),
       ));
     }
   }
