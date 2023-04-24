@@ -16,7 +16,8 @@ class CardPost extends StatefulWidget {
   CardPost(
       this.postID, this.title, this.content,
       this.userID, this.username, this.timeStart,
-      this.groups, this.emojiData, this.emojiLink);
+      this.groups, this.emojiData, this.emojiLink){
+  }
 
   @override
   State<CardPost> createState() => _CardPostState();
@@ -30,8 +31,21 @@ class _CardPostState extends State<CardPost> {
 
   @override
   void initState(){
+    DatabaseReference ref = FirebaseDatabase.instance.ref('Posts/${widget.postID}');
     getPostDoneState(widget.userID, widget.postID);
     isCardAuthor(widget.postID);
+    ref.onChildChanged.listen((event) async {
+      Map newValues = (await ref.get()).value as Map;
+      setState(() {
+        isCardFront = true;
+        widget.title = newValues['title'];
+        widget.content = newValues['content'];
+        widget.timeStart = newValues['timeStart'];
+        widget.groups = newValues['groups'].keys.toList();
+        widget.emojiData = newValues['emojiData'];
+        widget.emojiLink = newValues['emojiLink'];
+      });
+    });
   }
 
   void getPostDoneState(String userID, String postID) async {
