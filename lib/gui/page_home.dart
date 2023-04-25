@@ -254,7 +254,9 @@ class WidgetDashboardPostsBuilderState extends State<WidgetDashboardPostsBuilder
           post.groups = (event.snapshot.child('groups').value as Map).keys.toList();
           post.emojiData = event.snapshot.child('emojiData').value;
           post.emojiLink = event.snapshot.child('emojiLink').value.toString();
-          setState((){});
+          if (mounted) {
+            setState(() {});
+          }
         }
       }
     });
@@ -262,6 +264,9 @@ class WidgetDashboardPostsBuilderState extends State<WidgetDashboardPostsBuilder
       for (var post in posts) {
         if (post.postID == event.snapshot.key) {
           posts.removeWhere((post) => post.postID == event.snapshot.key);
+          if (mounted) {
+            setState(() {});
+          }
         }
       }
     });
@@ -304,6 +309,7 @@ class WidgetDashboardPostsBuilderState extends State<WidgetDashboardPostsBuilder
                                           .toLowerCase());
                                 } else {
                                   isPrint = true;
+                                  break;
                                 }
                               } else {
                                 isPrint = false;

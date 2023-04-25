@@ -1,10 +1,7 @@
 part of main;
 
 class GroupsMorePage extends StatefulWidget {
-  String groupID;
-  String groupName;
-  String groupDesc;
-
+  String groupID, groupName, groupDesc;
   GroupsMorePage(this.groupID, this.groupName, this.groupDesc);
 
   @override
@@ -20,7 +17,14 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
   @override
   void initState() {
     super.initState();
-    isGroupAdmin(widget.groupID);
+    initAdminPerms(widget.groupID);
+    DatabaseReference ref = FirebaseDatabase.instance.ref('Groups/${widget.groupID}');
+    ref.onValue.listen((event) async {
+      setState((){
+        widget.groupName = event.snapshot.child('name').value.toString();
+        widget.groupDesc = event.snapshot.child('description').value.toString();
+      });
+    });
   }
 
   @override
@@ -76,32 +80,52 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                               icon: Icon(Icons.more_vert, color: Colors.white),
                               color: Colors.black,
                               itemBuilder: (BuildContext context) {
-                                return isAdmin
-                                    ? [
-                                        PopupMenuItem(
-                                          onTap: () {
-                                            Future.delayed(
-                                                const Duration(seconds: 0),
-                                            () => AlertDeleteGroup(widget.groupID));
-                                          },
-                                          child: Text(
-                                            "Delete Class",
-                                            style: TextStyle(
-                                                color: Color.fromRGBO(
-                                                    255, 167, 167, 1)),
-                                          ),
+                                return isAdmin ? [
+                                  PopupMenuItem(
+                                    onTap: () {
+                                      Future.delayed(
+                                          const Duration(seconds: 0),
+                                              () => AlertInviteMembers(widget.groupID));
+                                    },
+                                    child: Text("Invite Members",
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(235, 235, 235, 1),
+                                      ),
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    onTap: () {
+                                      Future.delayed(
+                                          const Duration(seconds: 0),
+                                              () => AlertEditGroup(widget.groupID, widget.groupName, widget.groupDesc));
+                                    },
+                                    child: Text("Edit Class",
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(235, 235, 235, 1),
+                                      ),
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    onTap: () {
+                                      Future.delayed(
+                                        const Duration(seconds: 0),
+                                      () => AlertDeleteGroup(widget.groupID));
+                                    },
+                                      child: Text("Delete Class",
+                                        style: TextStyle(
+                                          color: Color.fromRGBO(255, 167, 167, 1),
                                         ),
-                                      ]
-                                    : [
-                                        PopupMenuItem(
-                                          child: Text(
-                                            "Leave Class",
-                                            style: TextStyle(
-                                                color: Color.fromRGBO(
-                                                    255, 167, 167, 1)),
-                                          ),
-                                        ),
-                                      ];
+                                      ),
+                                  ),
+                                ] : [
+                                  PopupMenuItem(
+                                    child: Text("Leave Class",
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(255, 167, 167, 1),
+                                      ),
+                                    ),
+                                  ),
+                                ];
                               },
                             ),
                           ],
@@ -152,13 +176,211 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
         );
   }
 
-  void isGroupAdmin(String groupID) async {
-    DatabaseReference ref =
-        FirebaseDatabase.instance.ref("Groups/$groupID/admin");
+  void AlertInviteMembers(String groupID) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          scrollable: true,
+          backgroundColor: Color.fromRGBO(32, 35, 43, 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: Text("Invite Members",
+              style: TextStyle(
+                color: Color.fromRGBO(245, 245, 245, 1),
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              )),
+          content: Column(
+            children: [
+              Text("INVITE USING QR CODE",
+                style: TextStyle(
+                  color: Color.fromRGBO(245, 245, 245, 0.6),
+                  fontSize: 11,
+                  letterSpacing: 2.5,
+                ),
+              ),
+              SizedBox(height: 5),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll<Color>(Color.fromRGBO(98, 112, 242, 1)),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Done',
+                        style: TextStyle(
+                            color: Colors.white)),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void AlertEditGroup(String groupID, String groupName, String groupDesc) {
+    final inputGroupName = TextEditingController(text: groupName);
+    final inputGroupDesc = TextEditingController(text: groupDesc);
+
+    verifyGroupName(String? value) {
+      if (value == null || value.isEmpty) {
+        return 'Please enter a class name';
+      }
+      return null;
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          scrollable: true,
+          icon: Icon(Icons.reduce_capacity_outlined,
+              color: Color.fromRGBO(98, 112, 242, 1), size: 32),
+          backgroundColor: Color.fromRGBO(32, 35, 43, 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: Text("Edit Class",
+              style: TextStyle(
+                color: Color.fromRGBO(245, 245, 245, 1),
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              )),
+          content: Column(
+            children: [
+              Text("CLASS INFORMATION",
+                style: TextStyle(
+                  color: Color.fromRGBO(245, 245, 245, 0.6),
+                  fontSize: 11,
+                  letterSpacing: 2.5,
+                ),
+              ),
+              SizedBox(height: 5),
+              TextFormField(
+                controller: inputGroupName,
+                decoration:
+                const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Class Name',
+                  labelStyle: TextStyle(
+                      color: Color.fromRGBO(
+                          235, 235, 235, 0.6),
+                      fontSize: 14),
+                  hintText: 'Enter class name',
+                  hintStyle: TextStyle(
+                      color: Color.fromRGBO(
+                          235, 235, 235, 0.2),
+                      fontSize: 14),
+                  isDense: true,
+                  filled: true,
+                  fillColor: Color.fromRGBO(
+                      22, 23, 27, 1),
+                ),
+                style: const TextStyle(
+                    fontSize: 14,
+                    color: Color.fromRGBO(
+                        235, 235, 235, 0.8)),
+                validator: (String? value) {
+                  return verifyGroupName(value);
+                },
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                controller: inputGroupDesc,
+                keyboardType:
+                TextInputType.multiline,
+                minLines: 2,
+                maxLines: 2,
+                decoration:
+                const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Class Description',
+                  labelStyle: TextStyle(
+                      color: Color.fromRGBO(235, 235, 235, 0.6),
+                      fontSize: 14),
+                  hintText: 'Enter class description',
+                  hintStyle: TextStyle(
+                      color: Color.fromRGBO(235, 235, 235, 0.2),
+                      fontSize: 14),
+                  isDense: true,
+                  filled: true,
+                  fillColor: Color.fromRGBO(22, 23, 27, 1),
+                ),
+                style: const TextStyle(
+                    fontSize: 14,
+                    color: Color.fromRGBO(235, 235, 235, 0.8)),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            side: BorderSide(color: Color.fromRGBO(245, 245, 245, 0.8), width: 1.5),
+                          )
+                      ),
+                    ),
+                    onPressed: (){
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("Cancel", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+                  ),
+                  SizedBox(width: 10),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll<Color>(Color.fromRGBO(98, 112, 242, 1)),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                    onPressed: () async {
+                      EditGroup(groupID, inputGroupName.text, inputGroupDesc.text);
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Edit Class',
+                        style: TextStyle(
+                            color: Colors.white)),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void EditGroup(String groupID, String groupName, String groupDesc) {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("Groups/$groupID");
+    ref.update({
+      'name': groupName,
+      'description': groupDesc
+    });
+  }
+
+  void initAdminPerms(String groupID) async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("Groups/$groupID/admin");
     DataSnapshot snapshot = await ref.get();
     setState(() {
-      isAdmin = (FirebaseAuth.instance.currentUser?.uid.toString() ==
-          snapshot.value.toString());
+      isAdmin = (FirebaseAuth.instance.currentUser?.uid.toString() == snapshot.value.toString());
     });
   }
 
@@ -188,14 +410,16 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
           actions: [
             ElevatedButton(
               style: ButtonStyle(
-                backgroundColor:
-                    MaterialStatePropertyAll<Color>(Colors.transparent),
+                backgroundColor: MaterialStatePropertyAll<Color>(Colors.transparent),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
+                  RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                   side: BorderSide(
-                      color: Color.fromRGBO(245, 245, 245, 0.8), width: 1.5),
-                )),
+                    color: Color.fromRGBO(245, 245, 245, 0.8),
+                    width: 1.5
+                  ),
+                  ),
+                ),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -208,16 +432,20 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                 backgroundColor: MaterialStatePropertyAll<Color>(
                     Color.fromRGBO(238, 94, 94, 1)),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
+                  RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
-                )),
+                  ),
+                ),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
                 DeleteGroup(groupID);
               },
-              child: Text("Delete",
-                  style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+              child: Text("Delete Class",
+                style: TextStyle(
+                  color: Color.fromRGBO(245, 245, 245, 0.8),
+                )
+              ),
             ),
           ],
         );
@@ -237,6 +465,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
         (snapshot.value as Map).forEach((a, b) => groups.add(a));
 
         // 1. Remove posts whose groups are only this group
+        // 2. Remove membership to this group if post has more than one group
         if (groups.length == 1){
           DeleteCard(post);
         } else {
@@ -257,7 +486,6 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
     (FirebaseDatabase.instance.ref("Groups/$groupID")).remove();
     Navigator.pop(context);
   }
-
 
   void DeleteCard(String postID) async {
     DatabaseReference ref = FirebaseDatabase.instance.ref("Posts/$postID/groups");
@@ -280,6 +508,9 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
     }
     (FirebaseDatabase.instance.ref("Posts/$postID")).remove();
   }
+
+
+
 }
 
 class WidgetGroupsMorePostsBuilder extends StatefulWidget {
@@ -292,8 +523,7 @@ class WidgetGroupsMorePostsBuilder extends StatefulWidget {
   State createState() => WidgetGroupsMorePostsBuilderState();
 }
 
-class WidgetGroupsMorePostsBuilderState
-    extends State<WidgetGroupsMorePostsBuilder> {
+class WidgetGroupsMorePostsBuilderState extends State<WidgetGroupsMorePostsBuilder> {
   List<Post> posts = [];
   bool isDoneBuilding = false;
 
@@ -302,6 +532,33 @@ class WidgetGroupsMorePostsBuilderState
     super.initState();
     widget.inputSearch.addListener(refresh);
     getPosts(widget.groupID);
+    DatabaseReference ref = FirebaseDatabase.instance.ref('Posts');
+    ref.onChildChanged.listen((event) async {
+      for (var post in posts){
+        if (post.postID == event.snapshot.key){
+          post.title = event.snapshot.child('title').value.toString();
+          post.content = event.snapshot.child('content').value.toString();
+          post.username = await getUsername(event.snapshot.child('userID').value.toString());
+          post.timeStart = event.snapshot.child('timeStart').value.toString();
+          post.groups = (event.snapshot.child('groups').value as Map).keys.toList();
+          post.emojiData = event.snapshot.child('emojiData').value;
+          post.emojiLink = event.snapshot.child('emojiLink').value.toString();
+          if (mounted) {
+            setState(() {});
+          }
+        }
+      }
+    });
+    ref.onChildRemoved.listen((event) async {
+      for (var post in posts) {
+        if (post.postID == event.snapshot.key) {
+          posts.removeWhere((post) => post.postID == event.snapshot.key);
+          if (mounted) {
+            setState(() {});
+          }
+        }
+      }
+    });
   }
 
   getPosts(groupID) async {
@@ -309,10 +566,11 @@ class WidgetGroupsMorePostsBuilderState
       var postID = event.snapshot.key;
       DatabaseReference ref = FirebaseDatabase.instance.ref('Posts/$postID');
       DataSnapshot snapshot = await ref.get();
-      Map postMetadata = snapshot.value as Map;
-      var userID = postMetadata['userID'].toString();
-      var username = await getUsername(userID);
-      posts.add(Post(
+      if (snapshot.value != null) {
+        Map postMetadata = snapshot.value as Map;
+        var userID = postMetadata['userID'].toString();
+        var username = await getUsername(userID);
+        posts.add(Post(
           postID!,
           postMetadata['title'].toString(),
           postMetadata['content'].toString(),
@@ -322,7 +580,8 @@ class WidgetGroupsMorePostsBuilderState
           postMetadata['groups'].keys.toList(),
           postMetadata['emojiData'],
           postMetadata['emojiLink'].toString(),
-      ));
+        ));
+      }
       if (mounted) {
         setState(() {
           isDoneBuilding = true;

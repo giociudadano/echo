@@ -22,6 +22,19 @@ class _GroupsPageState extends State<GroupsPage> {
   void initState() {
     super.initState();
     getGroups();
+    DatabaseReference ref = FirebaseDatabase.instance.ref('Groups');
+    ref.onChildChanged.listen((event) async {
+      setState((){
+        for (var group in groups){
+          if (group.groupID == event.snapshot.key){
+            setState((){
+              group.groupName = event.snapshot.child('name').value.toString();
+              group.groupDesc = event.snapshot.child('description').value.toString();
+            });
+          }
+        }
+      });
+    });
   }
 
   @override
@@ -133,8 +146,8 @@ class FormAddGroup extends StatefulWidget {
 
 class _FormAddGroupState extends State<FormAddGroup> {
   final GlobalKey<FormState> _formAddGroupKey = GlobalKey<FormState>();
-  final _inputGroupName = TextEditingController();
-  final _inputGroupDesc = TextEditingController();
+  final inputGroupName = TextEditingController();
+  final inputGroupDesc = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +205,7 @@ class _FormAddGroupState extends State<FormAddGroup> {
                                                   )),
                                               const SizedBox(height: 5),
                                               TextFormField(
-                                                controller: _inputGroupName,
+                                                controller: inputGroupName,
                                                 decoration:
                                                     const InputDecoration(
                                                   border: OutlineInputBorder(),
@@ -216,13 +229,13 @@ class _FormAddGroupState extends State<FormAddGroup> {
                                                     color: Color.fromRGBO(
                                                         235, 235, 235, 0.8)),
                                                 validator: (String? value) {
-                                                  return _verifyGroupName(
+                                                  return verifyGroupName(
                                                       value);
                                                 },
                                               ),
                                               const SizedBox(height: 10),
                                               TextFormField(
-                                                controller: _inputGroupDesc,
+                                                controller: inputGroupDesc,
                                                 keyboardType:
                                                     TextInputType.multiline,
                                                 minLines: 2,
@@ -274,8 +287,8 @@ class _FormAddGroupState extends State<FormAddGroup> {
                                                       .validate()) {
                                                     addGroup(
                                                       context,
-                                                      _inputGroupName.text,
-                                                      _inputGroupDesc.text,
+                                                      inputGroupName.text,
+                                                      inputGroupDesc.text,
                                                       getUID(),
                                                     );
                                                   }
@@ -305,7 +318,7 @@ class _FormAddGroupState extends State<FormAddGroup> {
     ]);
   }
 
-  _verifyGroupName(String? value) {
+  verifyGroupName(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter a class name';
     }
@@ -348,10 +361,10 @@ class WidgetGroupsBuilder extends StatefulWidget {
   WidgetGroupsBuilder(this.groups, this.inputSearch, {super.key});
 
   @override
-  State<WidgetGroupsBuilder> createState() => _WidgetGroupsBuilderState();
+  State<WidgetGroupsBuilder> createState() => WidgetGroupsBuilderState();
 }
 
-class _WidgetGroupsBuilderState extends State<WidgetGroupsBuilder> {
+class WidgetGroupsBuilderState extends State<WidgetGroupsBuilder> {
   @override
   void initState() {
     super.initState();

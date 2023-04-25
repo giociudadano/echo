@@ -35,9 +35,11 @@ class _CardPostState extends State<CardPost> {
     isCardAuthor(widget.postID);
     DatabaseReference ref = FirebaseDatabase.instance.ref('Posts/${widget.postID}');
     ref.onChildChanged.listen((event) async {
-      setState(() {
-        isCardFront = true;
-      });
+      if (mounted){
+        setState(() {
+          isCardFront = true;
+        });
+      }
     });
     /*
     DatabaseReference ref = FirebaseDatabase.instance.ref('Posts/${widget.postID}');
@@ -356,7 +358,7 @@ class _CardPostState extends State<CardPost> {
                   Navigator.of(context).pop();
                   DeleteCard(postID);
                 },
-                child: Text("Delete", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+                child: Text("Delete Card", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
               ),
             ]
           );
