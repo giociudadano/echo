@@ -10,7 +10,9 @@ import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart'; // Material Design
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart'; // Date and Time Picker Widget
 import 'package:multi_select_flutter/multi_select_flutter.dart'; // Item Selector
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart'; // Emoji Picker
+import 'package:qr_flutter/qr_flutter.dart'; //QR Code Generator
+import 'package:mobile_scanner/mobile_scanner.dart'; //QR Code Scanner
 
 // Firebase Libraries
 import 'package:firebase_core/firebase_core.dart'; // Firebase Main

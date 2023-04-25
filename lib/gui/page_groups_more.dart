@@ -194,14 +194,25 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
               )),
           content: Column(
             children: [
-              Text("INVITE USING QR CODE",
+             Text("INVITE USING QR CODE",
                 style: TextStyle(
                   color: Color.fromRGBO(245, 245, 245, 0.6),
                   fontSize: 11,
-                  letterSpacing: 2.5,
+                   letterSpacing: 2.5,
+                ),
+             ),
+              SizedBox(height: 5),
+              Container(
+                width: 200.0,
+                height: 200.0,
+                child: QrImage(
+                  foregroundColor: Colors.white,
+                  data: "${groupID}",
+                  version: QrVersions.auto,
+                  size: 200.0,
                 ),
               ),
-              SizedBox(height: 5),
+              SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [

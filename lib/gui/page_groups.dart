@@ -79,7 +79,27 @@ class _GroupsPageState extends State<GroupsPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(28, 0, 28, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                            onPressed: () async {
+                              AlertJoinGroup();
+                            },
+                            child: const Text('Join a class',
+                                style: TextStyle(
+                                  color: Color.fromRGBO(235, 235, 235, 0.8),
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: Colors.white,
+                                )),
+                          ),
+                      ]
+                    )
+                  ),
+                  const SizedBox(height: 10),
                   Expanded(
                     child: groups.length == 0 ? SizedBox.shrink() : isDoneBuilding
                         ? WidgetGroupsBuilder(groups, inputSearch)
@@ -134,6 +154,139 @@ class _GroupsPageState extends State<GroupsPage> {
       setState(() {
       });
     });
+  }
+
+  void AlertJoinGroup() {
+    MobileScannerController cameraController = MobileScannerController();
+    showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return Scaffold(
+            backgroundColor: Colors.black,
+            appBar: AppBar(
+              leading: const BackButton(
+                color: Colors.white,
+              ),
+              backgroundColor: Colors.black,
+              title: const Text('Join a class',
+                style: TextStyle(
+                  fontFamily: 'SF-Pro',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
+              ),
+              actions: [
+                IconButton(
+                  color: Colors.black,
+                  icon: ValueListenableBuilder(
+                    valueListenable: cameraController.torchState,
+                    builder: (context, state, child) {
+                      switch (state as TorchState) {
+                        case TorchState.off:
+                          return const Icon(Icons.flash_off, color: Colors.grey);
+                        case TorchState.on:
+                          return const Icon(Icons.flash_on, color: Colors.yellow);
+                      }
+                    },
+                  ),
+                  iconSize: 32.0,
+                  onPressed: () => cameraController.toggleTorch(),
+                ),
+                IconButton(
+                  color: Colors.black,
+                  icon: ValueListenableBuilder(
+                    valueListenable: cameraController.cameraFacingState,
+                    builder: (context, state, child) {
+                      switch (state as CameraFacing) {
+                        case CameraFacing.front:
+                          return const Icon(Icons.camera_front);
+                        case CameraFacing.back:
+                          return const Icon(Icons.camera_rear);
+                      }
+                    },
+                  ),
+                  iconSize: 32.0,
+                  onPressed: () => cameraController.switchCamera(),
+                ),
+              ],
+            ),
+            body: MobileScanner(
+              // fit: BoxFit.contain,
+              controller: cameraController,
+              onDetect: (capture) {
+                final List<Barcode> barcodes = capture.barcodes;
+                for (final barcode in barcodes) {
+                  JoinGroup('${barcode.rawValue}');
+                  Navigator.pop(context);
+                }
+              },
+            ),
+          );
+        },
+    );
+  }
+
+  void JoinGroup(String groupID) async {
+    DataSnapshot snapshot = await (FirebaseDatabase.instance.ref("Groups"))
+        .get();
+    if (snapshot.hasChild(groupID)) {
+      String userID = "${getUID()}";
+      DatabaseReference ref = FirebaseDatabase.instance.ref("Groups/${groupID}/members");
+      ref.update({
+        userID: true,
+      });
+      DatabaseReference ref2 = FirebaseDatabase.instance.ref("Users/${userID}/groups");
+      ref2.update({
+        groupID: true,
+      });
+    } else {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: Color.fromRGBO(32, 35, 43, 1),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              title: Text("Invalid Class Invite",
+                  style: TextStyle(
+                    color: Color.fromRGBO(245, 245, 245, 1),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  )),
+              content: Text(
+                  "We could not find a class with that ID. Please try again with a valid QR code.",
+                  style: TextStyle(
+                    color: Color.fromRGBO(245, 245, 245, 0.8),
+                    fontSize: 14,
+                  )
+              ),
+              actions: [
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll<Color>(
+                        Color.fromRGBO(98, 112, 242, 1)),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Confirm",
+                      style: TextStyle(
+                        color: Color.fromRGBO(245, 245, 245, 0.8),
+                      )
+                  ),
+                ),
+              ]
+            );
+          }
+      );
+    }
   }
 }
 
