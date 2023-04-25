@@ -31,9 +31,16 @@ class _CardPostState extends State<CardPost> {
 
   @override
   void initState(){
-    DatabaseReference ref = FirebaseDatabase.instance.ref('Posts/${widget.postID}');
     getPostDoneState(widget.userID, widget.postID);
     isCardAuthor(widget.postID);
+    DatabaseReference ref = FirebaseDatabase.instance.ref('Posts/${widget.postID}');
+    ref.onChildChanged.listen((event) async {
+      setState(() {
+        isCardFront = true;
+      });
+    });
+    /*
+    DatabaseReference ref = FirebaseDatabase.instance.ref('Posts/${widget.postID}');
     ref.onChildChanged.listen((event) async {
       Map newValues = (await ref.get()).value as Map;
       setState(() {
@@ -46,6 +53,7 @@ class _CardPostState extends State<CardPost> {
         widget.emojiLink = newValues['emojiLink'];
       });
     });
+    */
   }
 
   void getPostDoneState(String userID, String postID) async {

@@ -194,10 +194,9 @@ class WidgetGroupsFilterState extends State<WidgetGroupsFilter> {
 }
 
 class WidgetDashboardPostsBuilder extends StatefulWidget {
-  DatabaseReference ref = FirebaseDatabase.instance.ref('Posts');
+
   var filters = [];
   TextEditingController inputSearch;
-
   WidgetDashboardPostsBuilder(this.filters, this.inputSearch, {super.key});
 
   @override
@@ -206,14 +205,14 @@ class WidgetDashboardPostsBuilder extends StatefulWidget {
 
 class WidgetDashboardPostsBuilderState extends State<WidgetDashboardPostsBuilder> {
   List<Post> posts = [];
-  List<Post> postsFiltered = [];
   bool isDoneBuilding = false;
 
   @override
   void initState() {
     super.initState();
+    DatabaseReference ref = FirebaseDatabase.instance.ref('Posts');
     widget.inputSearch.addListener(refresh);
-    widget.ref.onChildAdded.listen((event) async {
+    ref.onChildAdded.listen((event) async {
       List groups = (event.snapshot.child('groups').value as Map).keys.toList();
       var userID = event.snapshot.child('userID').value.toString();
       var username = await getUsername(userID);
@@ -243,6 +242,27 @@ class WidgetDashboardPostsBuilderState extends State<WidgetDashboardPostsBuilder
         setState(() {
           isDoneBuilding = true;
         });
+      }
+    });
+    ref.onChildChanged.listen((event) async {
+      for (var post in posts){
+        if (post.postID == event.snapshot.key){
+          post.title = event.snapshot.child('title').value.toString();
+          post.content = event.snapshot.child('content').value.toString();
+          post.username = await getUsername(event.snapshot.child('userID').value.toString());
+          post.timeStart = event.snapshot.child('timeStart').value.toString();
+          post.groups = (event.snapshot.child('groups').value as Map).keys.toList();
+          post.emojiData = event.snapshot.child('emojiData').value;
+          post.emojiLink = event.snapshot.child('emojiLink').value.toString();
+          setState((){});
+        }
+      }
+    });
+    ref.onChildRemoved.listen((event) async {
+      for (var post in posts) {
+        if (post.postID == event.snapshot.key) {
+          posts.removeWhere((post) => post.postID == event.snapshot.key);
+        }
       }
     });
   }
