@@ -81,7 +81,7 @@ class _GroupsPageState extends State<GroupsPage> {
                   ),
                   const SizedBox(height: 10),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(28, 0, 28, 0),
+                    padding: EdgeInsets.fromLTRB(22, 0, 22, 0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -89,12 +89,19 @@ class _GroupsPageState extends State<GroupsPage> {
                             onPressed: () async {
                               AlertJoinGroup();
                             },
-                            child: const Text('Scan QR Code',
-                                style: TextStyle(
-                                  color: Color.fromRGBO(235, 235, 235, 0.6),
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: Color.fromRGBO(235, 235, 235, 0.6),
-                                )),
+                            child: Row(
+                              children: [
+                                Icon(Icons.qr_code_scanner, size: 16, color: Color.fromRGBO(235, 235, 235, 0.6)),
+                                SizedBox(width: 10),
+                                Text('Scan QR Code',
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(235, 235, 235, 0.6),
+                                      decoration: TextDecoration.underline,
+                                      decorationColor: Color.fromRGBO(235, 235, 235, 0.6),
+                                    ),
+                                )
+                              ]
+                            ),
                           ),
                       ]
                     )

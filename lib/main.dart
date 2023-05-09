@@ -14,6 +14,7 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart'; // Emoji Picker
 import 'package:qr_flutter/qr_flutter.dart'; //QR Code Generator
 import 'package:mobile_scanner/mobile_scanner.dart'; //QR Code Scanner
 import 'package:flutter_profile_picture/flutter_profile_picture.dart'; //Flutter Profile Pictures
+import 'package:image_picker/image_picker.dart'; //Image Picker
 
 // Firebase Libraries
 import 'package:firebase_core/firebase_core.dart'; // Firebase Main
