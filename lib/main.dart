@@ -13,6 +13,7 @@ import 'package:multi_select_flutter/multi_select_flutter.dart'; // Item Selecto
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart'; // Emoji Picker
 import 'package:qr_flutter/qr_flutter.dart'; //QR Code Generator
 import 'package:mobile_scanner/mobile_scanner.dart'; //QR Code Scanner
+import 'package:flutter_profile_picture/flutter_profile_picture.dart'; //Flutter Profile Pictures
 
 // Firebase Libraries
 import 'package:firebase_core/firebase_core.dart'; // Firebase Main

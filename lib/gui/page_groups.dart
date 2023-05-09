@@ -89,11 +89,11 @@ class _GroupsPageState extends State<GroupsPage> {
                             onPressed: () async {
                               AlertJoinGroup();
                             },
-                            child: const Text('Join a class',
+                            child: const Text('Scan QR Code',
                                 style: TextStyle(
-                                  color: Color.fromRGBO(235, 235, 235, 0.8),
+                                  color: Color.fromRGBO(235, 235, 235, 0.6),
                                   decoration: TextDecoration.underline,
-                                  decorationColor: Colors.white,
+                                  decorationColor: Color.fromRGBO(235, 235, 235, 0.6),
                                 )),
                           ),
                       ]
@@ -168,7 +168,7 @@ class _GroupsPageState extends State<GroupsPage> {
                 color: Colors.white,
               ),
               backgroundColor: Colors.black,
-              title: const Text('Join a class',
+              title: const Text('Scan QR Code',
                 style: TextStyle(
                   fontFamily: 'SF-Pro',
                   fontWeight: FontWeight.w700,
@@ -240,6 +240,10 @@ class _GroupsPageState extends State<GroupsPage> {
       ref2.update({
         groupID: true,
       });
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text(
+            "Successfully added to group!"),
+      ));
     } else {
       showDialog(
           context: context,
