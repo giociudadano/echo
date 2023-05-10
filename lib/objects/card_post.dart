@@ -536,7 +536,7 @@ class _FormEditPostState extends State<FormEditPost> {
       _inputCardTitle.text = widget.title;
       _inputCardContent.text = widget.content;
       _inputCardTimeStart.text = widget.timeStart;
-      emojiSelected = Emoji.fromJson(widget.emojiData as Map<String, dynamic>);
+      emojiSelected = Emoji.fromJson(Map<String, dynamic>.from(widget.emojiData));
     });
   }
 

@@ -20,10 +20,12 @@ import 'package:image_picker/image_picker.dart'; //Image Picker
 import 'package:firebase_core/firebase_core.dart'; // Firebase Main
 import 'package:firebase_auth/firebase_auth.dart'; // Authentication
 import 'package:firebase_database/firebase_database.dart'; // Read and Write
+import 'package:firebase_storage/firebase_storage.dart'; //Image Picker
 import 'package:bullet/firebase_options.dart';
 
 // Miscellaneous Libraries
 import 'package:intl/intl.dart';
+import 'package:universal_io/io.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 

@@ -1,7 +1,6 @@
 part of main;
 
 class ProfilePage extends StatefulWidget {
-
   ProfilePage({super.key});
 
   @override
@@ -12,6 +11,7 @@ class _ProfilePageState extends State<ProfilePage> {
   bool hasProfilePicture = false;
   String UID = getUID();
   String username = '';
+  String? profilePicturePath = null;
 
   @override
   void initState() {
@@ -20,10 +20,11 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void getHasProfilePicture() async {
-    DatabaseReference ref = FirebaseDatabase.instance.ref("Users/$UID/profilePicture");
+    DatabaseReference ref =
+        FirebaseDatabase.instance.ref("Users/$UID/profilePicture");
     ref.onChildChanged.listen((event) async {
-      if (event.snapshot != null){
-        setState((){
+      if (event.snapshot != null) {
+        setState(() {
           hasProfilePicture = true;
         });
       }
@@ -31,8 +32,9 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void getUsername() async {
-    DataSnapshot snapshot = await (FirebaseDatabase.instance.ref("Users/$UID/username")).get();
-    setState((){
+    DataSnapshot snapshot =
+        await (FirebaseDatabase.instance.ref("Users/$UID/username")).get();
+    setState(() {
       username = snapshot.value.toString();
     });
   }
@@ -50,176 +52,230 @@ class _ProfilePageState extends State<ProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 20),
-                              GestureDetector(
-                                onTap: (){
-                                  AlertUpdateProfilePicture();
-                                },
-                                child: hasProfilePicture ? SizedBox.shrink() : ProfilePicture(
-                                  name: username,
-                                  radius: 50,
-                                  fontsize: 21,
-                                ),
-                              ),
-                              SizedBox(height: 20),
-                              Text("$username",
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(245, 245, 245, 1),
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 20,
-                                  )
-                              ),
-                              SizedBox(height: 20),
-                              ElevatedButton(
-                              style: ButtonStyle(
-                                  minimumSize: MaterialStatePropertyAll<Size>(Size.fromHeight(40)),
-                                  backgroundColor: MaterialStatePropertyAll<Color>(Colors.black),
-                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8.0),
-                                      )
-                                  )
-                              ),
-                              onPressed: () {
-                                _logoutUser(context);
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 10),
-                                child: Text('Log Out',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(235, 235, 235, 0.8),
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
+                    GestureDetector(
+                      onTap: () {
+                        AlertUpdateProfilePicture();
+                      },
+                      child: hasProfilePicture
+                          ? SizedBox.shrink()
+                          : ProfilePicture(
+                              name: username,
+                              radius: 50,
+                              fontsize: 21,
                             ),
+                    ),
+                    SizedBox(height: 20),
+                    Text("$username",
+                        style: TextStyle(
+                          color: Color.fromRGBO(245, 245, 245, 1),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                        )),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                          minimumSize: MaterialStatePropertyAll<Size>(
+                              Size.fromHeight(40)),
+                          backgroundColor:
+                              MaterialStatePropertyAll<Color>(Colors.black),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ))),
+                      onPressed: () {
+                        _logoutUser(context);
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: Text(
+                          'Log Out',
+                          style: TextStyle(
+                            color: Color.fromRGBO(235, 235, 235, 0.8),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ))),
       ),
     );
   }
 
-  void AlertUpdateProfilePicture(){
+  void AlertUpdateProfilePicture() {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            icon: Icon(Icons.account_circle_outlined, color: Color.fromRGBO(98, 112, 242, 1), size: 32),
-            backgroundColor: Color.fromRGBO(32, 35, 43, 1),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            title: Text("Update Profile Picture",
-              style: TextStyle(
-                color: Color.fromRGBO(245, 245, 245, 1),
-                fontWeight: FontWeight.w700,
-                fontSize: 16,
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              icon: Icon(Icons.account_circle_outlined,
+                  color: Color.fromRGBO(98, 112, 242, 1), size: 32),
+              backgroundColor: Color.fromRGBO(32, 35, 43, 1),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
+              title: Text(
+                "Update Profile Picture",
+                style: TextStyle(
+                  color: Color.fromRGBO(245, 245, 245, 1),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                ),
+              ),
+              content: Column(mainAxisSize: MainAxisSize.min, children: [
+                Text(
+                  "PREVIEW",
+                  style: TextStyle(
+                    color: Color.fromRGBO(245, 245, 245, 0.6),
+                    fontSize: 11,
+                    letterSpacing: 2.5,
+                  ),
+                ),
+                SizedBox(height: 10),
+                (profilePicturePath == null) ? ProfilePicture(
+                  name: username,
+                  radius: 40,
+                  fontsize: 21,
+                ) : ClipRRect(
+                    borderRadius: BorderRadius.circular(40),
+                    child: Image.file(File(profilePicturePath!),
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.cover,
+                    )
+                ),
+                SizedBox(height: 20),
+                Text(
+                  "SELECT SOURCE",
+                  style: TextStyle(
+                    color: Color.fromRGBO(245, 245, 245, 0.6),
+                    fontSize: 11,
+                    letterSpacing: 2.5,
+                  ),
+                ),
+                SizedBox(height: 10),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(
-                      children: [
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Column(children: [
                         Container(
-                          decoration: BoxDecoration(
-                            color: Color.fromRGBO(34, 50, 69, 1),
-                            border: Border.all(
-                              color: Colors.transparent,
+                            decoration: BoxDecoration(
+                                color: Color.fromRGBO(34, 50, 69, 1),
+                                border: Border.all(
+                                  color: Colors.transparent,
+                                ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12))),
+                            height: 70,
+                            width: 70,
+                            child: IconButton(
+                                icon: Icon(Icons.photo_library),
+                                color: Color.fromRGBO(235, 235, 235, 0.8),
+                                onPressed: () async {
+                                  ImagePicker imagePicker = ImagePicker();
+                                  XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
+                                  setState(() {
+                                    if (file != null) {
+                                      profilePicturePath = '${file?.path}';
+                                    }
+                                  });
+                                  print('[DEBUG]: ${file?.path}');
+                                },
                             ),
-                            borderRadius: BorderRadius.all(Radius.circular(12))
-                          ),
-                          height: 70,
-                          width: 70,
-                          child: IconButton(
-                            icon: Icon(Icons.photo_library),
-                            color: Color.fromRGBO(235, 235, 235, 0.8),
-                            onPressed: () {
-                              print("Clicked Button: Upload from Gallery");
-                            }
-                          )
-                        ),
-                        Text("Gallery", style: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.8)))
-                      ]
-                    ),
-                    SizedBox(width: 20),
-                    Column(
-                        children: [
-                          Container(
-                              decoration: BoxDecoration(
-                                  color: Color.fromRGBO(34, 50, 69, 1),
-                                  border: Border.all(
-                                    color: Colors.transparent,
-                                  ),
-                                  borderRadius: BorderRadius.all(Radius.circular(12))
-                              ),
-                              height: 70,
-                              width: 70,
-                              child: IconButton(
-                                  icon: Icon(Icons.photo_camera),
-                                  color: Color.fromRGBO(235, 235, 235, 0.8),
-                                  onPressed: () {
-                                    print("Clicked Button: Upload from Camera");
-                                  }
-                              )
-                          ),
-                          Text("Camera", style: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.8)))
-                        ]
-                    ),
-                  ]
-                )
-              ]
-            ),
-            actions: [
+                            ),
+                        Text("Gallery",
+                            style: TextStyle(
+                                color: Color.fromRGBO(235, 235, 235, 0.8)))
+                      ]),
+                      SizedBox(width: 20),
+                      Column(children: [
+                        Container(
+                            decoration: BoxDecoration(
+                                color: Color.fromRGBO(34, 50, 69, 1),
+                                border: Border.all(
+                                  color: Colors.transparent,
+                                ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12))),
+                            height: 70,
+                            width: 70,
+                            child: IconButton(
+                                icon: Icon(Icons.photo_camera),
+                                color: Color.fromRGBO(235, 235, 235, 0.8),
+                                onPressed: () async {
+                                  ImagePicker imagePicker = ImagePicker();
+                                  XFile? file = await imagePicker.pickImage(
+                                      source: ImageSource.camera);
+                                  setState(() {
+                                    if (file != null) {
+                                      profilePicturePath = '${file?.path}';
+                                    }
+                                  });
+                                  print('[DEBUG]: ${file?.path}');
+                                })),
+                        Text("Camera",
+                            style: TextStyle(
+                                color: Color.fromRGBO(235, 235, 235, 0.8)))
+                      ]),
+                    ])
+              ]),
+              actions: [
                 ElevatedButton(
                   style: ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+                    backgroundColor:
+                        MaterialStatePropertyAll<Color>(Colors.transparent),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          side: BorderSide(color: Color.fromRGBO(245, 245, 245, 0.8), width: 1.5),
-                        )
-                    ),
+                      borderRadius: BorderRadius.circular(8.0),
+                      side: BorderSide(
+                          color: Color.fromRGBO(245, 245, 245, 0.8),
+                          width: 1.5),
+                    )),
                   ),
-                  onPressed: (){
+                  onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text("Cancel", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+                  child: Text("Cancel",
+                      style:
+                          TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
                 ),
                 ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: MaterialStatePropertyAll<Color>(
-                        Color.fromRGBO(92, 112, 242, 1)
-                    ),
+                        Color.fromRGBO(92, 112, 242, 1)),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        )
-                    ),
+                      borderRadius: BorderRadius.circular(8.0),
+                    )),
                   ),
-                  onPressed: (){
+                  onPressed: () {
+                    if (profilePicturePath != null) {
+                      Reference ref = FirebaseStorage.instance.ref('ProfilePics/$UID');
+                      ref.putFile(File(profilePicturePath!));
+                    }
                     Navigator.of(context).pop();
                   },
-                  child: Text("Save Picture", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+                  child: Text("Save Picture",
+                      style:
+                          TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
                 ),
               ],
-          );
-        }
-    );
+            );
+          });
+        });
   }
 }
 
-  void _logoutUser(BuildContext context) async {
-    try {
-      await FirebaseAuth.instance.signOut();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text(
-            "There was an error logging out your account. Please try again later."),
-      ));
-      return;
-    }
+void _logoutUser(BuildContext context) async {
+  try {
+    await FirebaseAuth.instance.signOut();
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text(
+          "There was an error logging out your account. Please try again later."),
+    ));
+    return;
   }
+}

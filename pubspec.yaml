@@ -22,6 +22,8 @@ dependencies:
   mobile_scanner: ^3.2.0
   flutter_profile_picture: ^2.0.0
   image_picker: ^0.8.7+4
+  firebase_storage: ^11.1.2
+  universal_io: ^2.2.0
 
 dev_dependencies:
   flutter_test:
