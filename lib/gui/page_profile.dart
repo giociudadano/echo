@@ -11,7 +11,8 @@ class _ProfilePageState extends State<ProfilePage> {
   bool hasProfilePicture = false;
   String UID = getUID();
   String username = '';
-  String? profilePicturePath = null;
+  String? profilePicturePath;
+  String profilePictureURL = '';
 
   @override
   void initState() {
@@ -20,14 +21,18 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void getHasProfilePicture() async {
-    DatabaseReference ref =
-        FirebaseDatabase.instance.ref("Users/$UID/profilePicture");
-    ref.onChildChanged.listen((event) async {
-      if (event.snapshot != null) {
-        setState(() {
-          hasProfilePicture = true;
-        });
+    DatabaseReference ref = FirebaseDatabase.instance.ref("Users/$UID/profilePicture");
+    DataSnapshot snapshot = await ref.get();
+    setState((){
+      hasProfilePicture = (snapshot.value != null);
+      if (hasProfilePicture){
+        profilePictureURL = snapshot.child("url").value.toString();
       }
+    });
+    ref.onChildChanged.listen((event){
+      setState((){
+        debugPrint('Fetched file: ${event.snapshot.child('url').value.toString()}');
+      });
     });
   }
 
@@ -56,31 +61,36 @@ class _ProfilePageState extends State<ProfilePage> {
                       onTap: () {
                         AlertUpdateProfilePicture();
                       },
-                      child: hasProfilePicture
-                          ? SizedBox.shrink()
+                      child: (hasProfilePicture) ?
+                            ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: Image.network(profilePictureURL,
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                )
+                            )
                           : ProfilePicture(
                               name: username,
                               radius: 50,
                               fontsize: 21,
-                            ),
-                    ),
+                            )
+                      ),
                     SizedBox(height: 20),
                     Text("$username",
-                        style: TextStyle(
-                          color: Color.fromRGBO(245, 245, 245, 1),
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20,
-                        )),
+                      style: TextStyle(
+                        color: Color.fromRGBO(245, 245, 245, 1),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
+                      )
+                    ),
                     SizedBox(height: 20),
                     ElevatedButton(
                       style: ButtonStyle(
-                          minimumSize: MaterialStatePropertyAll<Size>(
-                              Size.fromHeight(40)),
-                          backgroundColor:
-                              MaterialStatePropertyAll<Color>(Colors.black),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
+                      minimumSize: MaterialStatePropertyAll<Size>(Size.fromHeight(40)),
+                      backgroundColor: MaterialStatePropertyAll<Color>(Colors.black),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ))),
                       onPressed: () {
@@ -133,10 +143,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
                 SizedBox(height: 10),
-                (profilePicturePath == null) ? ProfilePicture(
+                (profilePicturePath == null) ?
+                ProfilePicture(
                   name: username,
                   radius: 40,
                   fontsize: 21,
+                  img: hasProfilePicture ? profilePictureURL : null,
                 ) : ClipRRect(
                     borderRadius: BorderRadius.circular(40),
                     child: Image.file(File(profilePicturePath!),
@@ -181,7 +193,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                       profilePicturePath = '${file?.path}';
                                     }
                                   });
-                                  print('[DEBUG]: ${file?.path}');
                                 },
                             ),
                             ),
@@ -235,6 +246,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     )),
                   ),
                   onPressed: () {
+                    setState((){
+                      profilePicturePath = null;
+                    });
                     Navigator.of(context).pop();
                   },
                   child: Text("Cancel",
@@ -250,10 +264,22 @@ class _ProfilePageState extends State<ProfilePage> {
                       borderRadius: BorderRadius.circular(8.0),
                     )),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     if (profilePicturePath != null) {
                       Reference ref = FirebaseStorage.instance.ref('ProfilePics/$UID');
                       ref.putFile(File(profilePicturePath!));
+                      DatabaseReference ref2 = FirebaseDatabase.instance.ref("Users/$UID/profilePicture");
+                      String downloadURL = await ref.getDownloadURL();
+                      setState((){
+                        debugPrint('Uploaded file: $downloadURL');
+                        profilePictureURL = downloadURL;
+                        hasProfilePicture = true;
+                        profilePicturePath = null;
+                      });
+                      ref2.update({
+                        'url': downloadURL,
+                        'timestamp': DateTime.now().millisecondsSinceEpoch
+                      });
                     }
                     Navigator.of(context).pop();
                   },
