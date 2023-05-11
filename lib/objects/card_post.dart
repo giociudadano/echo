@@ -5,17 +5,21 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class CardPost extends StatefulWidget {
-  String postID, title, content, userID, username, timeStart, emojiLink;
+  String postID, title, content, userID, timeStart, emojiLink;
+  String username = '';
+  var profilePicture;
   List groups;
   Map emojiData;
+  bool isDoneBuilding = false;
 
   CardPost(
       this.postID, this.title, this.content,
-      this.userID, this.username, this.timeStart,
+      this.userID, this.timeStart,
       this.groups, this.emojiData, this.emojiLink){
   }
 
@@ -31,6 +35,8 @@ class _CardPostState extends State<CardPost> {
 
   @override
   void initState(){
+    getUsername();
+    getProfilePicture();
     getPostDoneState(widget.userID, widget.postID);
     isCardAuthor(widget.postID);
     DatabaseReference ref = FirebaseDatabase.instance.ref('Posts/${widget.postID}');
@@ -56,6 +62,27 @@ class _CardPostState extends State<CardPost> {
       });
     });
     */
+  }
+
+  void getUsername() async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("Users/${widget.userID}/username");
+    DataSnapshot snapshot = await ref.get();
+    if (mounted){
+      setState(() {
+        widget.username = snapshot.value.toString();
+      });
+    }
+  }
+
+  void getProfilePicture() async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("Users/${widget.userID}/profilePicture/url");
+    DataSnapshot snapshot = await ref.get();
+    if (mounted){
+      setState(() {
+        widget.profilePicture = snapshot.value.toString();
+        widget.isDoneBuilding = true;
+      });
+    }
   }
 
   void getPostDoneState(String userID, String postID) async {
@@ -150,10 +177,11 @@ class _CardPostState extends State<CardPost> {
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 7),
                                   Row(
                                     children: [
                                       const Icon(Icons.calendar_month_outlined,
+                                          size: 12,
                                           color: Color.fromRGBO(245, 245, 245, 0.8)),
                                       const SizedBox(width: 5),
                                       Text(
@@ -171,14 +199,32 @@ class _CardPostState extends State<CardPost> {
                             ),
                             Positioned(
                               top: 98,
-                              child: Text(
-                                "by ${widget.username}",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 13,
-                                  color: Color.fromRGBO(245, 245, 245, 0.6),
-                                ),
-                              ),
+                              child: widget.isDoneBuilding ? Row(
+                                  children: [
+                                    Text("by",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 13,
+                                          color: Color.fromRGBO(235, 235, 235, 0.6),
+                                        )
+                                    ),
+                                    SizedBox(width: 5),
+                                    ProfilePicture(
+                                      name: widget.username,
+                                      radius: 10,
+                                      fontsize: 6,
+                                      img: widget.profilePicture,
+                                    ),
+                                    SizedBox(width: 5),
+                                    Text("${widget.username}",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 13,
+                                          color: Color.fromRGBO(235, 235, 235, 0.6),
+                                        )
+                                    )
+                                  ]
+                              ) : SizedBox.shrink()
                             ),
                           ],
                         ),

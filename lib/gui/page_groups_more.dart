@@ -643,7 +643,6 @@ class WidgetGroupsMorePostsBuilderState extends State<WidgetGroupsMorePostsBuild
                             posts[i].title,
                             posts[i].content,
                             posts[i].userID,
-                            posts[i].username,
                             posts[i].timeStart,
                             posts[i].groups,
                             posts[i].emojiData,

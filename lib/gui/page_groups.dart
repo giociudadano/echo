@@ -1,9 +1,9 @@
 part of main;
 
 class Group {
-  String groupID, groupName, groupDesc, adminName;
+  String groupID, groupName, groupDesc, adminID;
 
-  Group(this.groupID, this.groupName, this.groupDesc, this.adminName);
+  Group(this.groupID, this.groupName, this.groupDesc, this.adminID);
 }
 
 class GroupsPage extends StatefulWidget {
@@ -142,12 +142,8 @@ class _GroupsPageState extends State<GroupsPage> {
       DatabaseReference ref2 = FirebaseDatabase.instance.ref("Groups/$groupID");
       DataSnapshot snapshot = await ref2.get();
       Map groupMetadata = snapshot.value as Map;
-      DatabaseReference ref3 = FirebaseDatabase.instance
-        .ref("Users/${groupMetadata['admin']}/username");
-      DataSnapshot snapshot2 = await ref3.get();
-      var username = snapshot2.value;
       groups.add(Group("$groupID", "${groupMetadata['name']}",
-        "${groupMetadata['description']}", "$username"));
+        "${groupMetadata['description']}", "${groupMetadata['admin']}"));
       if (mounted) {
         setState(() {
           isDoneBuilding = true;
@@ -559,7 +555,7 @@ class WidgetGroupsBuilderState extends State<WidgetGroupsBuilder> {
           }
           if (isPrint) {
             return CardGroup(group.groupID, group.groupName, group.groupDesc,
-                group.adminName);
+                group.adminID);
           } else {
             return const SizedBox.shrink();
           }

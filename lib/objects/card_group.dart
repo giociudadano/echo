@@ -1,8 +1,10 @@
 part of main;
 
 class CardGroup extends StatefulWidget {
-  var id, name, desc, admin;
-  CardGroup(this.id, this.name, this.desc, this.admin);
+  var groupID, name, desc, adminID, adminUsername = '', adminProfilePicture;
+  bool isDoneBuilding = false;
+  CardGroup(this.groupID, this.name, this.desc, this.adminID) {
+  }
 
   @override
   State<CardGroup> createState() => _CardGroupState();
@@ -10,6 +12,33 @@ class CardGroup extends StatefulWidget {
 
 class _CardGroupState extends State<CardGroup> {
 
+  @override
+  void initState() {
+    super.initState();
+    getUsername();
+    getProfilePicture();
+  }
+
+  void getUsername() async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("Users/${widget.adminID}/username");
+    DataSnapshot snapshot = await ref.get();
+    if (mounted){
+      setState(() {
+        widget.adminUsername = snapshot.value.toString();
+      });
+    }
+  }
+
+  void getProfilePicture() async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("Users/${widget.adminID}/profilePicture/url");
+    DataSnapshot snapshot = await ref.get();
+    if (mounted){
+      setState(() {
+        widget.adminProfilePicture = snapshot.value.toString();
+        widget.isDoneBuilding = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,14 +93,32 @@ class _CardGroupState extends State<CardGroup> {
                           ),
                           Positioned(
                             top: 58,
-                            child: Text(
-                              "by ${widget.admin}",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 13,
-                                color: Color.fromRGBO(235, 235, 235, 0.6),
-                              ),
-                            ),
+                            child: widget.isDoneBuilding ? Row(
+                              children: [
+                                Text("by",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 13,
+                                    color: Color.fromRGBO(235, 235, 235, 0.6),
+                                  )
+                                ),
+                                SizedBox(width: 5),
+                                ProfilePicture(
+                                  name: widget.adminUsername,
+                                  radius: 10,
+                                  fontsize: 6,
+                                  img: widget.adminProfilePicture,
+                                ),
+                                SizedBox(width: 5),
+                                Text("${widget.adminUsername}",
+                                  style: const TextStyle(
+                                     fontWeight: FontWeight.w400,
+                                     fontSize: 13,
+                                     color: Color.fromRGBO(235, 235, 235, 0.6),
+                                  )
+                                )
+                              ]
+                            ) : SizedBox.shrink()
                           ),
                         ],
                       ),
@@ -84,7 +131,7 @@ class _CardGroupState extends State<CardGroup> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => GroupsMorePage("${widget.id}","${widget.name}", "${widget.desc}")),
+                              MaterialPageRoute(builder: (context) => GroupsMorePage("${widget.groupID}","${widget.name}", "${widget.desc}")),
                             );
                           },
                         )

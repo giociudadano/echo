@@ -327,7 +327,6 @@ class WidgetDashboardPostsBuilderState extends State<WidgetDashboardPostsBuilder
                                 posts[i].title,
                                 posts[i].content,
                                 posts[i].userID,
-                                posts[i].username,
                                 posts[i].timeStart,
                                 posts[i].groups,
                                 posts[i].emojiData,

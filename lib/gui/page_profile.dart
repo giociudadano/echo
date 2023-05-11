@@ -16,6 +16,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
+    super.initState();
     getHasProfilePicture();
     getUsername();
   }
@@ -28,11 +29,6 @@ class _ProfilePageState extends State<ProfilePage> {
       if (hasProfilePicture){
         profilePictureURL = snapshot.child("url").value.toString();
       }
-    });
-    ref.onChildChanged.listen((event){
-      setState((){
-        debugPrint('Fetched file: ${event.snapshot.child('url').value.toString()}');
-      });
     });
   }
 
@@ -265,22 +261,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     )),
                   ),
                   onPressed: () async {
-                    if (profilePicturePath != null) {
-                      Reference ref = FirebaseStorage.instance.ref('ProfilePics/$UID');
-                      ref.putFile(File(profilePicturePath!));
-                      DatabaseReference ref2 = FirebaseDatabase.instance.ref("Users/$UID/profilePicture");
-                      String downloadURL = await ref.getDownloadURL();
-                      setState((){
-                        debugPrint('Uploaded file: $downloadURL');
-                        profilePictureURL = downloadURL;
-                        hasProfilePicture = true;
-                        profilePicturePath = null;
-                      });
-                      ref2.update({
-                        'url': downloadURL,
-                        'timestamp': DateTime.now().millisecondsSinceEpoch
-                      });
-                    }
+                    await changeProfilePicture();
                     Navigator.of(context).pop();
                   },
                   child: Text("Save Picture",
@@ -291,6 +272,28 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           });
         });
+  }
+
+  changeProfilePicture() async {
+    if (profilePicturePath != null) {
+      Reference ref = FirebaseStorage.instance.ref('ProfilePics/$UID');
+      ref.putFile(File(profilePicturePath!));
+      DatabaseReference ref2 = FirebaseDatabase.instance.ref("Users/$UID/profilePicture");
+      String downloadURL = await ref.getDownloadURL();
+      ref2.update({
+        'url': downloadURL,
+        'timestamp': DateTime.now().millisecondsSinceEpoch
+      });
+      if (mounted){
+        setState((){
+          debugPrint('Uploaded file: $downloadURL');
+          profilePictureURL = downloadURL;
+          hasProfilePicture = true;
+          profilePicturePath = null;
+        });
+      }
+    }
+    return;
   }
 }
 
