@@ -8,7 +8,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  bool hasProfilePicture = false;
+  bool hasProfilePicture = false, toRemoveProfilePicture = false;
   String UID = getUID();
   String username = '';
   String? profilePicturePath;
@@ -144,7 +144,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   name: username,
                   radius: 40,
                   fontsize: 21,
-                  img: hasProfilePicture ? profilePictureURL : null,
+                  img: (hasProfilePicture && !toRemoveProfilePicture) ? profilePictureURL : null,
                 ) : ClipRRect(
                     borderRadius: BorderRadius.circular(40),
                     child: Image.file(File(profilePicturePath!),
@@ -179,7 +179,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             height: 70,
                             width: 70,
                             child: IconButton(
-                                icon: Icon(Icons.photo_library),
+                                icon: Icon(Icons.photo_library_outlined),
                                 color: Color.fromRGBO(235, 235, 235, 0.8),
                                 onPressed: () async {
                                   ImagePicker imagePicker = ImagePicker();
@@ -196,7 +196,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             style: TextStyle(
                                 color: Color.fromRGBO(235, 235, 235, 0.8)))
                       ]),
-                      SizedBox(width: 20),
+                      SizedBox(width: 10),
                       Column(children: [
                         Container(
                             decoration: BoxDecoration(
@@ -209,7 +209,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             height: 70,
                             width: 70,
                             child: IconButton(
-                                icon: Icon(Icons.photo_camera),
+                                icon: Icon(Icons.photo_camera_outlined),
                                 color: Color.fromRGBO(235, 235, 235, 0.8),
                                 onPressed: () async {
                                   ImagePicker imagePicker = ImagePicker();
@@ -223,6 +223,31 @@ class _ProfilePageState extends State<ProfilePage> {
                                   print('[DEBUG]: ${file?.path}');
                                 })),
                         Text("Camera",
+                            style: TextStyle(
+                                color: Color.fromRGBO(235, 235, 235, 0.8)))
+                      ]),
+                      SizedBox(width: 10),
+                      Column(children: [
+                        Container(
+                            decoration: BoxDecoration(
+                                color: Color.fromRGBO(34, 50, 69, 1),
+                                border: Border.all(
+                                  color: Colors.transparent,
+                                ),
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(12))),
+                            height: 70,
+                            width: 70,
+                            child: IconButton(
+                                icon: Icon(Icons.close_outlined),
+                                color: Color.fromRGBO(235, 235, 235, 0.8),
+                                onPressed: () async {
+                                  setState((){
+                                    profilePicturePath = null;
+                                    toRemoveProfilePicture = true;
+                                  });
+                                })),
+                        Text("Remove",
                             style: TextStyle(
                                 color: Color.fromRGBO(235, 235, 235, 0.8)))
                       ]),
@@ -244,6 +269,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   onPressed: () {
                     setState((){
                       profilePicturePath = null;
+                      toRemoveProfilePicture = false;
                     });
                     Navigator.of(context).pop();
                   },
@@ -275,6 +301,17 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   changeProfilePicture() async {
+    if (toRemoveProfilePicture){
+      DatabaseReference ref = FirebaseDatabase.instance.ref("Users/$UID/profilePicture");
+      ref.remove();
+      if (mounted){
+        setState((){
+          hasProfilePicture = false;
+          profilePicturePath = null;
+        });
+      }
+      return;
+    }
     if (profilePicturePath != null) {
       Reference ref = FirebaseStorage.instance.ref('ProfilePics/$UID');
       ref.putFile(File(profilePicturePath!));

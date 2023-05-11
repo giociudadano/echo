@@ -32,6 +32,10 @@ class _CardGroupState extends State<CardGroup> {
   void getProfilePicture() async {
     DatabaseReference ref = FirebaseDatabase.instance.ref("Users/${widget.adminID}/profilePicture/url");
     DataSnapshot snapshot = await ref.get();
+    if (snapshot.value == null){
+      widget.adminProfilePicture = null;
+      return;
+    }
     if (mounted){
       setState(() {
         widget.adminProfilePicture = snapshot.value.toString();
@@ -42,6 +46,11 @@ class _CardGroupState extends State<CardGroup> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.adminUsername != ''){
+      setState((){
+        widget.isDoneBuilding = true;
+      });
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Card(

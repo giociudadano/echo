@@ -77,10 +77,13 @@ class _CardPostState extends State<CardPost> {
   void getProfilePicture() async {
     DatabaseReference ref = FirebaseDatabase.instance.ref("Users/${widget.userID}/profilePicture/url");
     DataSnapshot snapshot = await ref.get();
+    if (snapshot.value == null){
+      widget.profilePicture = null;
+      return;
+    }
     if (mounted){
       setState(() {
         widget.profilePicture = snapshot.value.toString();
-        widget.isDoneBuilding = true;
       });
     }
   }
@@ -102,6 +105,11 @@ class _CardPostState extends State<CardPost> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.username != ''){
+      setState((){
+        widget.isDoneBuilding = true;
+      });
+    }
     return !isVisible ? SizedBox.shrink() : GestureDetector(
       onTap: () {
         setState((){
