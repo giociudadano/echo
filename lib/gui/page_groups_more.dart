@@ -30,6 +30,13 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+          appBar: AppBar(
+              toolbarHeight: 0,
+              systemOverlayStyle: SystemUiOverlayStyle(
+                systemNavigationBarColor: Color.fromRGBO(32, 35, 43, 1), // Navigation bar
+                statusBarColor: Colors.black,
+              )
+          ),
           backgroundColor: const Color.fromRGBO(32, 35, 43, 1),
           body: SafeArea(
             child: Column(
@@ -59,7 +66,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                                       "${widget.groupName}",
                                       style: TextStyle(
                                           color: Colors.white,
-                                          fontSize: 24,
+                                          fontSize: 20,
                                           fontWeight: FontWeight.w700),
                                     ),
                                     Positioned(
@@ -67,7 +74,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                                       child: Text(
                                         "${widget.groupDesc}",
                                         style: TextStyle(
-                                            color: Colors.white,
+                                            color: Color.fromRGBO(235, 235, 235, 0.8),
                                             fontSize: 14,
                                             fontWeight: FontWeight.w400),
                                       ),

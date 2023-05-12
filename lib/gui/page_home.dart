@@ -15,6 +15,13 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 0,
+          systemOverlayStyle: SystemUiOverlayStyle(
+          systemNavigationBarColor: Colors.black, // Navigation bar
+          statusBarColor: Colors.black,
+        )
+        ),
         backgroundColor: const Color.fromRGBO(32, 35, 43, 1),
         body: SafeArea(
           child: Center(

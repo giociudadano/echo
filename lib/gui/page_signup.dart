@@ -238,6 +238,7 @@ class SignupPage extends StatelessWidget {
         DatabaseReference ref = FirebaseDatabase.instance.ref("Users/$userID");
         ref.update({
           "username": _generateUsername(username),
+          "displayName": username,
         });
       }
     });

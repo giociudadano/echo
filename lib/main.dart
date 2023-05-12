@@ -8,6 +8,7 @@ import 'dart:ui';
 // Flutter Libraries
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart'; // Material Design
+import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart'; // Date and Time Picker Widget
 import 'package:multi_select_flutter/multi_select_flutter.dart'; // Item Selector
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart'; // Emoji Picker
@@ -40,6 +41,7 @@ part 'gui/page_groups.dart';
 part 'gui/page_home.dart';
 part 'gui/page_profile.dart';
 part 'gui/page_groups_more.dart';
+part 'gui/page_profile_edit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -40,6 +40,13 @@ class _GroupsPageState extends State<GroupsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+          appBar: AppBar(
+              toolbarHeight: 0,
+              systemOverlayStyle: SystemUiOverlayStyle(
+                systemNavigationBarColor: Colors.black, // Navigation bar
+                statusBarColor: Colors.black,
+              )
+          ),
           backgroundColor: const Color.fromRGBO(32, 35, 43, 1),
           body: SafeArea(
             child: Center(
@@ -75,39 +82,36 @@ class _GroupsPageState extends State<GroupsPage> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(22, 0, 22, 0),
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  TextButton(
+                                    onPressed: () async {
+                                      AlertJoinGroup();
+                                    },
+                                    child: Row(
+                                        children: [
+                                          Icon(Icons.qr_code_scanner, size: 15, color: Color.fromRGBO(235, 235, 235, 0.6)),
+                                          SizedBox(width: 5),
+                                          Text('Scan QR Code',
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: Color.fromRGBO(235, 235, 235, 0.6),
+                                              decoration: TextDecoration.underline,
+                                              decorationColor: Color.fromRGBO(235, 235, 235, 0.6),
+                                            ),
+                                          )
+                                        ]
+                                    ),
+                                  ),
+                                ]
+                            )
+                        ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 3),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(22, 0, 22, 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                            onPressed: () async {
-                              AlertJoinGroup();
-                            },
-                            child: Row(
-                              children: [
-                                Icon(Icons.qr_code_scanner, size: 15, color: Color.fromRGBO(235, 235, 235, 0.6)),
-                                SizedBox(width: 5),
-                                Text('Scan QR Code',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color: Color.fromRGBO(235, 235, 235, 0.6),
-                                      decoration: TextDecoration.underline,
-                                      decorationColor: Color.fromRGBO(235, 235, 235, 0.6),
-                                    ),
-                                )
-                              ]
-                            ),
-                          ),
-                      ]
-                    )
-                  ),
-                  const SizedBox(height: 3),
                   Expanded(
                     child: groups.length == 0 ? SizedBox.shrink() : isDoneBuilding
                         ? WidgetGroupsBuilder(groups, inputSearch)
