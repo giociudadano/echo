@@ -79,7 +79,7 @@ class _GroupsPageState extends State<GroupsPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 3),
                   Padding(
                     padding: EdgeInsets.fromLTRB(22, 0, 22, 0),
                     child: Row(
@@ -91,10 +91,11 @@ class _GroupsPageState extends State<GroupsPage> {
                             },
                             child: Row(
                               children: [
-                                Icon(Icons.qr_code_scanner, size: 16, color: Color.fromRGBO(235, 235, 235, 0.6)),
-                                SizedBox(width: 10),
+                                Icon(Icons.qr_code_scanner, size: 15, color: Color.fromRGBO(235, 235, 235, 0.6)),
+                                SizedBox(width: 5),
                                 Text('Scan QR Code',
                                     style: TextStyle(
+                                      fontSize: 13,
                                       color: Color.fromRGBO(235, 235, 235, 0.6),
                                       decoration: TextDecoration.underline,
                                       decorationColor: Color.fromRGBO(235, 235, 235, 0.6),
@@ -106,7 +107,7 @@ class _GroupsPageState extends State<GroupsPage> {
                       ]
                     )
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 3),
                   Expanded(
                     child: groups.length == 0 ? SizedBox.shrink() : isDoneBuilding
                         ? WidgetGroupsBuilder(groups, inputSearch)

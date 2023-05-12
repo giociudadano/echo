@@ -52,57 +52,133 @@ class _ProfilePageState extends State<ProfilePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 20),
-                    GestureDetector(
-                      onTap: () {
-                        AlertUpdateProfilePicture();
-                      },
-                      child: (hasProfilePicture) ?
-                            ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: Image.network(profilePictureURL,
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.cover,
+                    Card(
+                      color: Color.fromRGBO(22, 22, 22, 1),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            AlertUpdateProfilePicture();
+                          },
+                          child: Stack(
+                              children: [(hasProfilePicture) ?
+                                ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: Image.network(profilePictureURL,
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                    )
                                 )
-                            )
-                          : ProfilePicture(
-                              name: username,
-                              radius: 50,
-                              fontsize: 21,
-                            )
-                      ),
-                    SizedBox(height: 20),
-                    Text("$username",
-                      style: TextStyle(
-                        color: Color.fromRGBO(245, 245, 245, 1),
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20,
+                              : ProfilePicture(
+                                  name: username,
+                                  radius: 50,
+                                  fontsize: 21,
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: Container(
+                                    width: 35,
+                                    height: 35,
+                                    decoration: BoxDecoration(
+                                      color: Color.fromRGBO(25, 25, 32, 1),
+                                      shape: BoxShape.circle,
+                                    ),
+                                  )
+                                ),
+                                Positioned(
+                                    bottom: 7,
+                                    right: 7,
+                                    child: Container(
+                                      width: 22,
+                                      height: 22,
+                                      decoration: BoxDecoration(
+                                        color: Colors.green,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    )
+                                )
+                              ]
+                            ),
+                        ),
+                        SizedBox(width: 25),
+                        Expanded(
+                          child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children:[
+
+                            Stack(
+                              clipBehavior: Clip.none,
+                              children:[
+                                Text("Aaron Aardvark",
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(245, 245, 245, 1),
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 22,
+                                    )
+                                ),
+                                Positioned(
+                                  top: 28,
+                                  child: Text(username,
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(245, 245, 245, 0.8),
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                      )
+                                  ),
+                                )
+                              ]
+                            ),
+                            SizedBox(height: 30),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStatePropertyAll<Color>(const Color.fromRGBO(98, 112, 242, 1)),
+                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8.0),
+                                      ))),
+                              onPressed: () {  },
+                                child: Text(
+                                  '    Edit Profile    ',
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(235, 235, 235, 0.8),
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                          ]
+                        )
+                        )
+                      ]
+                    ),
                       )
                     ),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                      minimumSize: MaterialStatePropertyAll<Size>(Size.fromHeight(40)),
-                      backgroundColor: MaterialStatePropertyAll<Color>(Colors.black),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ))),
-                      onPressed: () {
-                        _logoutUser(context);
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10),
-                        child: Text(
-                          'Log Out',
-                          style: TextStyle(
-                            color: Color.fromRGBO(235, 235, 235, 0.8),
-                            fontSize: 14,
-                          ),
+                    SizedBox(height: 40),
+                    GestureDetector(
+                      onTap: () => _logoutUser(context),
+                      child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children:[
+                        Row(
+                          children: [
+                            Icon(Icons.logout_outlined, color: Color.fromRGBO(255, 167, 167, 1)),
+                            SizedBox(width: 20),
+                            Text('Log Out',
+                                style: TextStyle(
+                                  color: Color.fromRGBO(235, 235, 235, 0.8),
+                                  fontSize: 14,
+                                )
+                            )
+                          ]
                         ),
-                      ),
+                        Icon(Icons.chevron_right, color: Color.fromRGBO(235, 235, 235, 0.8)),
+                      ]
                     ),
+                  ),
                   ],
                 ))),
       ),
