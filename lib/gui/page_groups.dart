@@ -82,33 +82,7 @@ class _GroupsPageState extends State<GroupsPage> {
                             ),
                           ),
                         ),
-                        Padding(
-                            padding: EdgeInsets.fromLTRB(22, 0, 22, 0),
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  TextButton(
-                                    onPressed: () async {
-                                      AlertJoinGroup();
-                                    },
-                                    child: Row(
-                                        children: [
-                                          Icon(Icons.qr_code_scanner, size: 15, color: Color.fromRGBO(235, 235, 235, 0.6)),
-                                          SizedBox(width: 5),
-                                          Text('Scan QR Code',
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              color: Color.fromRGBO(235, 235, 235, 0.6),
-                                              decoration: TextDecoration.underline,
-                                              decorationColor: Color.fromRGBO(235, 235, 235, 0.6),
-                                            ),
-                                          )
-                                        ]
-                                    ),
-                                  ),
-                                ]
-                            )
-                        ),
+                        SizedBox(height: 20),
                       ],
                     ),
                   ),
@@ -163,143 +137,6 @@ class _GroupsPageState extends State<GroupsPage> {
       });
     });
   }
-
-  void AlertJoinGroup() {
-    MobileScannerController cameraController = MobileScannerController();
-    showDialog(
-        context: context,
-        builder: (BuildContext context){
-          return Scaffold(
-            backgroundColor: Colors.black,
-            appBar: AppBar(
-              leading: const BackButton(
-                color: Colors.white,
-              ),
-              backgroundColor: Colors.black,
-              title: const Text('Scan QR Code',
-                style: TextStyle(
-                  fontFamily: 'SF-Pro',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
-              ),
-              actions: [
-                IconButton(
-                  color: Colors.black,
-                  icon: ValueListenableBuilder(
-                    valueListenable: cameraController.torchState,
-                    builder: (context, state, child) {
-                      switch (state as TorchState) {
-                        case TorchState.off:
-                          return const Icon(Icons.flash_off, color: Colors.grey);
-                        case TorchState.on:
-                          return const Icon(Icons.flash_on, color: Colors.yellow);
-                      }
-                    },
-                  ),
-                  iconSize: 32.0,
-                  onPressed: () => cameraController.toggleTorch(),
-                ),
-                IconButton(
-                  color: Colors.black,
-                  icon: ValueListenableBuilder(
-                    valueListenable: cameraController.cameraFacingState,
-                    builder: (context, state, child) {
-                      switch (state as CameraFacing) {
-                        case CameraFacing.front:
-                          return const Icon(Icons.camera_front);
-                        case CameraFacing.back:
-                          return const Icon(Icons.camera_rear);
-                      }
-                    },
-                  ),
-                  iconSize: 32.0,
-                  onPressed: () => cameraController.switchCamera(),
-                ),
-              ],
-            ),
-            body: MobileScanner(
-              // fit: BoxFit.contain,
-              controller: cameraController,
-              onDetect: (capture) {
-                final List<Barcode> barcodes = capture.barcodes;
-                for (final barcode in barcodes) {
-                  JoinGroup('${barcode.rawValue}');
-                  Navigator.pop(context);
-                }
-              },
-            ),
-          );
-        },
-    );
-  }
-
-  void JoinGroup(String groupID) async {
-    DataSnapshot snapshot = await (FirebaseDatabase.instance.ref("Groups"))
-        .get();
-    if (snapshot.hasChild(groupID)) {
-      String userID = "${getUID()}";
-      DatabaseReference ref = FirebaseDatabase.instance.ref("Groups/${groupID}/members");
-      ref.update({
-        userID: true,
-      });
-      DatabaseReference ref2 = FirebaseDatabase.instance.ref("Users/${userID}/groups");
-      ref2.update({
-        groupID: true,
-      });
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text(
-            "Successfully added to group!"),
-      ));
-    } else {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              backgroundColor: Color.fromRGBO(32, 35, 43, 1),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              title: Text("Invalid Class Invite",
-                  style: TextStyle(
-                    color: Color.fromRGBO(245, 245, 245, 1),
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
-                  )),
-              content: Text(
-                  "We could not find a class with that ID. Please try again with a valid QR code.",
-                  style: TextStyle(
-                    color: Color.fromRGBO(245, 245, 245, 0.8),
-                    fontSize: 14,
-                  )
-              ),
-              actions: [
-                ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll<Color>(
-                        Color.fromRGBO(98, 112, 242, 1)),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("Confirm",
-                      style: TextStyle(
-                        color: Color.fromRGBO(245, 245, 245, 0.8),
-                      )
-                  ),
-                ),
-              ]
-            );
-          }
-      );
-    }
-  }
 }
 
 class FormAddGroup extends StatefulWidget {
@@ -336,9 +173,9 @@ class _FormAddGroupState extends State<FormAddGroup> {
                             ],
                           ),
                           child: Card(
-                            color: const Color.fromRGBO(32, 35, 43, 1),
+                            color: const Color.fromRGBO(30, 30, 32, 1),
                             child: Container(
-                              height: 330,
+                              height: 350,
                               child: Stack(
                                 children: [
                                   Padding(
@@ -349,36 +186,33 @@ class _FormAddGroupState extends State<FormAddGroup> {
                                         child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              const SizedBox(height: 10),
-                                              Icon(Icons.group_add_outlined, color: Color.fromRGBO(98, 112, 242, 1), size: 32),
-                                              const SizedBox(height: 10),
-                                              const Text("Create a New Class",
-                                                  style: TextStyle(
-                                                    color: Color.fromRGBO(245, 245, 245, 1),
-                                                    fontWeight: FontWeight.w700,
-                                                    fontSize: 16,
-                                                  )
+                                              const SizedBox(height: 20),
+                                              const Center(
+                                                child: Text("Create a New Class",
+                                                    style: TextStyle(
+                                                      color: Color.fromRGBO(245, 245, 245, 1),
+                                                      fontWeight: FontWeight.w700,
+                                                      fontSize: 20,
+                                                    )
+                                                ),
                                               ),
                                               const SizedBox(height: 20),
-                                              Text("CLASS INFORMATION",
-                                                  style: TextStyle(
-                                                    color: Color.fromRGBO(
-                                                        245, 245, 245, 0.6),
-                                                    fontSize: 11,
-                                                    letterSpacing: 2.5,
-                                                  )),
+                                              Text("NAME",
+                                                style: TextStyle(
+                                                  color: Color.fromRGBO(245, 245, 245, 0.8),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
                                               const SizedBox(height: 5),
                                               TextFormField(
                                                 controller: inputGroupName,
                                                 decoration:
                                                     const InputDecoration(
-                                                  border: OutlineInputBorder(),
-                                                  labelText: 'Class Name',
-                                                  labelStyle: TextStyle(
-                                                      color: Color.fromRGBO(
-                                                          235, 235, 235, 0.6),
-                                                      fontSize: 14),
+                                                  border: InputBorder.none,
                                                   hintText: 'Enter class name',
                                                   hintStyle: TextStyle(
                                                       color: Color.fromRGBO(
@@ -399,6 +233,14 @@ class _FormAddGroupState extends State<FormAddGroup> {
                                                 },
                                               ),
                                               const SizedBox(height: 10),
+                                              Text("DESCRIPTION",
+                                                style: TextStyle(
+                                                  color: Color.fromRGBO(245, 245, 245, 0.8),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 5),
                                               TextFormField(
                                                 controller: inputGroupDesc,
                                                 keyboardType:
@@ -407,13 +249,7 @@ class _FormAddGroupState extends State<FormAddGroup> {
                                                 maxLines: 2,
                                                 decoration:
                                                     const InputDecoration(
-                                                  border: OutlineInputBorder(),
-                                                  labelText:
-                                                      'Class Description',
-                                                  labelStyle: TextStyle(
-                                                      color: Color.fromRGBO(
-                                                          235, 235, 235, 0.6),
-                                                      fontSize: 14),
+                                                  border: InputBorder.none,
                                                   hintText:
                                                       'Enter class description',
                                                   hintStyle: TextStyle(
@@ -430,7 +266,26 @@ class _FormAddGroupState extends State<FormAddGroup> {
                                                     color: Color.fromRGBO(
                                                         235, 235, 235, 0.8)),
                                               ),
-                                              const SizedBox(height: 10),
+                                              const SizedBox(height: 20),
+                                        Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children:[
+                                              ElevatedButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+                                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                      RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(8.0),
+                                                        side: BorderSide(color: Color.fromRGBO(245, 245, 245, 0.8), width: 1.5),
+                                                      )
+                                                  ),
+                                                ),
+                                                onPressed: (){
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text("Cancel", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+                                              ),
+                                              SizedBox(width: 10),
                                               ElevatedButton(
                                                 style: ButtonStyle(
                                                   backgroundColor:
@@ -459,11 +314,12 @@ class _FormAddGroupState extends State<FormAddGroup> {
                                                   }
                                                 },
                                                 child: const Text(
-                                                  'Create Class',
+                                                  'Create',
                                                   style: TextStyle(
                                                       color: Colors.white),
                                                 ),
                                               ),
+                                              ],)
                                             ])
                                     )]),
                                   ),
@@ -481,6 +337,8 @@ class _FormAddGroupState extends State<FormAddGroup> {
         ]),
       )
     ]);
+
+
   }
 
   verifyGroupName(String? value) {
@@ -540,18 +398,195 @@ class WidgetGroupsBuilderState extends State<WidgetGroupsBuilder> {
     setState(() {});
   }
 
+  void AlertJoinGroup() {
+    MobileScannerController cameraController = MobileScannerController();
+    showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            leading: const BackButton(
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.black,
+            title: const Text('Scan QR Code',
+              style: TextStyle(
+                fontFamily: 'SF-Pro',
+                fontWeight: FontWeight.w700,
+                fontSize: 20,
+                color: Colors.white,
+              ),
+            ),
+            actions: [
+              IconButton(
+                color: Colors.black,
+                icon: ValueListenableBuilder(
+                  valueListenable: cameraController.torchState,
+                  builder: (context, state, child) {
+                    switch (state as TorchState) {
+                      case TorchState.off:
+                        return const Icon(Icons.flash_off, color: Colors.grey);
+                      case TorchState.on:
+                        return const Icon(Icons.flash_on, color: Colors.yellow);
+                    }
+                  },
+                ),
+                iconSize: 32.0,
+                onPressed: () => cameraController.toggleTorch(),
+              ),
+              IconButton(
+                color: Colors.black,
+                icon: ValueListenableBuilder(
+                  valueListenable: cameraController.cameraFacingState,
+                  builder: (context, state, child) {
+                    switch (state as CameraFacing) {
+                      case CameraFacing.front:
+                        return const Icon(Icons.camera_front);
+                      case CameraFacing.back:
+                        return const Icon(Icons.camera_rear);
+                    }
+                  },
+                ),
+                iconSize: 32.0,
+                onPressed: () => cameraController.switchCamera(),
+              ),
+            ],
+          ),
+          body: MobileScanner(
+            // fit: BoxFit.contain,
+            controller: cameraController,
+            onDetect: (capture) {
+              final List<Barcode> barcodes = capture.barcodes;
+              for (final barcode in barcodes) {
+                JoinGroup('${barcode.rawValue}');
+                Navigator.pop(context);
+              }
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  void JoinGroup(String groupID) async {
+    DataSnapshot snapshot = await (FirebaseDatabase.instance.ref("Groups"))
+        .get();
+    if (snapshot.hasChild(groupID)) {
+      String userID = "${getUID()}";
+      DatabaseReference ref = FirebaseDatabase.instance.ref("Groups/${groupID}/members");
+      ref.update({
+        userID: true,
+      });
+      DatabaseReference ref2 = FirebaseDatabase.instance.ref("Users/${userID}/groups");
+      ref2.update({
+        groupID: true,
+      });
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text(
+            "Successfully added to group!"),
+      ));
+    } else {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                backgroundColor: Color.fromRGBO(32, 35, 43, 1),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                title: Text("Invalid Class Invite",
+                    style: TextStyle(
+                      color: Color.fromRGBO(245, 245, 245, 1),
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    )),
+                content: Text(
+                    "We could not find a class with that ID. Please try again with a valid QR code.",
+                    style: TextStyle(
+                      color: Color.fromRGBO(245, 245, 245, 0.8),
+                      fontSize: 14,
+                    )
+                ),
+                actions: [
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll<Color>(
+                          Color.fromRGBO(98, 112, 242, 1)),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("Confirm",
+                        style: TextStyle(
+                          color: Color.fromRGBO(245, 245, 245, 0.8),
+                        )
+                    ),
+                  ),
+                ]
+            );
+          }
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: ListView.builder(
         shrinkWrap: true,
-        itemCount: widget.groups.length+1,
+        itemCount: widget.groups.length+2,
         itemBuilder: (BuildContext context, int i) {
-          if (i == widget.groups.length){
+          if (i == 0){
+            return Padding(
+                padding: EdgeInsets.fromLTRB(5, 7, 0, 0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('MY GROUPS',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Color.fromRGBO(245, 245, 245, 0.8),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Spacer(),
+                      SizedBox(
+                        height: 35,
+                        child: TextButton(
+                          onPressed: () async {
+                            AlertJoinGroup();
+                          },
+                          child:
+                          Row(
+                              children: [
+                                Icon(Icons.qr_code_scanner, size: 15, color: Color.fromRGBO(235, 235, 235, 0.6)),
+                                SizedBox(width: 5),
+                                Text('SCAN QR CODE',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Color.fromRGBO(245, 245, 245, 0.8),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                )
+                              ]
+                          ),
+                        ),
+                      )
+                    ]
+                )
+            );
+          }
+          if (i == widget.groups.length+1){
             return SizedBox(height: 75);
           }
-          var group = widget.groups[i];
+          var group = widget.groups[i-1];
           bool isPrint = true;
           if (widget.inputSearch.text.isNotEmpty) {
             isPrint = group.groupName

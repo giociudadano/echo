@@ -52,7 +52,7 @@ class _CardGroupState extends State<CardGroup> {
       });
     }
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
+      padding: const EdgeInsets.fromLTRB(0,0,0,10),
       child: Card(
         color: Color.fromRGBO(22, 22, 22, 1),
         child: Container(

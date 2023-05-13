@@ -48,6 +48,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                     child: Column(
                       children: [
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             IconButton(
                               color: Color.fromRGBO(98, 112, 242, 1),
@@ -70,13 +71,13 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                                           fontWeight: FontWeight.w700),
                                     ),
                                     Positioned(
-                                      top: 28,
+                                      top: 24,
                                       child: Text(
                                         "${widget.groupDesc}",
                                         style: TextStyle(
                                             color: Color.fromRGBO(235, 235, 235, 0.8),
                                             fontSize: 14,
-                                            fontWeight: FontWeight.w400),
+                                            fontWeight: FontWeight.w500),
                                       ),
                                     ),
                                   ],
@@ -85,7 +86,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                             ),
                             PopupMenuButton(
                               icon: Icon(Icons.more_vert, color: Colors.white),
-                              color: Colors.black,
+                              color: Color.fromRGBO(30, 30, 32, 1),
                               itemBuilder: (BuildContext context) {
                                 return isAdmin ? [
                                   PopupMenuItem(
@@ -189,26 +190,20 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
       builder: (BuildContext context) {
         return AlertDialog(
           scrollable: true,
-          backgroundColor: Color.fromRGBO(32, 35, 43, 1),
+          backgroundColor: Color.fromRGBO(30, 30, 32, 1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: Text("Invite Members",
-              style: TextStyle(
-                color: Color.fromRGBO(245, 245, 245, 1),
-                fontWeight: FontWeight.w700,
-                fontSize: 16,
-              )),
+          title: Center(
+            child: Text("Invite Members",
+                style: TextStyle(
+                  color: Color.fromRGBO(245, 245, 245, 1),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 20,
+                )),
+          ),
           content: Column(
             children: [
-             Text("INVITE USING QR CODE",
-                style: TextStyle(
-                  color: Color.fromRGBO(245, 245, 245, 0.6),
-                  fontSize: 11,
-                   letterSpacing: 2.5,
-                ),
-             ),
-              SizedBox(height: 5),
               Container(
                 width: 200.0,
                 height: 200.0,
@@ -264,25 +259,26 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
       builder: (BuildContext context) {
         return AlertDialog(
           scrollable: true,
-          icon: Icon(Icons.reduce_capacity_outlined,
-              color: Color.fromRGBO(98, 112, 242, 1), size: 32),
-          backgroundColor: Color.fromRGBO(32, 35, 43, 1),
+          backgroundColor: Color.fromRGBO(30, 30, 32, 1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: Text("Edit Class",
-              style: TextStyle(
-                color: Color.fromRGBO(245, 245, 245, 1),
-                fontWeight: FontWeight.w700,
-                fontSize: 16,
-              )),
-          content: Column(
-            children: [
-              Text("CLASS INFORMATION",
+          title: Center(
+            child: Text("Edit Class",
                 style: TextStyle(
-                  color: Color.fromRGBO(245, 245, 245, 0.6),
-                  fontSize: 11,
-                  letterSpacing: 2.5,
+                  color: Color.fromRGBO(245, 245, 245, 1),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 20,
+                )),
+          ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("NAME",
+                style: TextStyle(
+                  color: Color.fromRGBO(245, 245, 245, 0.8),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               SizedBox(height: 5),
@@ -290,17 +286,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                 controller: inputGroupName,
                 decoration:
                 const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Class Name',
-                  labelStyle: TextStyle(
-                      color: Color.fromRGBO(
-                          235, 235, 235, 0.6),
-                      fontSize: 14),
-                  hintText: 'Enter class name',
-                  hintStyle: TextStyle(
-                      color: Color.fromRGBO(
-                          235, 235, 235, 0.2),
-                      fontSize: 14),
+                  border: InputBorder.none,
                   isDense: true,
                   filled: true,
                   fillColor: Color.fromRGBO(
@@ -315,6 +301,14 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                 },
               ),
               const SizedBox(height: 10),
+              Text("DESCRIPTION",
+                style: TextStyle(
+                  color: Color.fromRGBO(245, 245, 245, 0.8),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 5),
               TextFormField(
                 controller: inputGroupDesc,
                 keyboardType:
@@ -323,11 +317,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                 maxLines: 2,
                 decoration:
                 const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Class Description',
-                  labelStyle: TextStyle(
-                      color: Color.fromRGBO(235, 235, 235, 0.6),
-                      fontSize: 14),
+                  border: InputBorder.none,
                   hintText: 'Enter class description',
                   hintStyle: TextStyle(
                       color: Color.fromRGBO(235, 235, 235, 0.2),
@@ -373,7 +363,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                       EditGroup(groupID, inputGroupName.text, inputGroupDesc.text);
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Edit Class',
+                    child: const Text('Save',
                         style: TextStyle(
                             color: Colors.white)),
                   ),
@@ -407,18 +397,18 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          icon: Icon(Icons.group_remove_outlined,
-              color: Color.fromRGBO(238, 94, 94, 1), size: 32),
-          backgroundColor: Color.fromRGBO(32, 35, 43, 1),
+          backgroundColor: Color.fromRGBO(30, 30, 32, 1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: Text("Confirm Delete Class",
-              style: TextStyle(
-                color: Color.fromRGBO(245, 245, 245, 1),
-                fontWeight: FontWeight.w700,
-                fontSize: 16,
-              )),
+          title: Center(
+            child: Text("Confirm Delete Class",
+                style: TextStyle(
+                  color: Color.fromRGBO(245, 245, 245, 1),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20,
+                ))
+          ),
           content: Text(
               "This action will permanently delete your class. Are you sure you want to continue?",
               style: TextStyle(
