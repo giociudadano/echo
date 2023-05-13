@@ -120,6 +120,7 @@ class _CardPostState extends State<CardPost> {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 5),
         child: Card(
+          color: Color.fromRGBO(22, 22, 22, 1),
           child: Container(
             height: 140,
             decoration: BoxDecoration(
@@ -291,7 +292,6 @@ class _CardPostState extends State<CardPost> {
                         color: Colors.white),
                     label: Text("Edit Card", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
                   ) : SizedBox.shrink(),
-                  isAuthor ? SizedBox(height: 20) : SizedBox.shrink(),
                   isAuthor ? ElevatedButton.icon(
                       style: ButtonStyle(
                         backgroundColor: MaterialStatePropertyAll<Color>(
@@ -326,7 +326,7 @@ class _CardPostState extends State<CardPost> {
                       AlertReportAuthor(widget.postID, widget.userID, widget.username);
                     },
                     icon: Icon(Icons.flag, color: Colors.white),
-                    label: Text("Report Author", style: TextStyle(color: Colors.white)),
+                    label: Text("Report Card", style: TextStyle(color: Colors.white)),
                   ) : SizedBox.shrink(),
                 ],
               ),
@@ -363,17 +363,21 @@ class _CardPostState extends State<CardPost> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            icon: Icon(Icons.delete_sweep_outlined, color: Color.fromRGBO(238, 94, 94, 1), size: 32),
-            backgroundColor: Color.fromRGBO(32, 35, 43, 1),
+            backgroundColor: Color.fromRGBO(30, 30, 32, 1),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            title: Text("Confirm Delete Card",
-                style: TextStyle(
-                  color: Color.fromRGBO(245, 245, 245, 1),
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
-                )
+            title: Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Text("Confirm Delete Card",
+                    style: TextStyle(
+                      color: Color.fromRGBO(245, 245, 245, 1),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 20,
+                    )
+                ),
+              )
             ),
             content: Text("This action will permanently delete your card. Are you sure you want to continue?",
                 style: TextStyle(
@@ -412,7 +416,7 @@ class _CardPostState extends State<CardPost> {
                   Navigator.of(context).pop();
                   DeleteCard(postID);
                 },
-                child: Text("Delete Card", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+                child: Text("Delete", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
               ),
             ]
           );
@@ -463,17 +467,21 @@ class _CardPostState extends State<CardPost> {
         builder: (BuildContext context) {
           return AlertDialog(
               scrollable: true,
-              icon: Icon(Icons.flag_outlined, color: Color.fromRGBO(238, 94, 94, 1), size: 32),
-              backgroundColor: Color.fromRGBO(32, 35, 43, 1),
+              backgroundColor: Color.fromRGBO(30, 30, 32, 1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              title: Text("Report $username?",
-                  style: TextStyle(
-                    color: Color.fromRGBO(245, 245, 245, 1),
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
-                  )
+              title: Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Text("Report Card",
+                      style: TextStyle(
+                        color: Color.fromRGBO(245, 245, 245, 1),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
+                      )
+                  ),
+                )
               ),
               content: Text("We value your safe space and take reports seriously. If we find this account to be malicious, we will either remove this card or suspend the account. Are you sure you want to continue?",
                   style: TextStyle(
@@ -618,7 +626,7 @@ class _FormEditPostState extends State<FormEditPost> {
                                 ],
                               ),
                               child: Card(
-                                color: const Color.fromRGBO(32, 35, 43, 1),
+                                color: const Color.fromRGBO(30, 30, 32, 1),
                                 child: Container(
                                   height: 350,
                                   child: Padding(
@@ -636,41 +644,33 @@ class _FormEditPostState extends State<FormEditPost> {
                                             Form(
                                               key: _formEditPostKey,
                                               child: Column(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  const SizedBox(height: 10),
-                                                  Icon(Icons.edit_note_outlined,
-                                                      color: Color.fromRGBO(
-                                                          98, 112, 242, 1),
-                                                      size: 32),
-                                                  const SizedBox(height: 10),
-                                                  const Text("Edit Card",
-                                                      style: TextStyle(
-                                                        color: Color.fromRGBO(
-                                                            245, 245, 245, 1),
-                                                        fontWeight: FontWeight.w700,
-                                                        fontSize: 16,
-                                                      )),
                                                   const SizedBox(height: 20),
-                                                  Text("CARD INFORMATION",
-                                                      style: TextStyle(
-                                                        color: Color.fromRGBO(
-                                                            245, 245, 245, 0.6),
-                                                        fontSize: 11,
-                                                        letterSpacing: 2.5,
-                                                      )),
+                                                  const Center(
+                                                    child: Text("Edit Card",
+                                                        style: TextStyle(
+                                                          color: Color.fromRGBO(
+                                                              245, 245, 245, 1),
+                                                          fontWeight: FontWeight.w700,
+                                                          fontSize: 20,
+                                                        )),
+                                                  ),
+                                                  const SizedBox(height: 20),
+                                                  Text("TITLE",
+                                                    style: TextStyle(
+                                                      color: Color.fromRGBO(245, 245, 245, 0.8),
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w600,
+                                                    ),
+                                                  ),
                                                   const SizedBox(height: 5),
                                                   TextFormField(
                                                     controller: _inputCardTitle,
                                                     decoration:
                                                     const InputDecoration(
-                                                      border: OutlineInputBorder(),
-                                                      labelText: 'Card Title',
-                                                      labelStyle: TextStyle(
-                                                          color: Color.fromRGBO(
-                                                              235, 235, 235, 0.6),
-                                                          fontSize: 14),
+                                                      border: InputBorder.none,
                                                       hintText: 'Enter card title',
                                                       hintStyle: TextStyle(
                                                           color: Color.fromRGBO(
@@ -691,6 +691,14 @@ class _FormEditPostState extends State<FormEditPost> {
                                                     },
                                                   ),
                                                   const SizedBox(height: 10),
+                                                  Text("DESCRIPTION",
+                                                    style: TextStyle(
+                                                      color: Color.fromRGBO(245, 245, 245, 0.8),
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 5),
                                                   TextFormField(
                                                     controller: _inputCardContent,
                                                     keyboardType:
@@ -699,14 +707,9 @@ class _FormEditPostState extends State<FormEditPost> {
                                                     maxLines: 3,
                                                     decoration:
                                                     const InputDecoration(
-                                                      border: OutlineInputBorder(),
-                                                      labelText: 'Card Content',
-                                                      labelStyle: TextStyle(
-                                                          color: Color.fromRGBO(
-                                                              235, 235, 235, 0.6),
-                                                          fontSize: 14),
+                                                      border: InputBorder.none,
                                                       hintText:
-                                                      'Enter additional information here.',
+                                                      'Enter additional information here (optional)',
                                                       hintStyle: TextStyle(
                                                           color: Color.fromRGBO(
                                                               235, 235, 235, 0.2),
@@ -722,6 +725,14 @@ class _FormEditPostState extends State<FormEditPost> {
                                                             235, 235, 235, 0.8)),
                                                   ),
                                                   const SizedBox(height: 10),
+                                                  Text("START TIME",
+                                                    style: TextStyle(
+                                                      color: Color.fromRGBO(245, 245, 245, 0.8),
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 5),
                                                   TextFormField(
                                                     controller: _inputCardTimeStart,
                                                     readOnly: true,
@@ -765,10 +776,12 @@ class _FormEditPostState extends State<FormEditPost> {
                                                     },
                                                     decoration:
                                                     const InputDecoration(
-                                                      border: OutlineInputBorder(),
-                                                      labelText: 'Start Time',
-                                                      labelStyle: TextStyle(
-                                                          color: Color.fromRGBO(235, 235, 235, 0.6),
+                                                      border: InputBorder.none,
+                                                      hintText:
+                                                      'Select start time of card',
+                                                      hintStyle: TextStyle(
+                                                          color: Color.fromRGBO(
+                                                              235, 235, 235, 0.2),
                                                           fontSize: 14),
                                                       isDense: true,
                                                       filled: true,
@@ -781,13 +794,14 @@ class _FormEditPostState extends State<FormEditPost> {
                                                       return verifyCardDate(value);
                                                     },
                                                   ),
-                                                  const SizedBox(height: 20),
-                                                  Text("CARD VISIBILITY",
-                                                      style: TextStyle(
-                                                        color: Color.fromRGBO(245, 245, 245, 0.6),
-                                                        fontSize: 11,
-                                                        letterSpacing: 2.5,
-                                                  )),
+                                                  const SizedBox(height: 10),
+                                                  Text("VISIBILITY",
+                                                    style: TextStyle(
+                                                      color: Color.fromRGBO(245, 245, 245, 0.8),
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w600,
+                                                    ),
+                                                  ),
                                                   const SizedBox(height: 5),
                                                   Column(children: [
                                                     GroupSelector(
@@ -796,16 +810,16 @@ class _FormEditPostState extends State<FormEditPost> {
                                                       },
                                                       initGroups: widget.groupsToPost,
                                                     ),
-                                                    const SizedBox(height: 20),
+                                                    const SizedBox(height: 10),
                                                   ]),
-                                                  Text(
-                                                    "CARD APPEARANCE",
+                                                  Text("APPEARANCE",
                                                     style: TextStyle(
-                                                      color: Color.fromRGBO(245, 245, 245, 0.6),
-                                                      fontSize: 11,
-                                                      letterSpacing: 2.5,
+                                                      color: Color.fromRGBO(245, 245, 245, 0.8),
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w600,
                                                     ),
                                                   ),
+                                                  const SizedBox(height: 5),
                                                   const SizedBox(height: 5),
                                                   Row(
                                                     children: [
@@ -832,7 +846,7 @@ class _FormEditPostState extends State<FormEditPost> {
                                                                     Text(
                                                                       'Select an emoji',
                                                                       style: TextStyle(
-                                                                          color: Color.fromRGBO(235, 235, 235, 0.8)),
+                                                                          color: Color.fromRGBO(235, 235, 235, 0.2)),
                                                                       textAlign: TextAlign.left,
                                                                     ),
                                                                     Spacer(),
@@ -1029,7 +1043,7 @@ class _FormEditPostState extends State<FormEditPost> {
                                                             setState(() {});
                                                           }
                                                         },
-                                                        child: const Text('Edit Card',
+                                                        child: const Text('Save',
                                                             style: TextStyle(
                                                                 color: Colors.white)),
                                                       ),

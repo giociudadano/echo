@@ -219,7 +219,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                     children: [
                       ElevatedButton(
                         style: ButtonStyle(
-                          backgroundColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+                          backgroundColor: MaterialStatePropertyAll<Color>(Color.fromRGBO(31, 34, 40, 1)),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8.0),

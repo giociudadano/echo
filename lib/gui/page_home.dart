@@ -116,21 +116,9 @@ class WidgetGroupsFilterState extends State<WidgetGroupsFilter> {
     return SizedBox(
       height: 30,
       child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Row(
             children: [
-              const Icon(Icons.filter_alt_outlined,
-                  color: Color.fromRGBO(230, 230, 230, 1), size: 14),
-              const SizedBox(width: 5),
-              const Text(
-                "Filter Class",
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                  color: Color.fromRGBO(230, 230, 230, 1),
-                ),
-              ),
-              const SizedBox(width: 14),
               Expanded(
                 child: groupIDs.length == 0
                     ? SizedBox.shrink()
@@ -298,18 +286,30 @@ class WidgetDashboardPostsBuilderState extends State<WidgetDashboardPostsBuilder
             child: posts.length == 0 ? SizedBox.shrink()
                 : isDoneBuilding ? ListView.builder(
                         shrinkWrap: true,
-                        itemCount: posts.length + 1,
+                        itemCount: posts.length + 2,
                         itemBuilder: (BuildContext context, int i) {
                           bool isPrint = true;
-                          if (i == posts.length) {
+                          if (i == 0){
+                            return Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 5),
+                              child: Text("MY CARDS",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(245, 245, 245, 0.8),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              );
+                          }
+                          if (i == posts.length+1) {
                             return SizedBox(height: 75);
                           }
                           if (widget.filters.isNotEmpty) {
                             for (var filter in widget.filters) {
-                              isPrint = posts[i].groups.contains(filter);
-                              if (posts[i].groups.contains(filter)) {
+                              isPrint = posts[i-1].groups.contains(filter);
+                              if (posts[i-1].groups.contains(filter)) {
                                 if (widget.inputSearch.text.isNotEmpty) {
-                                  isPrint = posts[i]
+                                  isPrint = posts[i-1]
                                       .title
                                       .toLowerCase()
                                       .contains(widget.inputSearch.text
@@ -324,20 +324,20 @@ class WidgetDashboardPostsBuilderState extends State<WidgetDashboardPostsBuilder
                             }
                           } else {
                             if (widget.inputSearch.text.isNotEmpty) {
-                              isPrint = posts[i].title.toLowerCase().contains(
+                              isPrint = posts[i-1].title.toLowerCase().contains(
                                   widget.inputSearch.text.toLowerCase());
                             }
                           }
                           if (isPrint) {
                             return CardPost(
-                                posts[i].postID,
-                                posts[i].title,
-                                posts[i].content,
-                                posts[i].userID,
-                                posts[i].timeStart,
-                                posts[i].groups,
-                                posts[i].emojiData,
-                                posts[i].emojiLink,
+                                posts[i-1].postID,
+                                posts[i-1].title,
+                                posts[i-1].content,
+                                posts[i-1].userID,
+                                posts[i-1].timeStart,
+                                posts[i-1].groups,
+                                posts[i-1].emojiData,
+                                posts[i-1].emojiLink,
                             );
                           } else {
                             return const SizedBox.shrink();
@@ -404,7 +404,7 @@ class _FormAddPostState extends State<FormAddPost> {
                             ],
                           ),
                           child: Card(
-                            color: const Color.fromRGBO(32, 35, 43, 1),
+                            color: const Color.fromRGBO(30, 30, 32, 1),
                             child: Container(
                               height: 350,
                               child: Padding(
@@ -420,40 +420,33 @@ class _FormAddPostState extends State<FormAddPost> {
                                         Form(
                                           key: _formAddPostKey,
                                           child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               const SizedBox(height: 10),
-                                              Icon(Icons.note_add_outlined,
-                                                  color: Color.fromRGBO(98, 112, 242, 1),
-                                                  size: 32
-                                              ),
                                               const SizedBox(height: 10),
-                                              const Text("Create a New Card",
+                                              const Center(
+                                                child: Text("Create a New Card",
                                                   style: TextStyle(
                                                     color: Color.fromRGBO(245, 245, 245, 1),
-                                                    fontWeight: FontWeight.w700,
-                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 20,
                                                   ),
+                                                ),
                                               ),
                                               const SizedBox(height: 20),
-                                              Text("CARD INFORMATION",
-                                                  style: TextStyle(
-                                                    color: Color.fromRGBO(
-                                                        245, 245, 245, 0.6),
-                                                    fontSize: 11,
-                                                    letterSpacing: 2.5,
-                                                  ),
+                                              Text("TITLE",
+                                                style: TextStyle(
+                                                  color: Color.fromRGBO(245, 245, 245, 0.8),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
                                               ),
                                               const SizedBox(height: 5),
                                               TextFormField(
                                                 controller: _inputCardTitle,
                                                 decoration: const InputDecoration(
-                                                  border: OutlineInputBorder(),
-                                                  labelText: 'Card Title',
-                                                  labelStyle: TextStyle(
-                                                      color: Color.fromRGBO(235, 235, 235, 0.6),
-                                                      fontSize: 14
-                                                  ),
+                                                  border: InputBorder.none,
                                                   hintText: 'Enter card title',
                                                   hintStyle: TextStyle(
                                                       color: Color.fromRGBO(235, 235, 235, 0.2),
@@ -471,18 +464,22 @@ class _FormAddPostState extends State<FormAddPost> {
                                                 },
                                               ),
                                               const SizedBox(height: 10),
+                                              Text("DESCRIPTION",
+                                                style: TextStyle(
+                                                  color: Color.fromRGBO(245, 245, 245, 0.8),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 5),
                                               TextFormField(
                                                 controller: _inputCardContent,
                                                 keyboardType: TextInputType.multiline,
                                                 minLines: 3,
                                                 maxLines: 3,
                                                 decoration: const InputDecoration(
-                                                  border: OutlineInputBorder(),
-                                                  labelText: 'Card Content',
-                                                  labelStyle: TextStyle(
-                                                      color: Color.fromRGBO(235, 235, 235, 0.6),
-                                                      fontSize: 14),
-                                                  hintText: 'Enter additional information here.',
+                                                  border: InputBorder.none,
+                                                  hintText: 'Enter additional information here (optional)',
                                                   hintStyle: TextStyle(
                                                       color: Color.fromRGBO(235, 235, 235, 0.2),
                                                       fontSize: 14),
@@ -495,6 +492,14 @@ class _FormAddPostState extends State<FormAddPost> {
                                                     color: Color.fromRGBO(235, 235, 235, 0.8)),
                                               ),
                                               const SizedBox(height: 10),
+                                              Text("START TIME",
+                                                style: TextStyle(
+                                                  color: Color.fromRGBO(245, 245, 245, 0.8),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 5),
                                               TextFormField(
                                                 controller: _inputCardTimeStart,
                                                 readOnly: true,
@@ -523,11 +528,11 @@ class _FormAddPostState extends State<FormAddPost> {
                                                 },
                                                 decoration:
                                                   const InputDecoration(
-                                                    border: OutlineInputBorder(),
-                                                    labelText: 'Start Time',
-                                                    labelStyle: TextStyle(
-                                                      color: Color.fromRGBO(235, 235, 235, 0.6),
-                                                      fontSize: 14),
+                                                    border: InputBorder.none,
+                                                    hintText: 'Select start time of card',
+                                                    hintStyle: TextStyle(
+                                                        color: Color.fromRGBO(235, 235, 235, 0.2),
+                                                        fontSize: 14),
                                                   isDense: true,
                                                   filled: true,
                                                   fillColor: Color.fromRGBO(22, 23, 27, 1),
@@ -539,14 +544,15 @@ class _FormAddPostState extends State<FormAddPost> {
                                                   return verifyCardDate(value);
                                                 },
                                               ),
-                                              const SizedBox(height: 20),
+                                              const SizedBox(height: 15),
                                               widget.groupID == 'All'
-                                                  ? Text("CARD VISIBILITY",
+                                                  ? Text("VISIBILITY",
                                                       style: TextStyle(
-                                                        color: Color.fromRGBO(245, 245, 245, 0.6),
-                                                        fontSize: 11,
-                                                        letterSpacing: 2.5,
-                                                      ))
+                                                        color: Color.fromRGBO(245, 245, 245, 0.8),
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w600,
+                                                      ),
+                                                    )
                                                   : SizedBox.shrink(),
                                               const SizedBox(height: 5),
                                               widget.groupID == 'All'
@@ -556,15 +562,14 @@ class _FormAddPostState extends State<FormAddPost> {
                                                           widget.groupsToPost = newGroups;
                                                         },
                                                       ),
-                                                      const SizedBox(height: 20),
+                                                      const SizedBox(height: 15),
                                                     ])
                                                   : SizedBox.shrink(),
-                                              Text(
-                                                "CARD APPEARANCE",
+                                              Text("APPEARANCE",
                                                 style: TextStyle(
-                                                  color: Color.fromRGBO(245, 245, 245, 0.6),
-                                                  fontSize: 11,
-                                                  letterSpacing: 2.5,
+                                                  color: Color.fromRGBO(245, 245, 245, 0.8),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
                                                 ),
                                               ),
                                               const SizedBox(height: 5),
@@ -593,7 +598,7 @@ class _FormAddPostState extends State<FormAddPost> {
                                                             Text(
                                                               'Select an emoji',
                                                               style: TextStyle(
-                                                                  color: Color.fromRGBO(235, 235, 235, 0.8)),
+                                                                  color: Color.fromRGBO(235, 235, 235, 0.2)),
                                                               textAlign: TextAlign.left,
                                                             ),
                                                             Spacer(),
@@ -791,7 +796,7 @@ class _FormAddPostState extends State<FormAddPost> {
                                                     );
                                                   }
                                                 },
-                                                child: const Text('Create Card',
+                                                child: const Text('Create',
                                                     style: TextStyle(
                                                         color: Colors.white)),
                                               ),
@@ -951,7 +956,7 @@ class _GroupSelectorState extends State<GroupSelector> {
                         color: Color.fromRGBO(235, 235, 235, 0.6)),
                     buttonText: const Text("Select a class to post",
                         style: TextStyle(
-                            color: Color.fromRGBO(235, 235, 235, 0.8))),
+                            color: Color.fromRGBO(235, 235, 235, 0.2))),
                     items: items,
                     title: Text("Search a class",
                         style:

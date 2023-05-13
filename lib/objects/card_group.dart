@@ -54,6 +54,7 @@ class _CardGroupState extends State<CardGroup> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Card(
+        color: Color.fromRGBO(22, 22, 22, 1),
         child: Container(
           height: 100,
           decoration: BoxDecoration(

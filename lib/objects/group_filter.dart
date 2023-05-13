@@ -21,7 +21,7 @@ class _GroupFilterState extends State<GroupFilter> {
   Widget build(BuildContext context) {
     bool isSelected = widget.filters.contains(widget.id);
     return FilterChip(
-      padding: const EdgeInsets.fromLTRB(6, 4, 6, 4),
+      padding: const EdgeInsets.fromLTRB(5, 3, 5, 4),
       label: Text(widget.name,
         style: TextStyle(
           fontWeight: FontWeight.w500,
@@ -30,7 +30,7 @@ class _GroupFilterState extends State<GroupFilter> {
         ),
       ),
       selected: isSelected,
-      side: const BorderSide(color: Colors.transparent),
+      side: const BorderSide(color: Color.fromRGBO(32, 35, 43, 1),),
       checkmarkColor: const Color.fromRGBO(233, 235, 247, 1),
       backgroundColor: const Color.fromRGBO(32, 35, 43, 1),
       selectedColor: const Color.fromRGBO(98, 112, 242, 1),
