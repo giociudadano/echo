@@ -50,8 +50,8 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
           toolbarHeight: 0,
           systemOverlayStyle: SystemUiOverlayStyle(
-            systemNavigationBarColor: Colors.black, // Navigation bar
-            statusBarColor: Colors.black,
+            systemNavigationBarColor: Colors.black, // rNavigation bar
+            statusBarColor: Color.fromRGBO(32, 35, 43, 1),
           )
       ),
       backgroundColor: const Color.fromRGBO(32, 35, 43, 1),
@@ -60,70 +60,81 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 28),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    Expanded(
+                    child: ListView(
+                        children: [
                     SizedBox(height: 20),
-                    Card(
-                        color: Color.fromRGBO(22, 22, 22, 1),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Row(children: [
-                            GestureDetector(
-                              onTap: () {
+                Text("PROFILE",
+                  style: TextStyle(
+                    color: Color.fromRGBO(245, 245, 245, 0.8),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Card(
+                    color: Color.fromRGBO(22, 22, 22, 1),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Row(children: [
+                        GestureDetector(
+                          onTap: () {
 
-                              },
-                              child: Stack(children: [
-                                (hasProfilePicture)
-                                    ? ClipRRect(
-                                        borderRadius: BorderRadius.circular(50),
-                                        child: Image.network(
-                                          profilePictureURL,
-                                          width: 100,
-                                          height: 100,
-                                          fit: BoxFit.cover,
-                                        ))
-                                    : ProfilePicture(
-                                        name: username,
-                                        radius: 50,
-                                        fontsize: 21,
-                                      ),
-                                Positioned(
-                                    bottom: 0,
-                                    right: 0,
-                                    child: Container(
-                                      width: 35,
-                                      height: 35,
-                                      decoration: BoxDecoration(
-                                        color: Color.fromRGBO(25, 25, 32, 1),
-                                        shape: BoxShape.circle,
-                                      ),
-                                    )),
-                                Positioned(
-                                    bottom: 7,
-                                    right: 7,
-                                    child: Container(
-                                      width: 22,
-                                      height: 22,
-                                      decoration: BoxDecoration(
-                                        color: Colors.green,
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ))
-                              ]),
+                          },
+                          child: Stack(children: [
+                            (hasProfilePicture)
+                                ? ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: Image.network(
+                                  profilePictureURL,
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                ))
+                                : ProfilePicture(
+                              name: username,
+                              radius: 50,
+                              fontsize: 21,
                             ),
-                            SizedBox(width: 25),
-                            Expanded(
-                                child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
+                            Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: Container(
+                                  width: 35,
+                                  height: 35,
+                                  decoration: BoxDecoration(
+                                    color: Color.fromRGBO(25, 25, 32, 1),
+                                    shape: BoxShape.circle,
+                                  ),
+                                )),
+                            Positioned(
+                                bottom: 7,
+                                right: 7,
+                                child: Container(
+                                  width: 22,
+                                  height: 22,
+                                  decoration: BoxDecoration(
+                                    color: Colors.green,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ))
+                          ]),
+                        ),
+                        SizedBox(width: 25),
+                        Expanded(
+                            child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: [
                                   Stack(clipBehavior: Clip.none, children: [
                                     Text(displayName,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
                                           color:
-                                              Color.fromRGBO(245, 245, 245, 1),
+                                          Color.fromRGBO(245, 245, 245, 1),
                                           fontWeight: FontWeight.w700,
                                           fontSize: 22,
                                         )),
@@ -142,36 +153,47 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ElevatedButton(
                                     style: ButtonStyle(
                                         backgroundColor:
-                                            MaterialStatePropertyAll<Color>(
-                                                const Color.fromRGBO(
-                                                    98, 112, 242, 1)),
+                                        MaterialStatePropertyAll<Color>(
+                                            const Color.fromRGBO(
+                                                98, 112, 242, 1)),
                                         shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
+                                            RoundedRectangleBorder>(
                                             RoundedRectangleBorder(
-                                          borderRadius:
+                                              borderRadius:
                                               BorderRadius.circular(8.0),
-                                        ))),
+                                            ))),
                                     onPressed: () {
                                       Navigator.push(context,
-                                        MaterialPageRoute(builder: (context) => ProfileEditPage()),
+                                        MaterialPageRoute(builder: (context) =>
+                                            ProfileEditPage(displayName, username)
+                                        ),
+                                      ).then((_) {
+                                        getHasProfilePicture();
+                                        getProfileMetadata();
+                                        debugPrint("[DEBUG] Refreshed!");
+                                      }
                                       );
                                     },
                                     child: Text(
                                       '    Edit Profile    ',
                                       style: TextStyle(
                                         color:
-                                            Color.fromRGBO(235, 235, 235, 0.8),
+                                        Color.fromRGBO(235, 235, 235, 0.8),
                                         fontSize: 14,
                                       ),
                                     ),
                                   ),
                                 ]))
-                          ]),
-                        )),
-                    SizedBox(height: 20),
-                    Expanded(
-                    child: ListView(
-                        children: [
+                      ]),
+                    )),
+                SizedBox(height: 20),
+                      Text("SETTINGS",
+                        style: TextStyle(
+                          color: Color.fromRGBO(245, 245, 245, 0.8),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                       TextButton(
                         onPressed: () {
                           displayUnimplementedError();
@@ -368,8 +390,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             ]),
                       ),
                     ]),
-                    )
-                  ],
+                    )],
                 ))),
       ),
     );

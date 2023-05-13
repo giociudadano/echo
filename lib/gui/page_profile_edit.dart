@@ -1,25 +1,28 @@
 part of main;
 
 class ProfileEditPage extends StatefulWidget {
-  ProfileEditPage({super.key});
+  String displayName = '', username = '';
+  ProfileEditPage(this.displayName, this.username);
 
   @override
   State<ProfileEditPage> createState() => _ProfileEditPageState();
 }
 
 class _ProfileEditPageState extends State<ProfileEditPage> {
+  final GlobalKey<FormState> formEditProfileKey = GlobalKey<FormState>();
   bool hasProfilePicture = false, toRemoveProfilePicture = false;
   String UID = getUID();
-  String username = '';
-  String displayName = '';
   String? profilePicturePath;
   String profilePictureURL = '';
+  final inputDisplayName = TextEditingController();
+  final inputUsername = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     getHasProfilePicture();
-    getProfileMetadata();
+    inputDisplayName.text = widget.displayName;
+    inputUsername.text = (widget.username).substring(0, widget.username.length-5);
   }
 
   void getHasProfilePicture() async {
@@ -34,21 +37,23 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     });
   }
 
-  void getProfileMetadata() async {
-    DataSnapshot snapshot =
-        await (FirebaseDatabase.instance.ref("Users/$UID/username")).get();
-    String username = snapshot.value.toString();
-    snapshot =
-        await (FirebaseDatabase.instance.ref("Users/$UID/displayName")).get();
-    String displayName = snapshot.value.toString();
-    setState(() {
-      this.username = username;
-      this.displayName = displayName;
-    });
+  String? verifyDisplayName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a display name';
+    }
+    return null;
+  }
+
+  String? verifyUsername(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a username';
+    }
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle(
@@ -62,7 +67,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
             style: TextStyle(
                 color: Color.fromRGBO(235, 235, 235, 1),
                 fontWeight: FontWeight.w600,
-                fontSize: 16,
+                fontSize: 18,
             ),
           ),
           backgroundColor: Colors.black,
@@ -72,24 +77,185 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 28),
-            child: GestureDetector(
-              onTap: () {
-                AlertUpdateProfilePicture();
-              },
-              child: (hasProfilePicture)
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: Image.network(
-                        profilePictureURL,
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ))
-                  : ProfilePicture(
-                      name: username,
-                      radius: 50,
-                      fontsize: 21,
+            child: Form(
+              key: formEditProfileKey,
+              child: ListView(
+              children: [
+                SizedBox(height: 20),
+                Text("PROFILE PICTURE",
+                  style: TextStyle(
+                    color: Color.fromRGBO(245, 245, 245, 0.8),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 10),
+                GestureDetector(
+                  onTap: () {
+                    AlertUpdateProfilePicture();
+                  },
+                  child: Center(
+                    child: Stack(children: [
+                      (hasProfilePicture)
+                          ? ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: Image.network(
+                            profilePictureURL,
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.cover,
+                          ))
+                          : ProfilePicture(
+                        name: widget.username,
+                        radius: 40,
+                        fontsize: 21,
+                      ),
+                      Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            width: 25,
+                            height: 25,
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              shape: BoxShape.circle,
+                            ),
+                          )),
+                      Positioned(
+                        bottom: 4,
+                        right: 4,
+                        child: Icon(Icons.edit_outlined, color: Colors.grey, size: 16),
+                      ),
+                    ]),
+                  ),
+                ),
+                SizedBox(height: 30),
+                Text("DISPLAY NAME",
+                  style: TextStyle(
+                    color: Color.fromRGBO(245, 245, 245, 0.8),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 5),
+                TextFormField(
+                  controller: inputDisplayName,
+                  decoration:
+                  const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Enter a display name',
+                    hintStyle: TextStyle(
+                        color: Color.fromRGBO(
+                            235, 235, 235, 0.2),
+                        fontSize: 14),
+                    isDense: true,
+                    filled: true,
+                    fillColor: Color.fromRGBO(
+                        22, 23, 27, 1),
+                  ),
+                  style: const TextStyle(
+                      fontSize: 14,
+                      color: Color.fromRGBO(
+                          235, 235, 235, 0.8)),
+                  validator: (String? value) {
+                    return verifyDisplayName(value);
+                  },
+                ),
+                SizedBox(height: 20),
+                Text("USERNAME",
+                  style: TextStyle(
+                    color: Color.fromRGBO(245, 245, 245, 0.8),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 5),
+                Stack(
+                  children: [
+                    TextFormField(
+                      maxLength: 20,
+                      controller: inputUsername,
+                      decoration:
+                      const InputDecoration(
+                        border: InputBorder.none,
+                        counterText: '',
+                        hintText: 'Enter a username',
+                        hintStyle: TextStyle(
+                            color: Color.fromRGBO(
+                                235, 235, 235, 0.2),
+                            fontSize: 14),
+                        isDense: true,
+                        filled: true,
+                        fillColor: Color.fromRGBO(
+                            22, 23, 27, 1),
+                      ),
+                      style: const TextStyle(
+                          fontSize: 14,
+                          color: Color.fromRGBO(
+                              235, 235, 235, 0.8)),
+                      validator: (String? value) {
+                        return verifyUsername(value);
+                      },
                     ),
+                    Positioned(
+                      right: 5,
+                      top: 0,
+                      child: Container(
+                        color: Color.fromRGBO(22, 23, 27, 1),
+                        child: Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Text(widget.username.substring(widget.username.length-5),
+                              style: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.4)),
+                            )
+                        ),
+                      )
+                    ),
+
+                      ],
+                    ),
+                SizedBox(height: 30),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                side: BorderSide(color: Color.fromRGBO(245, 245, 245, 0.8), width: 1.5),
+                              )
+                          ),
+                        ),
+                        onPressed: (){
+                          Navigator.of(context).pop();
+                        },
+                        child: Text("Cancel", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+                      ),
+                      SizedBox(width: 10),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStatePropertyAll<Color>(Color.fromRGBO(98, 112, 242, 1)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                        ),
+                        onPressed: () async {
+                          if (formEditProfileKey.currentState!.validate()) {
+                            editProfile(inputDisplayName.text, inputUsername.text, widget.username.substring(widget.username.length-5));
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        child: const Text('Save',
+                            style: TextStyle(
+                                color: Colors.white)),
+                      ),
+                  ]
+                )
+              ]
+            ),
             ),
           ),
         ),
@@ -129,7 +295,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                 SizedBox(height: 10),
                 (profilePicturePath == null)
                     ? ProfilePicture(
-                        name: username,
+                        name: widget.username,
                         radius: 40,
                         fontsize: 21,
                         img: (hasProfilePicture && !toRemoveProfilePicture)
@@ -178,7 +344,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                                   source: ImageSource.gallery);
                               setState(() {
                                 if (file != null) {
-                                  profilePicturePath = '${file?.path}';
+                                  profilePicturePath = '${file.path}';
                                 }
                               });
                             },
@@ -209,7 +375,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                                       source: ImageSource.camera);
                                   setState(() {
                                     if (file != null) {
-                                      profilePicturePath = '${file?.path}';
+                                      profilePicturePath = '${file.path}';
                                     }
                                   });
                                   print('[DEBUG]: ${file?.path}');
@@ -282,7 +448,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                     await changeProfilePicture();
                     Navigator.of(context).pop();
                   },
-                  child: Text("Save Picture",
+                  child: Text("Save",
                       style:
                           TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
                 ),
@@ -344,5 +510,13 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
       ));
       return;
     }
+  }
+
+  void editProfile(String displayName, String username, String usernameDiscrim) {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("Users/${getUID()}");
+    ref.update({
+      'username': "$username$usernameDiscrim",
+      'displayName': displayName,
+    });
   }
 }
