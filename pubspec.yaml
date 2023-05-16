@@ -36,6 +36,8 @@ flutter:
   uses-material-design: true
   assets:
     - lib/assets/images/emoji/
+    - lib/assets/images/onboarding/
+
   fonts:
     - family: SF-Pro
       fonts:
@@ -56,3 +58,11 @@ flutter:
           weight: 200
         - asset: lib/assets/fonts/sf-pro/SF-Pro-Display-Ultralight.otf
           weight: 100
+
+    - family: Spotnik
+      fonts:
+        - asset: lib/assets/fonts/spotnik/Fontspring-DEMO-caspotnik-regular.otf
+        - asset: lib/assets/fonts/spotnik/Fontspring-DEMO-caspotnik-bold.otf
+          weight: 700
+        - asset: lib/assets/fonts/spotnik/Fontspring-DEMO-caspotnik-italic.otf
+          style: italic
