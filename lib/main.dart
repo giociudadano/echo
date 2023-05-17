@@ -95,17 +95,19 @@ class _MyAppPageState extends State<MyAppPage> with TickerProviderStateMixin {
       });
     });
     FirebaseAuth.instance.authStateChanges().listen((User? user) async {
-      isLoggedIn = (user != null);
-      if (isLoggedIn) {
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Successfully logged out!")));
+      } else {
         String username = await _getUsername();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Successfully logged in as $username"),
         ));
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Successfully logged out!")));
+        Navigator.pop(context);
       }
-      setState(() {});
+      setState((){
+        isLoggedIn = (user != null);
+      });
     });
   }
 

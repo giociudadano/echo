@@ -2,7 +2,7 @@ part of main;
 
 
 class OnBoardingPage extends StatefulWidget {
-  const OnBoardingPage({Key? key}) : super(key: key);
+  OnBoardingPage({super.key});
 
   @override
   State<OnBoardingPage> createState() => _OnBoardingPageState();
@@ -59,12 +59,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (currentIndex == contents.length - 1) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => LoginPage(),
-                        ),
-                      );
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginPage()));
                     }
                     _pageController.nextPage(
                       duration: const Duration(milliseconds: 300),
