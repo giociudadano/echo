@@ -549,7 +549,7 @@ class WidgetGroupsBuilderState extends State<WidgetGroupsBuilder> {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('MY GROUPS',
+                      Text('MY CLASSES',
                         style: TextStyle(
                           fontSize: 12,
                           color: Color.fromRGBO(245, 245, 245, 0.8),

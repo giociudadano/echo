@@ -1,21 +1,28 @@
-import 'package:flutter/material.dart';
-import 'package:bullet/content_model.dart';
-import 'package:bullet/dummy_home.dart';
+part of main;
 
-class OnBoardingScreen extends StatefulWidget {
-  const OnBoardingScreen({Key? key}) : super(key: key);
+
+class OnBoardingPage extends StatefulWidget {
+  const OnBoardingPage({Key? key}) : super(key: key);
 
   @override
-  State<OnBoardingScreen> createState() => _OnBoardingScreenState();
+  State<OnBoardingPage> createState() => _OnBoardingPageState();
 }
 
-class _OnBoardingScreenState extends State<OnBoardingScreen> {
+class _OnBoardingPageState extends State<OnBoardingPage> {
   int currentIndex = 0;
   final PageController _pageController = PageController(initialPage: 0);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+          toolbarHeight: 0,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            systemNavigationBarColor: Color.fromRGBO(98, 112, 243, 1), // Navigation bar
+            statusBarColor: Color.fromRGBO(98, 112, 243, 1),
+          )
+      ),
+      backgroundColor: Color.fromRGBO(98, 112, 243, 1),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(40.0),
@@ -55,7 +62,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const Home(),
+                          builder: (_) => LoginPage(),
                         ),
                       );
                     }
@@ -142,7 +149,7 @@ class OnBoardingContent extends StatelessWidget {
         ListTile(
           contentPadding: const EdgeInsets.symmetric(vertical: 5),
           leading: Image.asset(
-            "assets/icons/verified.png",
+            "lib/assets/images/onboarding/verified.png",
           ),
           title: Text(
             description2,

@@ -12,6 +12,13 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      appBar: AppBar(
+          toolbarHeight: 0,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            systemNavigationBarColor: Color.fromRGBO(98, 112, 243, 1), // Navigation bar
+            statusBarColor: Color.fromRGBO(98, 112, 243, 1),
+          )
+      ),
       backgroundColor: Color.fromRGBO(98, 112, 243, 1),
       body: SafeArea(
         child: Padding(

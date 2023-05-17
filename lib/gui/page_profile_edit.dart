@@ -53,7 +53,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
 
   @override
   Widget build(BuildContext context) {
-
+    getHasProfilePicture();
     return Scaffold(
       appBar: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle(
@@ -96,19 +96,11 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                   },
                   child: Center(
                     child: Stack(children: [
-                      (hasProfilePicture)
-                          ? ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
-                          child: Image.network(
-                            profilePictureURL,
-                            width: 80,
-                            height: 80,
-                            fit: BoxFit.cover,
-                          ))
-                          : ProfilePicture(
+                      ProfilePicture(
                         name: widget.username,
                         radius: 40,
                         fontsize: 21,
+                        img: profilePictureURL,
                       ),
                       Positioned(
                           bottom: 0,
@@ -269,56 +261,59 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
         builder: (BuildContext context) {
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
-              icon: Icon(Icons.account_circle_outlined,
-                  color: Color.fromRGBO(98, 112, 242, 1), size: 32),
-              backgroundColor: Color.fromRGBO(32, 35, 43, 1),
+              backgroundColor: Color.fromRGBO(30, 30, 30, 1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              title: Text(
-                "Update Profile Picture",
-                style: TextStyle(
-                  color: Color.fromRGBO(245, 245, 245, 1),
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
+              title: Center(
+                child: Text(
+                  "Update Profile Picture",
+                  style: TextStyle(
+                    color: Color.fromRGBO(245, 245, 245, 1),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20,
+                  ),
                 ),
               ),
-              content: Column(mainAxisSize: MainAxisSize.min, children: [
-                Text(
-                  "PREVIEW",
-                  style: TextStyle(
-                    color: Color.fromRGBO(245, 245, 245, 0.6),
-                    fontSize: 11,
-                    letterSpacing: 2.5,
-                  ),
-                ),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text("PREVIEW",
+                      style: TextStyle(
+                        color: Color.fromRGBO(245, 245, 245, 0.8),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                 SizedBox(height: 10),
-                (profilePicturePath == null)
-                    ? ProfilePicture(
-                        name: widget.username,
-                        radius: 40,
-                        fontsize: 21,
-                        img: (hasProfilePicture && !toRemoveProfilePicture)
-                            ? profilePictureURL
-                            : null,
-                      )
-                    : ClipRRect(
-                        borderRadius: BorderRadius.circular(40),
-                        child: Image.file(
-                          File(profilePicturePath!),
-                          width: 80,
-                          height: 80,
-                          fit: BoxFit.cover,
-                        )),
-                SizedBox(height: 20),
-                Text(
-                  "SELECT SOURCE",
-                  style: TextStyle(
-                    color: Color.fromRGBO(245, 245, 245, 0.6),
-                    fontSize: 11,
-                    letterSpacing: 2.5,
-                  ),
+                Center(
+                  child: (profilePicturePath == null)
+                      ? ProfilePicture(
+                    name: widget.username,
+                    radius: 40,
+                    fontsize: 21,
+                    img: (hasProfilePicture && !toRemoveProfilePicture)
+                        ? profilePictureURL
+                        : null,
+                  )
+                      : ClipRRect(
+                      borderRadius: BorderRadius.circular(40),
+                      child: Image.file(
+                        File(profilePicturePath!),
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                      )),
                 ),
+                SizedBox(height: 20),
+                    Text("SOURCE",
+                      style: TextStyle(
+                        color: Color.fromRGBO(245, 245, 245, 0.8),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                 SizedBox(height: 10),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -327,7 +322,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                       Column(children: [
                         Container(
                           decoration: BoxDecoration(
-                              color: Color.fromRGBO(34, 50, 69, 1),
+                              color: Color.fromRGBO(50, 50, 58, 1),
                               border: Border.all(
                                 color: Colors.transparent,
                               ),
@@ -358,7 +353,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                       Column(children: [
                         Container(
                             decoration: BoxDecoration(
-                                color: Color.fromRGBO(34, 50, 69, 1),
+                                color: Color.fromRGBO(50, 50, 58, 1),
                                 border: Border.all(
                                   color: Colors.transparent,
                                 ),
@@ -388,7 +383,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                       Column(children: [
                         Container(
                             decoration: BoxDecoration(
-                                color: Color.fromRGBO(34, 50, 69, 1),
+                                color: Color.fromRGBO(50, 50, 58, 1),
                                 border: Border.all(
                                   color: Colors.transparent,
                                 ),

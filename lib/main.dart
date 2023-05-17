@@ -33,6 +33,7 @@ import 'package:google_fonts/google_fonts.dart';
 // Custom Objects
 import 'objects/card_post.dart';
 import 'objects/group_filter.dart';
+import 'package:bullet/content_model.dart';
 part 'objects/card_group.dart';
 
 part 'gui/page_login.dart';
@@ -42,6 +43,7 @@ part 'gui/page_home.dart';
 part 'gui/page_profile.dart';
 part 'gui/page_groups_more.dart';
 part 'gui/page_profile_edit.dart';
+part 'gui/page_onboarding.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -122,7 +124,7 @@ class _MyAppPageState extends State<MyAppPage> with TickerProviderStateMixin {
           extendBody: true,
           body: Stack(
             children: [
-              isLoggedIn ? page : LoginPage(),
+              isLoggedIn ? page : OnBoardingPage(),
               isLoggedIn
                   ? AppNavigationBar(tabController)
                   : const SizedBox.shrink(),

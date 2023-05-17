@@ -105,6 +105,8 @@ class _CardPostState extends State<CardPost> {
 
   @override
   Widget build(BuildContext context) {
+    getUsername();
+    getProfilePicture();
     if (widget.username != ''){
       setState((){
         widget.isDoneBuilding = true;

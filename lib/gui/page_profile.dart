@@ -85,19 +85,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
                           },
                           child: Stack(children: [
-                            (hasProfilePicture)
-                                ? ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: Image.network(
-                                  profilePictureURL,
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.cover,
-                                ))
-                                : ProfilePicture(
+                            ProfilePicture(
                               name: username,
                               radius: 50,
                               fontsize: 21,
+                              img: profilePictureURL,
                             ),
                             Positioned(
                                 bottom: 0,

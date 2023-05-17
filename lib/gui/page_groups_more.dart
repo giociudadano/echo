@@ -127,6 +127,11 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                                   ),
                                 ] : [
                                   PopupMenuItem(
+                                    onTap: () {
+                                      Future.delayed(
+                                          const Duration(seconds: 0),
+                                              () => AlertLeaveGroup(widget.groupID));
+                                    },
                                     child: Text("Leave Class",
                                       style: TextStyle(
                                         color: Color.fromRGBO(255, 167, 167, 1),
@@ -517,7 +522,82 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
     (FirebaseDatabase.instance.ref("Posts/$postID")).remove();
   }
 
+  void AlertLeaveGroup(String groupID) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color.fromRGBO(30, 30, 32, 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: Center(
+              child: Text("Confirm Leave Class",
+                  style: TextStyle(
+                    color: Color.fromRGBO(245, 245, 245, 1),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                  ))
+          ),
+          content: Text(
+              "This action will permanently remove you from the class. Are you sure you want to continue?",
+              style: TextStyle(
+                color: Color.fromRGBO(245, 245, 245, 0.8),
+                fontSize: 14,
+              )),
+          actions: [
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    side: BorderSide(
+                        color: Color.fromRGBO(245, 245, 245, 0.8),
+                        width: 1.5
+                    ),
+                  ),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Cancel",
+                  style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+            ),
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll<Color>(
+                    Color.fromRGBO(238, 94, 94, 1)),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                LeaveGroup(widget.groupID);
+              },
+              child: Text("Leave Class",
+                  style: TextStyle(
+                    color: Color.fromRGBO(245, 245, 245, 0.8),
+                  )
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
+  void LeaveGroup(String groupID) async {
+    // 1. Remove cards containing only this group
+    // 2. Remove instance of group on cards containing more than this group
+    // 3. Delete user from group
+    (FirebaseDatabase.instance.ref("Groups/$groupID/members/${getUID()}")).remove();
+    Navigator.pop(context);
+  }
 
 }
 

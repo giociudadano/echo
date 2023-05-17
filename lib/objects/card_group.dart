@@ -46,6 +46,8 @@ class _CardGroupState extends State<CardGroup> {
 
   @override
   Widget build(BuildContext context) {
+    getUsername();
+    getProfilePicture();
     if (widget.adminUsername != ''){
       setState((){
         widget.isDoneBuilding = true;
