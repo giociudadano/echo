@@ -311,6 +311,7 @@ class _FormAddGroupState extends State<FormAddGroup> {
                                                       inputGroupDesc.text,
                                                       getUID(),
                                                     );
+                                                    Navigator.of(context).pop();
                                                   }
                                                 },
                                                 child: const Text(

@@ -13,6 +13,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String username = '';
   String displayName = '';
   String profilePictureURL = '';
+  String status = '';
 
   @override
   void initState() {
@@ -38,14 +39,18 @@ class _ProfilePageState extends State<ProfilePage> {
     String username = snapshot.value.toString();
     snapshot = await (FirebaseDatabase.instance.ref("Users/$UID/displayName")).get();
     String displayName = snapshot.value.toString();
+    snapshot = await (FirebaseDatabase.instance.ref("Users/$UID/status")).get();
+    String status = snapshot.value.toString();
     setState(() {
       this.username = username;
       this.displayName = displayName;
+      this.status = status;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    getProfileMetadata();
     return Scaffold(
       appBar: AppBar(
           toolbarHeight: 0,
@@ -82,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Row(children: [
                         GestureDetector(
                           onTap: () {
-
+                            AlertChangeStatus();
                           },
                           child: Stack(children: [
                             ProfilePicture(
@@ -109,10 +114,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                   width: 22,
                                   height: 22,
                                   decoration: BoxDecoration(
-                                    color: Colors.green,
+                                    color: getStatusColor(status),
                                     shape: BoxShape.circle,
                                   ),
-                                ))
+                                )),
+                            getStatusOverlay(status),
                           ]),
                         ),
                         SizedBox(width: 25),
@@ -188,23 +194,84 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       TextButton(
                         onPressed: () {
-                          displayUnimplementedError();
+                          AlertChangeStatus();
                         },
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Row(children: [
-                                Icon(Icons.swap_horiz_outlined,
+                                Icon(Icons.person_pin_circle_outlined,
                                     color: Color.fromRGBO(235, 235, 235, 0.8)),
                                 SizedBox(width: 20),
-                                Text('Change Account',
+                                Text('Set Status',
                                     style: TextStyle(
                                       color: Color.fromRGBO(235, 235, 235, 0.8),
                                       fontSize: 14,
                                     ))
                               ]),
-                              Icon(Icons.chevron_right,
-                                  color: Color.fromRGBO(235, 235, 235, 0.8)),
+                              Row(children: [
+                                Stack(
+                                  children:[
+                                    Container(
+                                      width: 10,
+                                      height: 10,
+                                      decoration: BoxDecoration(
+                                        color: getStatusColor(status),
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                    status == 'Away' ? Positioned(
+                                          bottom: 3,
+                                          right: 3,
+                                          child: Container(
+                                            width: 10,
+                                            height: 10,
+                                            decoration: BoxDecoration(
+                                              color: Color.fromRGBO(32, 35, 43, 1),
+                                              shape: BoxShape.circle,
+                                            ),
+                                          )
+                                      ) : SizedBox.shrink(),
+                                    status == 'Do Not Disturb' ?
+                                    Positioned(
+                                        top: 3,
+                                        left: 2,
+                                        child: ClipRect(
+                                            child: Container(
+                                              width: 6,
+                                              height: 3,
+                                              decoration: BoxDecoration(
+                                                color: Color.fromRGBO(32, 35, 43, 1),
+                                                shape: BoxShape.rectangle,
+                                                borderRadius: BorderRadius.circular(5),
+                                              ),
+                                            )
+                                        )
+                                    ) : SizedBox.shrink(),
+                                    status == 'Offline' ? Positioned(
+                                        top: 2,
+                                        left: 2,
+                                        child: Container(
+                                          width: 6,
+                                          height: 6,
+                                          decoration: BoxDecoration(
+                                            color: Color.fromRGBO(32, 35, 43, 1),
+                                            shape: BoxShape.circle,
+                                          ),
+                                        )
+                                    ) : SizedBox.shrink(),
+                                  ]
+                                ),
+                                SizedBox(width: 12),
+                                Text(status,
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(235, 235, 235, 0.4),
+                                      fontSize: 14,
+                                )),
+                                SizedBox(width: 20),
+                                Icon(Icons.chevron_right,
+                                    color: Color.fromRGBO(235, 235, 235, 0.8)),
+                              ]),
                             ]),
                       ),
                       TextButton(
@@ -405,6 +472,249 @@ class _ProfilePageState extends State<ProfilePage> {
       return;
     }
   }
+
+  AlertChangeStatus(){
+    showModalBottomSheet(
+        context: context,
+        builder: (builder) {
+          return Container(
+            color: Color.fromRGBO(32, 35, 43, 1),
+            height: 260,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(22, 25, 22, 10),
+              child: Column(
+                children:[
+                  Text("Set Status",
+                      style: TextStyle(
+                        color: Color.fromRGBO(245, 245, 245, 1),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
+                  )),
+                  TextButton(
+                    onPressed: () {
+                      changeStatus('Online');
+                      setState((){});
+                      Navigator.pop(context);
+                    },
+                    child: Row(children: [
+                      Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: Color.fromRGBO(102, 189, 80, 1),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      Text('Online',
+                          style: TextStyle(
+                            color: Color.fromRGBO(235, 235, 235, 0.8),
+                            fontSize: 14,
+                          )
+                      )
+                    ]),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      changeStatus('Away');
+                      setState((){});
+                      Navigator.pop(context);
+                    },
+                    child: Row(children: [
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Container(
+                              width: 12,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                color: Color.fromRGBO(235, 188, 70, 1),
+                                shape: BoxShape.circle,
+                              ),
+                          ),
+                          Positioned(
+                            bottom: 3,
+                            right: 3,
+                            child: Container(
+                              width: 10,
+                              height: 10,
+                              decoration: BoxDecoration(
+                                color: Color.fromRGBO(32, 35, 43, 1),
+                                shape: BoxShape.circle,
+                              ),
+                            )
+                          )
+                        ]
+                      ),
+                      SizedBox(width: 20),
+                      Text('Away',
+                          style: TextStyle(
+                            color: Color.fromRGBO(235, 235, 235, 0.8),
+                            fontSize: 14,
+                          )
+                      )
+                    ]),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      changeStatus('Do Not Disturb');
+                      setState((){});
+                      Navigator.pop(context);
+                    },
+                    child: Row(children: [
+                      Stack(
+
+                          children: [
+                            Container(
+                              width: 12,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                color: Color.fromRGBO(222, 72, 65, 1),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            Positioned(
+                                top: 5,
+                                left: 2,
+                                child: ClipRect(
+                                    child: Container(
+                                      width: 8,
+                                      height: 3,
+                                      decoration: BoxDecoration(
+                                        color: const Color.fromRGBO(32, 35, 43, 1),
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                    )
+                                )
+                            ),
+                          ]
+                      ),
+                      SizedBox(width: 20),
+                      Text('Do Not Disturb',
+                          style: TextStyle(
+                            color: Color.fromRGBO(235, 235, 235, 0.8),
+                            fontSize: 14,
+                          )
+                      )
+                    ]),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      changeStatus('Offline');
+                      setState((){});
+                      Navigator.pop(context);
+                    },
+                    child: Row(children: [
+                      Stack(
+                          children: [
+                            Container(
+                              width: 12,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                color: Color.fromRGBO(195, 201, 208, 1),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            Positioned(
+                                top: 2,
+                                left: 2,
+                                child: Container(
+                                  width: 8,
+                                  height: 8,
+                                  decoration: BoxDecoration(
+                                    color: Color.fromRGBO(32, 35, 43, 1),
+                                    shape: BoxShape.circle,
+                                  ),
+                                )
+                            )
+                          ]
+                      ),
+                      SizedBox(width: 20),
+                      Text('Offline',
+                          style: TextStyle(
+                            color: Color.fromRGBO(235, 235, 235, 0.8),
+                            fontSize: 14,
+                          )
+                      )
+                    ]),
+                  )
+                ]
+              )
+            )
+          );
+        }
+        );
+  }
+
+  getStatusColor(String status) {
+    switch (status){
+      case 'Online':
+        return Color.fromRGBO(102, 189, 80, 1);
+      case 'Away':
+        return Color.fromRGBO(235, 188, 70, 1);
+      case 'Do Not Disturb':
+        return Color.fromRGBO(222, 72, 65, 1);
+      case 'Offline':
+        return Color.fromRGBO(195, 201, 208, 1);
+      default:
+        return Color.fromRGBO(22, 22, 22, 1);
+    }
+  }
+
+  Widget getStatusOverlay(String status){
+    switch (status) {
+      case 'Away':
+        return Positioned(
+          bottom: 13,
+          right: 13,
+          child: Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+            color: Color.fromRGBO(25, 25, 32, 1),
+            shape: BoxShape.circle,
+            ),
+          )
+        );
+      case 'Do Not Disturb':
+        return Positioned(
+            bottom: 15,
+            right: 11,
+            child: ClipRect(
+              child: Container(
+                width: 14,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(25, 25, 32, 1),
+                  shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(5),
+                ),
+              )
+            )
+        );
+      case 'Offline':
+        return Positioned(
+            bottom: 12,
+            right: 12,
+            child: Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(25, 25, 32, 1),
+                shape: BoxShape.circle,
+              ),
+            )
+        );
+      default:
+        return SizedBox.shrink();
+    }
+  }
+
+  void changeStatus(String status) {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("Users/${getUID()}");
+    ref.update({
+      "status": status,
+    });
+  }
 }
-
-

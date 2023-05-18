@@ -239,6 +239,7 @@ class SignupPage extends StatelessWidget {
         ref.update({
           "username": _generateUsername(username),
           "displayName": username,
+          "status": "online",
         });
       }
     });
