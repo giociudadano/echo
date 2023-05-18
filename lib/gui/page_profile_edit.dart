@@ -5,10 +5,10 @@ class ProfileEditPage extends StatefulWidget {
   ProfileEditPage(this.displayName, this.username);
 
   @override
-  State<ProfileEditPage> createState() => _ProfileEditPageState();
+  State<ProfileEditPage> createState() => GroupsMoreMembersState();
 }
 
-class _ProfileEditPageState extends State<ProfileEditPage> {
+class GroupsMoreMembersState extends State<ProfileEditPage> {
   final GlobalKey<FormState> formEditProfileKey = GlobalKey<FormState>();
   bool hasProfilePicture = false, toRemoveProfilePicture = false;
   String UID = getUID();

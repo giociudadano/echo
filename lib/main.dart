@@ -44,6 +44,7 @@ part 'gui/page_profile.dart';
 part 'gui/page_groups_more.dart';
 part 'gui/page_profile_edit.dart';
 part 'gui/page_onboarding.dart';
+part 'gui/page_groups_more_members.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -116,7 +117,9 @@ class _MyAppPageState extends State<MyAppPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     Widget page;
-    page = TabBarView(controller: tabController, children: [
+    page = TabBarView(
+      controller: tabController,
+      children: [
       HomePage(),
       GroupsPage(),
       ProfilePage(),

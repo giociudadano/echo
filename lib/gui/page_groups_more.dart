@@ -93,6 +93,22 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                                     onTap: () {
                                       Future.delayed(
                                           const Duration(seconds: 0),
+                                              () => Navigator.push(context,
+                                                MaterialPageRoute(builder: (context) =>
+                                                    GroupsMoreMembersPage()
+                                                ),
+                                              ));
+                                    },
+                                    child: Text("View Members",
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(235, 235, 235, 1),
+                                      ),
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    onTap: () {
+                                      Future.delayed(
+                                          const Duration(seconds: 0),
                                               () => AlertInviteMembers(widget.groupID));
                                     },
                                     child: Text("Invite Members",
@@ -210,16 +226,26 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
           content: Column(
             children: [
               Container(
-                width: 200.0,
-                height: 200.0,
+                width: 250.0,
+                height: 250.0,
                 child: QrImage(
-                  foregroundColor: Colors.white,
+                  errorCorrectionLevel: QrErrorCorrectLevel.H,
+                  backgroundColor: Colors.white,
                   data: "${groupID}",
                   version: QrVersions.auto,
-                  size: 200.0,
+                  size: 250.0,
                 ),
               ),
               SizedBox(height: 20),
+              Text("To add this class, please use the 'Scan QR Code' function found in the 'Classes' section. Please do not share this QR Code with unauthorized users.",
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    color: Color.fromRGBO(245, 245, 245, 0.6),
+                    fontSize: 12,
+                    height: 0.95,
+                  )
+              ),
+              SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
