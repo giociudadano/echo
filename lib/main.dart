@@ -103,7 +103,9 @@ class _MyAppPageState extends State<MyAppPage> with TickerProviderStateMixin {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Successfully logged in as $username"),
         ));
-        Navigator.pop(context);
+        if (foundation.kIsWeb) {
+          Navigator.pop(context);
+        }
       }
       setState((){
         isLoggedIn = (user != null);

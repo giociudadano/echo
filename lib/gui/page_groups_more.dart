@@ -505,7 +505,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
     DataSnapshot snapshot = await ref.get();
     List groups = [];
     (snapshot.value as Map).forEach((a, b) => groups.add(a));
-    for (var group in groups){
+    for (var group in groups) {
       (FirebaseDatabase.instance.ref("Groups/$group/posts/$postID")).remove();
     }
 
@@ -592,13 +592,29 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
   }
 
   void LeaveGroup(String groupID) async {
-    // 1. Remove cards containing only this group
-    // 2. Remove instance of group on cards containing more than this group
-    // 3. Delete user from group
-    (FirebaseDatabase.instance.ref("Groups/$groupID/members/${getUID()}")).remove();
+    String userID = getUID();
+    DataSnapshot snapshot = await (FirebaseDatabase.instance.ref("Groups/$groupID/posts")).get();
+    List posts = [];
+    if (snapshot.value != null) {
+      (snapshot.value as Map).forEach((a, b) => posts.add(a));
+      for (var post in posts){
+        snapshot = await (FirebaseDatabase.instance.ref("Posts/$post/userID")).get();
+        if (snapshot.value == userID){
+          snapshot = await (FirebaseDatabase.instance.ref("Posts/$post/groups")).get();
+          List groups = [];
+          (snapshot.value as Map).forEach((a, b) => groups.add(a));
+          if (groups.length == 1){
+            DeleteCard(post);
+          } else {
+            (FirebaseDatabase.instance.ref("Posts/$post/groups/$groupID")).remove();
+          }
+        }
+      }
+    }
+    (FirebaseDatabase.instance.ref("Groups/$groupID/members/$userID")).remove();
+    (FirebaseDatabase.instance.ref("Users/$userID/groups/$groupID")).remove();
     Navigator.pop(context);
   }
-
 }
 
 class WidgetGroupsMorePostsBuilder extends StatefulWidget {
