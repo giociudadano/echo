@@ -658,7 +658,7 @@ class _ProfilePageState extends State<ProfilePage> {
       case 'Offline':
         return Color.fromRGBO(195, 201, 208, 1);
       default:
-        return Color.fromRGBO(22, 22, 22, 1);
+        return Colors.transparent;
     }
   }
 

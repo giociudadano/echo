@@ -464,6 +464,7 @@ class _CardPostState extends State<CardPost> {
   }
 
   void AlertReportAuthor(String postID, String userID, String username) async {
+    String dropdownValue = 'Spam';
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -482,14 +483,34 @@ class _CardPostState extends State<CardPost> {
                         fontWeight: FontWeight.w700,
                         fontSize: 20,
                       )
-                  ),
+                  )
                 )
               ),
-              content: Text("We value your safe space and take reports seriously. If we find this account to be malicious, we will either remove this card or suspend the account. Are you sure you want to continue?",
-                  style: TextStyle(
-                    color: Color.fromRGBO(245, 245, 245, 0.8),
-                    fontSize: 14,
-                  )
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children:[
+                  Text('SELECT OPTION',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Color.fromRGBO(245, 245, 245, 0.8),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  DropdownButtonClass(
+                      onValueChanged: (value) {
+                        dropdownValue = value;
+                      }
+                  ),
+                  SizedBox(height: 20),
+                  Text("We value your safe space and take reports seriously. If we find this account to be malicious, we will either remove this card or suspend the account for repeat offenses. Are you sure you want to continue?",
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        color: Color.fromRGBO(245, 245, 245, 0.6),
+                        fontSize: 12,
+                        height: 0.95,
+                      )
+                  ),
+                ]
               ),
               actions: [
                 ElevatedButton(
@@ -520,7 +541,7 @@ class _CardPostState extends State<CardPost> {
                   ),
                   onPressed: (){
                     Navigator.of(context).pop();
-                    ReportAuthor(postID, userID);
+                    ReportAuthor(postID, userID, dropdownValue);
                   },
                   child: Text("Report", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
                 ),
@@ -530,9 +551,9 @@ class _CardPostState extends State<CardPost> {
     );
   }
 
-  void ReportAuthor(String postID, String userID) {
+  void ReportAuthor(String postID, String userID, String value) {
     DatabaseReference ref = FirebaseDatabase.instance.ref("Reports/$postID");
-    ref.update({userID:true});
+    ref.update({userID:value});
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text("User has been reported!"),
     ));
@@ -566,6 +587,59 @@ class _CardPostState extends State<CardPost> {
             '${emoji.name.toLowerCase().replaceAll(RegExp(' '), '_').replaceAll(RegExp('[^a-z^A-Z^0-9\^-\^_\^%]+'),'')}_3d.png';
       }
     }
+  }
+}
+
+class DropdownButtonClass extends StatefulWidget {
+  final ValueChanged<String> onValueChanged;
+  DropdownButtonClass({required this.onValueChanged});
+
+  @override
+  State<StatefulWidget> createState() => DropdownButtonClassState();
+}
+
+class DropdownButtonClassState extends State<DropdownButtonClass> {
+  String dropdownValue = 'Spam';
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton(
+      value: dropdownValue,
+      dropdownColor: Colors.black,
+      isExpanded: true,
+      items: [
+        DropdownMenuItem(
+            value: "Spam",
+            child: Text('Spam', style: TextStyle(color: Color.fromRGBO(245, 245, 245, 1)))
+        ),
+        DropdownMenuItem(
+            value: "Misinformation",
+            child: Text('Misinformation', style: TextStyle(color: Color.fromRGBO(245, 245, 245, 1)))
+        ),
+        DropdownMenuItem(
+            value: "Duplicate",
+            child: Text('Duplicate', style: TextStyle(color: Color.fromRGBO(245, 245, 245, 1)))
+        ),
+        DropdownMenuItem(
+            value: "Explicit",
+            child: Text('Explicit', style: TextStyle(color: Color.fromRGBO(245, 245, 245, 1)))
+        ),
+        DropdownMenuItem(
+            value: "Harassment",
+            child: Text('Harassment', style: TextStyle(color: Color.fromRGBO(245, 245, 245, 1)))
+        ),
+        DropdownMenuItem(
+            value: "Others",
+            child: Text('Others', style: TextStyle(color: Color.fromRGBO(245, 245, 245, 1)))
+        )
+      ],
+      onChanged: (String? value) {
+        setState(() {
+          dropdownValue = value!;
+          widget.onValueChanged(value!);
+        });
+      },
+    );
   }
 }
 

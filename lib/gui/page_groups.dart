@@ -492,16 +492,18 @@ class WidgetGroupsBuilderState extends State<WidgetGroupsBuilder> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-                backgroundColor: Color.fromRGBO(32, 35, 43, 1),
+                backgroundColor: Color.fromRGBO(30, 30, 32, 1),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                title: Text("Invalid Class Invite",
-                    style: TextStyle(
-                      color: Color.fromRGBO(245, 245, 245, 1),
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                    )),
+                title: Center(
+                  child: Text("Invalid Class Invite",
+                      style: TextStyle(
+                        color: Color.fromRGBO(245, 245, 245, 1),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
+                      )),
+                ),
                 content: Text(
                     "We could not find a class with that ID. Please try again with a valid QR code.",
                     style: TextStyle(
