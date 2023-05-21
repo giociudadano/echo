@@ -18,9 +18,10 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
   void initState() {
     super.initState();
     initAdminPerms(widget.groupID);
-    DatabaseReference ref = FirebaseDatabase.instance.ref('Groups/${widget.groupID}');
+    DatabaseReference ref =
+        FirebaseDatabase.instance.ref('Groups/${widget.groupID}');
     ref.onValue.listen((event) async {
-      setState((){
+      setState(() {
         widget.groupName = event.snapshot.child('name').value.toString();
         widget.groupDesc = event.snapshot.child('description').value.toString();
       });
@@ -30,56 +31,100 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          appBar: AppBar(
-              toolbarHeight: 0,
-              systemOverlayStyle: SystemUiOverlayStyle(
-                systemNavigationBarColor: Color.fromRGBO(32, 35, 43, 1), // Navigation bar
-                statusBarColor: Colors.black,
-              )
-          ),
-          backgroundColor: const Color.fromRGBO(32, 35, 43, 1),
-          body: SafeArea(
-            child: Column(
-              children: [
-                Container(
-                  color: Colors.black,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 10, 24, 15),
-                    child: Column(
+      appBar: AppBar(
+          toolbarHeight: 0,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            systemNavigationBarColor:
+                Color.fromRGBO(32, 35, 43, 1), // Navigation bar
+            statusBarColor: Colors.black,
+          )),
+      backgroundColor: const Color.fromRGBO(32, 35, 43, 1),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              color: Colors.black,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(24, 10, 24, 15),
+                child: Column(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            IconButton(
-                              color: Color.fromRGBO(98, 112, 242, 1),
-                              icon: const Icon(Icons.arrow_back),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
+                        IconButton(
+                          color: Color.fromRGBO(98, 112, 242, 1),
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        SizedBox(width: 20),
+                        Expanded(
+                          child: Container(
+                            height: 60,
+                            child: Stack(
+                              children: [
+                                Text(
+                                  "${widget.groupName}",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                Positioned(
+                                  top: 24,
+                                  child: Text(
+                                    "${widget.groupDesc}",
+                                    style: TextStyle(
+                                        color:
+                                            Color.fromRGBO(235, 235, 235, 0.8),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(width: 20),
-                            Expanded(
-                              child: Container(
-                                height: 60,
-                                child: Stack(
-                                  children: [
-                                    Text(
-                                      "${widget.groupName}",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                    Positioned(
-                                      top: 24,
+                          ),
+                        ),
+                        PopupMenuButton(
+                          icon: Icon(Icons.more_vert, color: Colors.white),
+                          color: Color.fromRGBO(30, 30, 32, 1),
+                          itemBuilder: (BuildContext context) {
+                            return isAdmin
+                                ? [
+                                    PopupMenuItem(
+                                      onTap: () {
+                                        Future.delayed(
+                                            const Duration(seconds: 0),
+                                            () => Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          GroupsMoreMembersPage(
+                                                              widget.groupID)),
+                                                ));
+                                      },
                                       child: Text(
-                                        "${widget.groupDesc}",
+                                        "View Members",
                                         style: TextStyle(
-                                            color: Color.fromRGBO(235, 235, 235, 0.8),
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500),
+                                          color:
+                                              Color.fromRGBO(235, 235, 235, 1),
+                                        ),
                                       ),
                                     ),
+                                    PopupMenuItem(
+                                      onTap: () {
+                                        Future.delayed(
+                                            const Duration(seconds: 0),
+                                            () => AlertInviteMembers(
+                                                widget.groupID));
+                                      },
+                                      child: Text(
+                                        "Invite Members",
+                                        style: TextStyle(
+                                          color:
+                                              Color.fromRGBO(235, 235, 235, 1),
+                                        ),
                                   ],
                                 ),
                               ),
@@ -104,42 +149,73 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                                         color: Color.fromRGBO(235, 235, 235, 1),
                                       ),
                                     ),
-                                  ),
-                                  PopupMenuItem(
-                                    onTap: () {
-                                      Future.delayed(
-                                          const Duration(seconds: 0),
-                                              () => AlertInviteMembers(widget.groupID));
-                                    },
-                                    child: Text("Invite Members",
-                                      style: TextStyle(
-                                        color: Color.fromRGBO(235, 235, 235, 1),
-                                      ),
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    onTap: () {
-                                      Future.delayed(
-                                          const Duration(seconds: 0),
-                                              () => AlertEditGroup(widget.groupID, widget.groupName, widget.groupDesc));
-                                    },
-                                    child: Text("Edit Class",
-                                      style: TextStyle(
-                                        color: Color.fromRGBO(235, 235, 235, 1),
-                                      ),
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    onTap: () {
-                                      Future.delayed(
-                                        const Duration(seconds: 0),
-                                      () => AlertDeleteGroup(widget.groupID));
-                                    },
-                                      child: Text("Delete Class",
+                                    PopupMenuItem(
+                                      onTap: () {
+                                        Future.delayed(
+                                            const Duration(seconds: 0),
+                                            () => AlertEditGroup(
+                                                widget.groupID,
+                                                widget.groupName,
+                                                widget.groupDesc));
+                                      },
+                                      child: Text(
+                                        "Edit Class",
                                         style: TextStyle(
-                                          color: Color.fromRGBO(255, 167, 167, 1),
+                                          color:
+                                              Color.fromRGBO(235, 235, 235, 1),
                                         ),
                                       ),
+                                    ),
+                                    PopupMenuItem(
+                                      onTap: () {
+                                        Future.delayed(
+                                            const Duration(seconds: 0),
+                                            () => AlertDeleteGroup(
+                                                widget.groupID));
+                                      },
+                                      child: Text(
+                                        "Delete Class",
+                                        style: TextStyle(
+                                          color:
+                                              Color.fromRGBO(255, 167, 167, 1),
+                                        ),
+                                      ),
+                                    ),
+                                  ]
+                                : [
+                                    PopupMenuItem(
+                                      onTap: () {
+                                        Future.delayed(
+                                            const Duration(seconds: 0),
+                                            () => Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          GroupsMoreMembersPage(
+                                                              widget.groupID)),
+                                                ));
+                                      },
+                                      child: Text(
+                                        "View Members",
+                                        style: TextStyle(
+                                          color:
+                                              Color.fromRGBO(235, 235, 235, 1),
+                                        ),
+                                      ),
+                                    ),
+                                    PopupMenuItem(
+                                      onTap: () {
+                                        Future.delayed(
+                                            const Duration(seconds: 0),
+                                            () => AlertLeaveGroup(
+                                                widget.groupID));
+                                      },
+                                      child: Text(
+                                        "Leave Class",
+                                        style: TextStyle(
+                                          color:
+                                              Color.fromRGBO(255, 167, 167, 1),
+                                        ),
                                   ),
                                 ] : [
                                   PopupMenuItem(
@@ -169,56 +245,55 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                                         color: Color.fromRGBO(255, 167, 167, 1),
                                       ),
                                     ),
-                                  ),
-                                ];
-                              },
-                            ),
-                          ],
-                        ),
-                        TextFormField(
-                          controller: inputSearch,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: BorderSide.none,
-                            ),
-                            contentPadding:
-                                const EdgeInsets.fromLTRB(22, 12, 60, 12),
-                            hintText: '🔍  Search cards',
-                            hintStyle: TextStyle(
-                                color: Color.fromRGBO(235, 235, 235, 0.8),
-                                fontSize: 14),
-                            filled: true,
-                            fillColor: const Color.fromRGBO(22, 23, 27, 1),
-                            isDense: true,
-                          ),
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Color.fromRGBO(235, 235, 235, 0.8),
-                          ),
+                                  ];
+                          },
                         ),
                       ],
                     ),
-                  ),
+                    TextFormField(
+                      controller: inputSearch,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding:
+                            const EdgeInsets.fromLTRB(22, 12, 60, 12),
+                        hintText: '🔍  Search cards',
+                        hintStyle: TextStyle(
+                            color: Color.fromRGBO(235, 235, 235, 0.8),
+                            fontSize: 14),
+                        filled: true,
+                        fillColor: const Color.fromRGBO(22, 23, 27, 1),
+                        isDense: true,
+                      ),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color.fromRGBO(235, 235, 235, 0.8),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 15),
-                WidgetGroupsMorePostsBuilder(widget.groupID, inputSearch),
-              ],
+              ),
             ),
-          ),
-          floatingActionButton: FloatingActionButton(
-            shape: const CircleBorder(),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return FormAddPost(widget.groupID);
+            const SizedBox(height: 15),
+            WidgetGroupsMorePostsBuilder(widget.groupID, inputSearch),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        shape: const CircleBorder(),
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return FormAddPost(widget.groupID);
               });
-            },
-            backgroundColor: const Color.fromRGBO(98, 112, 242, 1),
-            child: const Icon(Icons.note_add_outlined),
-          ),
-        );
+        },
+        backgroundColor: const Color.fromRGBO(98, 112, 242, 1),
+        child: const Icon(Icons.note_add_outlined),
+      ),
+    );
   }
 
   void AlertInviteMembers(String groupID) {
@@ -253,21 +328,22 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                 ),
               ),
               SizedBox(height: 20),
-              Text("To add this class, please use the 'Scan QR Code' function found in the 'Classes' section. Please do not share this QR Code with unauthorized users.",
+              Text(
+                  "To add this class, please use the 'Scan QR Code' function found in the 'Classes' section. Please do not share this QR Code with unauthorized users.",
                   style: TextStyle(
                     fontStyle: FontStyle.italic,
                     color: Color.fromRGBO(245, 245, 245, 0.6),
                     fontSize: 12,
                     height: 0.95,
-                  )
-              ),
+                  )),
               SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll<Color>(Color.fromRGBO(98, 112, 242, 1)),
+                      backgroundColor: MaterialStatePropertyAll<Color>(
+                          Color.fromRGBO(98, 112, 242, 1)),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
@@ -278,8 +354,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                       Navigator.of(context).pop();
                     },
                     child: const Text('Done',
-                        style: TextStyle(
-                            color: Colors.white)),
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ],
               ),
@@ -321,7 +396,8 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("NAME",
+              Text(
+                "NAME",
                 style: TextStyle(
                   color: Color.fromRGBO(245, 245, 245, 0.8),
                   fontSize: 12,
@@ -331,24 +407,21 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
               SizedBox(height: 5),
               TextFormField(
                 controller: inputGroupName,
-                decoration:
-                const InputDecoration(
+                decoration: const InputDecoration(
                   border: InputBorder.none,
                   isDense: true,
                   filled: true,
-                  fillColor: Color.fromRGBO(
-                      22, 23, 27, 1),
+                  fillColor: Color.fromRGBO(22, 23, 27, 1),
                 ),
                 style: const TextStyle(
-                    fontSize: 14,
-                    color: Color.fromRGBO(
-                        235, 235, 235, 0.8)),
+                    fontSize: 14, color: Color.fromRGBO(235, 235, 235, 0.8)),
                 validator: (String? value) {
                   return verifyGroupName(value);
                 },
               ),
               const SizedBox(height: 10),
-              Text("DESCRIPTION",
+              Text(
+                "DESCRIPTION",
                 style: TextStyle(
                   color: Color.fromRGBO(245, 245, 245, 0.8),
                   fontSize: 12,
@@ -358,24 +431,20 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
               const SizedBox(height: 5),
               TextFormField(
                 controller: inputGroupDesc,
-                keyboardType:
-                TextInputType.multiline,
+                keyboardType: TextInputType.multiline,
                 minLines: 2,
                 maxLines: 2,
-                decoration:
-                const InputDecoration(
+                decoration: const InputDecoration(
                   border: InputBorder.none,
                   hintText: 'Enter class description',
                   hintStyle: TextStyle(
-                      color: Color.fromRGBO(235, 235, 235, 0.2),
-                      fontSize: 14),
+                      color: Color.fromRGBO(235, 235, 235, 0.2), fontSize: 14),
                   isDense: true,
                   filled: true,
                   fillColor: Color.fromRGBO(22, 23, 27, 1),
                 ),
                 style: const TextStyle(
-                    fontSize: 14,
-                    color: Color.fromRGBO(235, 235, 235, 0.8)),
+                    fontSize: 14, color: Color.fromRGBO(235, 235, 235, 0.8)),
               ),
               const SizedBox(height: 10),
               Row(
@@ -383,23 +452,28 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                 children: [
                   ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+                      backgroundColor:
+                          MaterialStatePropertyAll<Color>(Colors.transparent),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                            side: BorderSide(color: Color.fromRGBO(245, 245, 245, 0.8), width: 1.5),
-                          )
-                      ),
+                        borderRadius: BorderRadius.circular(8.0),
+                        side: BorderSide(
+                            color: Color.fromRGBO(245, 245, 245, 0.8),
+                            width: 1.5),
+                      )),
                     ),
-                    onPressed: (){
+                    onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text("Cancel", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+                    child: Text("Cancel",
+                        style: TextStyle(
+                            color: Color.fromRGBO(245, 245, 245, 0.8))),
                   ),
                   SizedBox(width: 10),
                   ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll<Color>(Color.fromRGBO(98, 112, 242, 1)),
+                      backgroundColor: MaterialStatePropertyAll<Color>(
+                          Color.fromRGBO(98, 112, 242, 1)),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
@@ -407,12 +481,12 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                       ),
                     ),
                     onPressed: () async {
-                      EditGroup(groupID, inputGroupName.text, inputGroupDesc.text);
+                      EditGroup(
+                          groupID, inputGroupName.text, inputGroupDesc.text);
                       Navigator.of(context).pop();
                     },
                     child: const Text('Save',
-                        style: TextStyle(
-                            color: Colors.white)),
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ],
               ),
@@ -425,17 +499,16 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
 
   void EditGroup(String groupID, String groupName, String groupDesc) {
     DatabaseReference ref = FirebaseDatabase.instance.ref("Groups/$groupID");
-    ref.update({
-      'name': groupName,
-      'description': groupDesc
-    });
+    ref.update({'name': groupName, 'description': groupDesc});
   }
 
   void initAdminPerms(String groupID) async {
-    DatabaseReference ref = FirebaseDatabase.instance.ref("Groups/$groupID/admin");
+    DatabaseReference ref =
+        FirebaseDatabase.instance.ref("Groups/$groupID/admin");
     DataSnapshot snapshot = await ref.get();
     setState(() {
-      isAdmin = (FirebaseAuth.instance.currentUser?.uid.toString() == snapshot.value.toString());
+      isAdmin = (FirebaseAuth.instance.currentUser?.uid.toString() ==
+          snapshot.value.toString());
     });
   }
 
@@ -449,13 +522,12 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
             borderRadius: BorderRadius.circular(10),
           ),
           title: Center(
-            child: Text("Confirm Delete Class",
-                style: TextStyle(
-                  color: Color.fromRGBO(245, 245, 245, 1),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 20,
-                ))
-          ),
+              child: Text("Confirm Delete Class",
+                  style: TextStyle(
+                    color: Color.fromRGBO(245, 245, 245, 1),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                  ))),
           content: Text(
               "This action will permanently delete your class. Are you sure you want to continue?",
               style: TextStyle(
@@ -465,14 +537,13 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
           actions: [
             ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+                backgroundColor:
+                    MaterialStatePropertyAll<Color>(Colors.transparent),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  side: BorderSide(
-                    color: Color.fromRGBO(245, 245, 245, 0.8),
-                    width: 1.5
-                  ),
+                    borderRadius: BorderRadius.circular(8.0),
+                    side: BorderSide(
+                        color: Color.fromRGBO(245, 245, 245, 0.8), width: 1.5),
                   ),
                 ),
               ),
@@ -488,7 +559,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                     Color.fromRGBO(238, 94, 94, 1)),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
                 ),
               ),
@@ -497,10 +568,9 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                 DeleteGroup(groupID);
               },
               child: Text("Delete Class",
-                style: TextStyle(
-                  color: Color.fromRGBO(245, 245, 245, 0.8),
-                )
-              ),
+                  style: TextStyle(
+                    color: Color.fromRGBO(245, 245, 245, 0.8),
+                  )),
             ),
           ],
         );
@@ -509,31 +579,35 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
   }
 
   void DeleteGroup(String groupID) async {
-    DataSnapshot snapshot = await (FirebaseDatabase.instance.ref("Groups/$groupID/posts")).get();
+    DataSnapshot snapshot =
+        await (FirebaseDatabase.instance.ref("Groups/$groupID/posts")).get();
     List posts = [];
 
     if (snapshot.value != null) {
       (snapshot.value as Map).forEach((a, b) => posts.add(a));
-      for (var post in posts){
-        snapshot = await (FirebaseDatabase.instance.ref("Posts/$post/groups")).get();
+      for (var post in posts) {
+        snapshot =
+            await (FirebaseDatabase.instance.ref("Posts/$post/groups")).get();
         List groups = [];
         (snapshot.value as Map).forEach((a, b) => groups.add(a));
 
         // 1. Remove posts whose groups are only this group
         // 2. Remove membership to this group if post has more than one group
-        if (groups.length == 1){
+        if (groups.length == 1) {
           DeleteCard(post);
         } else {
-          (FirebaseDatabase.instance.ref("Posts/$post/groups/$groupID")).remove();
+          (FirebaseDatabase.instance.ref("Posts/$post/groups/$groupID"))
+              .remove();
         }
       }
     }
 
     // 3. Remove membership to this group
-    snapshot = await (FirebaseDatabase.instance.ref("Groups/$groupID/members")).get();
+    snapshot =
+        await (FirebaseDatabase.instance.ref("Groups/$groupID/members")).get();
     List members = [];
     (snapshot.value as Map).forEach((a, b) => members.add(a));
-    for (var member in members){
+    for (var member in members) {
       (FirebaseDatabase.instance.ref("Users/$member/groups/$groupID")).remove();
     }
 
@@ -543,7 +617,8 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
   }
 
   void DeleteCard(String postID) async {
-    DatabaseReference ref = FirebaseDatabase.instance.ref("Posts/$postID/groups");
+    DatabaseReference ref =
+        FirebaseDatabase.instance.ref("Posts/$postID/groups");
     DataSnapshot snapshot = await ref.get();
     List groups = [];
     (snapshot.value as Map).forEach((a, b) => groups.add(a));
@@ -579,8 +654,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                     color: Color.fromRGBO(245, 245, 245, 1),
                     fontWeight: FontWeight.w600,
                     fontSize: 20,
-                  ))
-          ),
+                  ))),
           content: Text(
               "This action will permanently remove you from the class. Are you sure you want to continue?",
               style: TextStyle(
@@ -590,14 +664,13 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
           actions: [
             ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+                backgroundColor:
+                    MaterialStatePropertyAll<Color>(Colors.transparent),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                     side: BorderSide(
-                        color: Color.fromRGBO(245, 245, 245, 0.8),
-                        width: 1.5
-                    ),
+                        color: Color.fromRGBO(245, 245, 245, 0.8), width: 1.5),
                   ),
                 ),
               ),
@@ -624,8 +697,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
               child: Text("Leave Class",
                   style: TextStyle(
                     color: Color.fromRGBO(245, 245, 245, 0.8),
-                  )
-              ),
+                  )),
             ),
           ],
         );
@@ -635,20 +707,24 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
 
   void LeaveGroup(String groupID) async {
     String userID = getUID();
-    DataSnapshot snapshot = await (FirebaseDatabase.instance.ref("Groups/$groupID/posts")).get();
+    DataSnapshot snapshot =
+        await (FirebaseDatabase.instance.ref("Groups/$groupID/posts")).get();
     List posts = [];
     if (snapshot.value != null) {
       (snapshot.value as Map).forEach((a, b) => posts.add(a));
-      for (var post in posts){
-        snapshot = await (FirebaseDatabase.instance.ref("Posts/$post/userID")).get();
-        if (snapshot.value == userID){
-          snapshot = await (FirebaseDatabase.instance.ref("Posts/$post/groups")).get();
+      for (var post in posts) {
+        snapshot =
+            await (FirebaseDatabase.instance.ref("Posts/$post/userID")).get();
+        if (snapshot.value == userID) {
+          snapshot =
+              await (FirebaseDatabase.instance.ref("Posts/$post/groups")).get();
           List groups = [];
           (snapshot.value as Map).forEach((a, b) => groups.add(a));
-          if (groups.length == 1){
+          if (groups.length == 1) {
             DeleteCard(post);
           } else {
-            (FirebaseDatabase.instance.ref("Posts/$post/groups/$groupID")).remove();
+            (FirebaseDatabase.instance.ref("Posts/$post/groups/$groupID"))
+                .remove();
           }
         }
       }
@@ -669,7 +745,8 @@ class WidgetGroupsMorePostsBuilder extends StatefulWidget {
   State createState() => WidgetGroupsMorePostsBuilderState();
 }
 
-class WidgetGroupsMorePostsBuilderState extends State<WidgetGroupsMorePostsBuilder> {
+class WidgetGroupsMorePostsBuilderState
+    extends State<WidgetGroupsMorePostsBuilder> {
   List<Post> posts = [];
   bool isDoneBuilding = false;
 
@@ -680,13 +757,15 @@ class WidgetGroupsMorePostsBuilderState extends State<WidgetGroupsMorePostsBuild
     getPosts(widget.groupID);
     DatabaseReference ref = FirebaseDatabase.instance.ref('Posts');
     ref.onChildChanged.listen((event) async {
-      for (var post in posts){
-        if (post.postID == event.snapshot.key){
+      for (var post in posts) {
+        if (post.postID == event.snapshot.key) {
           post.title = event.snapshot.child('title').value.toString();
           post.content = event.snapshot.child('content').value.toString();
-          post.username = await getUsername(event.snapshot.child('userID').value.toString());
+          post.username = await getUsername(
+              event.snapshot.child('userID').value.toString());
           post.timeStart = event.snapshot.child('timeStart').value.toString();
-          post.groups = (event.snapshot.child('groups').value as Map).keys.toList();
+          post.groups =
+              (event.snapshot.child('groups').value as Map).keys.toList();
           post.emojiData = event.snapshot.child('emojiData').value;
           post.emojiLink = event.snapshot.child('emojiLink').value.toString();
           if (mounted) {
@@ -708,7 +787,9 @@ class WidgetGroupsMorePostsBuilderState extends State<WidgetGroupsMorePostsBuild
   }
 
   getPosts(groupID) async {
-    (FirebaseDatabase.instance.ref('Groups/$groupID/posts')).onChildAdded.listen((event) async {
+    (FirebaseDatabase.instance.ref('Groups/$groupID/posts'))
+        .onChildAdded
+        .listen((event) async {
       var postID = event.snapshot.key;
       DatabaseReference ref = FirebaseDatabase.instance.ref('Posts/$postID');
       DataSnapshot snapshot = await ref.get();
@@ -757,38 +838,96 @@ class WidgetGroupsMorePostsBuilderState extends State<WidgetGroupsMorePostsBuild
     return Expanded(
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: isDoneBuilding
-                ? ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: posts.length + 1,
-                    itemBuilder: (BuildContext context, int i) {
-                      bool isPrint = true;
-                      if (i == posts.length) {
-                        return SizedBox(height: 75);
-                      }
-                      if (widget.inputSearch.text.isNotEmpty) {
-                        isPrint = posts[i]
-                            .title
-                            .toLowerCase()
-                            .contains(widget.inputSearch.text.toLowerCase());
-                      }
-                      if (isPrint) {
-                        return CardPost(
-                            posts[i].postID,
-                            posts[i].title,
-                            posts[i].content,
-                            posts[i].userID,
-                            posts[i].timeStart,
-                            posts[i].groups,
-                            posts[i].emojiData,
-                            posts[i].emojiLink,);
-                      } else {
-                        return const SizedBox.shrink();
-                      }
-                    },
-                  )
-                : Center(
-                    child: CircularProgressIndicator(),
-                  )));
+            child: posts.length == 0
+                ? Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 0, horizontal: 40),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child: Stack(
+                              alignment: const Alignment(0, 1),
+                              children: <Widget>[
+                                Image.asset(
+                                  "lib/assets/images/onboarding/emptypost.png",
+                                  height: 300,
+                                ),
+                                const Text(
+                                  "It feels lonely in here...",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontFamily: 'Spotnik',
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 28,
+                                      color: Color(0xFFFFFFFF)),
+                                ),
+                              ]),
+                        ),
+                        ListTile(
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 5),
+                          leading: Image.asset(
+                            "lib/assets/images/onboarding/verifiedoff.png",
+                            height: 25,
+                          ),
+                          title: const Text(
+                            "create a new group using the form button",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Color(0x5EFFFFFF),
+                            ),
+                          ),
+                        ),
+                        ListTile(
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 5),
+                          leading: Image.asset(
+                            "lib/assets/images/onboarding/verifiedoff.png",
+                            height: 25,
+                          ),
+                          title: const Text(
+                            "join a group by scanning a valid QR code",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Color(0x5EFFFFFF),
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                      ],
+                    ))
+                : isDoneBuilding
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: posts.length + 1,
+                        itemBuilder: (BuildContext context, int i) {
+                          bool isPrint = true;
+                          if (i == posts.length) {
+                            return SizedBox(height: 75);
+                          }
+                          if (widget.inputSearch.text.isNotEmpty) {
+                            isPrint = posts[i].title.toLowerCase().contains(
+                                widget.inputSearch.text.toLowerCase());
+                          }
+                          if (isPrint) {
+                            return CardPost(
+                              posts[i].postID,
+                              posts[i].title,
+                              posts[i].content,
+                              posts[i].userID,
+                              posts[i].timeStart,
+                              posts[i].groups,
+                              posts[i].emojiData,
+                              posts[i].emojiLink,
+                            );
+                          } else {
+                            return const SizedBox.shrink();
+                          }
+                        },
+                      )
+                    : Center(
+                        child: CircularProgressIndicator(),
+                      )));
   }
 }
