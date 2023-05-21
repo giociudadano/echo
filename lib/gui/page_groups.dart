@@ -24,12 +24,13 @@ class _GroupsPageState extends State<GroupsPage> {
     getGroups();
     DatabaseReference ref = FirebaseDatabase.instance.ref('Groups');
     ref.onChildChanged.listen((event) async {
-      setState((){
-        for (var group in groups){
-          if (group.groupID == event.snapshot.key){
-            setState((){
+      setState(() {
+        for (var group in groups) {
+          if (group.groupID == event.snapshot.key) {
+            setState(() {
               group.groupName = event.snapshot.child('name').value.toString();
-              group.groupDesc = event.snapshot.child('description').value.toString();
+              group.groupDesc =
+                  event.snapshot.child('description').value.toString();
             });
           }
         }
@@ -40,89 +41,149 @@ class _GroupsPageState extends State<GroupsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          appBar: AppBar(
-              toolbarHeight: 0,
-              systemOverlayStyle: SystemUiOverlayStyle(
-                systemNavigationBarColor: Colors.black, // Navigation bar
-                statusBarColor: Colors.black,
-              )
-          ),
-          backgroundColor: const Color.fromRGBO(32, 35, 43, 1),
-          body: SafeArea(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    color: Colors.black,
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 20),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 28),
-                          child: TextFormField(
-                            controller: inputSearch,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: BorderSide.none,
-                              ),
-                              contentPadding:
-                                  const EdgeInsets.fromLTRB(22, 12, 60, 12),
-                              hintText: '🔍  Search classes',
-                              hintStyle: const TextStyle(
-                                  color: Color.fromRGBO(235, 235, 235, 0.8)),
-                              filled: true,
-                              fillColor: const Color.fromRGBO(22, 23, 27, 1),
-                              isDense: true,
-                            ),
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Color.fromRGBO(235, 235, 235, 0.8),
-                            ),
+      appBar: AppBar(
+          toolbarHeight: 0,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            systemNavigationBarColor: Colors.black, // Navigation bar
+            statusBarColor: Colors.black,
+          )),
+      backgroundColor: const Color.fromRGBO(32, 35, 43, 1),
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                color: Colors.black,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 28),
+                      child: TextFormField(
+                        controller: inputSearch,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide.none,
                           ),
+                          contentPadding:
+                              const EdgeInsets.fromLTRB(22, 12, 60, 12),
+                          hintText: '🔍  Search classes',
+                          hintStyle: const TextStyle(
+                              color: Color.fromRGBO(235, 235, 235, 0.8)),
+                          filled: true,
+                          fillColor: const Color.fromRGBO(22, 23, 27, 1),
+                          isDense: true,
                         ),
-                        SizedBox(height: 20),
-                      ],
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Color.fromRGBO(235, 235, 235, 0.8),
+                        ),
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: groups.length == 0 ? SizedBox.shrink() : isDoneBuilding
+                    SizedBox(height: 20),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: groups.length == 0
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 0, horizontal: 60),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 20),
+                              child: Stack(
+                                  alignment: const Alignment(0, 1),
+                                  children: <Widget>[
+                                    Image.asset(
+                                      "lib/assets/images/onboarding/emptygroup.png",
+                                      height: 300,
+                                    ),
+                                    const Text(
+                                      "It feels lonely in here...",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontFamily: 'Spotnik',
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 28,
+                                          color: Color(0xFFFFFFFF)),
+                                    ),
+                                  ]),
+                            ),
+                            ListTile(
+                              contentPadding:
+                                  const EdgeInsets.symmetric(vertical: 5),
+                              leading: Image.asset(
+                                "lib/assets/images/onboarding/verifiedoff.png",
+                                height: 25,
+                              ),
+                              title: const Text(
+                                "create a new group using the form button",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Color(0x5EFFFFFF),
+                                ),
+                              ),
+                            ),
+                            ListTile(
+                              contentPadding:
+                                  const EdgeInsets.symmetric(vertical: 5),
+                              leading: Image.asset(
+                                "lib/assets/images/onboarding/verifiedoff.png",
+                                height: 25,
+                              ),
+                              title: const Text(
+                                "join a group by scanning a valid QR code",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Color(0x5EFFFFFF),
+                                ),
+                              ),
+                            ),
+                            const Spacer(),
+                          ],
+                        ))
+                    : isDoneBuilding
                         ? WidgetGroupsBuilder(groups, inputSearch)
                         : const Center(
                             child: CircularProgressIndicator(),
                           ),
-                  ),
-                ],
               ),
-            ),
+            ],
           ),
-          floatingActionButton: Padding(
-            padding: const EdgeInsets.only(bottom: 70),
-            child: FloatingActionButton(
-              shape: const CircleBorder(),
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return FormAddGroup();
+        ),
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 70),
+        child: FloatingActionButton(
+          shape: const CircleBorder(),
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return FormAddGroup();
                 });
-              },
-              backgroundColor: const Color.fromRGBO(98, 112, 242, 1),
-              child: const Icon(Icons.group_add_outlined),
-            ),
-          ),
-        );
+          },
+          backgroundColor: const Color.fromRGBO(98, 112, 242, 1),
+          child: const Icon(Icons.group_add_outlined),
+        ),
+      ),
+    );
   }
 
   void getGroups() async {
-    (FirebaseDatabase.instance.ref("Users/${getUID()}/groups")).onChildAdded.listen((event) async {
+    (FirebaseDatabase.instance.ref("Users/${getUID()}/groups"))
+        .onChildAdded
+        .listen((event) async {
       var groupID = event.snapshot.key;
       DatabaseReference ref2 = FirebaseDatabase.instance.ref("Groups/$groupID");
       DataSnapshot snapshot = await ref2.get();
       Map groupMetadata = snapshot.value as Map;
       groups.add(Group("$groupID", "${groupMetadata['name']}",
-        "${groupMetadata['description']}", "${groupMetadata['admin']}"));
+          "${groupMetadata['description']}", "${groupMetadata['admin']}"));
       if (mounted) {
         setState(() {
           isDoneBuilding = true;
@@ -130,11 +191,12 @@ class _GroupsPageState extends State<GroupsPage> {
       }
     });
 
-    (FirebaseDatabase.instance.ref("Users/${getUID()}/groups")).onChildRemoved.listen((event) async {
+    (FirebaseDatabase.instance.ref("Users/${getUID()}/groups"))
+        .onChildRemoved
+        .listen((event) async {
       var groupID = event.snapshot.key;
       groups.removeWhere((group) => group.groupID == groupID);
-      setState(() {
-      });
+      setState(() {});
     });
   }
 }
@@ -157,31 +219,32 @@ class _FormAddGroupState extends State<FormAddGroup> {
       Expanded(
         child: Row(children: [
           Expanded(
-              child: Center(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 5.0,
-                              ),
-                            ],
-                          ),
-                          child: Card(
-                            color: const Color.fromRGBO(30, 30, 32, 1),
-                            child: Container(
-                              height: 350,
-                              child: Stack(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        30, 20, 30, 20),
-                                    child: ListView(children: [Form(
+            child: Center(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 5.0,
+                            ),
+                          ],
+                        ),
+                        child: Card(
+                          color: const Color.fromRGBO(30, 30, 32, 1),
+                          child: Container(
+                            height: 350,
+                            child: Stack(
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(30, 20, 30, 20),
+                                  child: ListView(children: [
+                                    Form(
                                         key: _formAddGroupKey,
                                         child: Column(
                                             mainAxisAlignment:
@@ -191,18 +254,22 @@ class _FormAddGroupState extends State<FormAddGroup> {
                                             children: [
                                               const SizedBox(height: 20),
                                               const Center(
-                                                child: Text("Create a New Class",
-                                                    style: TextStyle(
-                                                      color: Color.fromRGBO(245, 245, 245, 1),
-                                                      fontWeight: FontWeight.w700,
-                                                      fontSize: 20,
-                                                    )
-                                                ),
+                                                child:
+                                                    Text("Create a New Class",
+                                                        style: TextStyle(
+                                                          color: Color.fromRGBO(
+                                                              245, 245, 245, 1),
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                          fontSize: 20,
+                                                        )),
                                               ),
                                               const SizedBox(height: 20),
-                                              Text("NAME",
+                                              Text(
+                                                "NAME",
                                                 style: TextStyle(
-                                                  color: Color.fromRGBO(245, 245, 245, 0.8),
+                                                  color: Color.fromRGBO(
+                                                      245, 245, 245, 0.8),
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.w600,
                                                 ),
@@ -228,14 +295,15 @@ class _FormAddGroupState extends State<FormAddGroup> {
                                                     color: Color.fromRGBO(
                                                         235, 235, 235, 0.8)),
                                                 validator: (String? value) {
-                                                  return verifyGroupName(
-                                                      value);
+                                                  return verifyGroupName(value);
                                                 },
                                               ),
                                               const SizedBox(height: 10),
-                                              Text("DESCRIPTION",
+                                              Text(
+                                                "DESCRIPTION",
                                                 style: TextStyle(
-                                                  color: Color.fromRGBO(245, 245, 245, 0.8),
+                                                  color: Color.fromRGBO(
+                                                      245, 245, 245, 0.8),
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.w600,
                                                 ),
@@ -267,79 +335,101 @@ class _FormAddGroupState extends State<FormAddGroup> {
                                                         235, 235, 235, 0.8)),
                                               ),
                                               const SizedBox(height: 20),
-                                        Row(
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children:[
-                                              ElevatedButton(
-                                                style: ButtonStyle(
-                                                  backgroundColor: MaterialStatePropertyAll<Color>(Colors.transparent),
-                                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                      RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(8.0),
-                                                        side: BorderSide(color: Color.fromRGBO(245, 245, 245, 0.8), width: 1.5),
-                                                      )
-                                                  ),
-                                                ),
-                                                onPressed: (){
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: Text("Cancel", style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
-                                              ),
-                                              SizedBox(width: 10),
-                                              ElevatedButton(
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                  MaterialStatePropertyAll<
-                                                      Color>(
-                                                      Color.fromRGBO(
-                                                          98, 112, 242, 1)),
-                                                  shape: MaterialStateProperty
-                                                      .all<RoundedRectangleBorder>(
-                                                      RoundedRectangleBorder(
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  ElevatedButton(
+                                                    style: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStatePropertyAll<
+                                                                  Color>(
+                                                              Colors
+                                                                  .transparent),
+                                                      shape: MaterialStateProperty.all<
+                                                              RoundedRectangleBorder>(
+                                                          RoundedRectangleBorder(
                                                         borderRadius:
-                                                        BorderRadius.circular(
-                                                            8.0),
+                                                            BorderRadius
+                                                                .circular(8.0),
+                                                        side: BorderSide(
+                                                            color:
+                                                                Color.fromRGBO(
+                                                                    245,
+                                                                    245,
+                                                                    245,
+                                                                    0.8),
+                                                            width: 1.5),
                                                       )),
-                                                ),
-                                                onPressed: () async {
-                                                  if (_formAddGroupKey
-                                                      .currentState!
-                                                      .validate()) {
-                                                    addGroup(
-                                                      context,
-                                                      inputGroupName.text,
-                                                      inputGroupDesc.text,
-                                                      getUID(),
-                                                    );
-                                                    Navigator.of(context).pop();
-                                                  }
-                                                },
-                                                child: const Text(
-                                                  'Create',
-                                                  style: TextStyle(
-                                                      color: Colors.white),
-                                                ),
-                                              ),
-                                              ],)
-                                            ])
-                                    )]),
-                                  ),
-                                ],
-                              ),
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: Text("Cancel",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Color.fromRGBO(
+                                                                    245,
+                                                                    245,
+                                                                    245,
+                                                                    0.8))),
+                                                  ),
+                                                  SizedBox(width: 10),
+                                                  ElevatedButton(
+                                                    style: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStatePropertyAll<
+                                                                  Color>(
+                                                              Color.fromRGBO(98,
+                                                                  112, 242, 1)),
+                                                      shape: MaterialStateProperty.all<
+                                                              RoundedRectangleBorder>(
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8.0),
+                                                      )),
+                                                    ),
+                                                    onPressed: () async {
+                                                      if (_formAddGroupKey
+                                                          .currentState!
+                                                          .validate()) {
+                                                        addGroup(
+                                                          context,
+                                                          inputGroupName.text,
+                                                          inputGroupDesc.text,
+                                                          getUID(),
+                                                        );
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      }
+                                                    },
+                                                    child: const Text(
+                                                      'Create',
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            ]))
+                                  ]),
+                                ),
+                              ],
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
           ),
         ]),
       )
     ]);
-
-
   }
 
   verifyGroupName(String? value) {
@@ -403,7 +493,7 @@ class WidgetGroupsBuilderState extends State<WidgetGroupsBuilder> {
     MobileScannerController cameraController = MobileScannerController();
     showDialog(
       context: context,
-      builder: (BuildContext context){
+      builder: (BuildContext context) {
         return Scaffold(
           backgroundColor: Colors.black,
           appBar: AppBar(
@@ -411,7 +501,8 @@ class WidgetGroupsBuilderState extends State<WidgetGroupsBuilder> {
               color: Colors.white,
             ),
             backgroundColor: Colors.black,
-            title: const Text('Scan QR Code',
+            title: const Text(
+              'Scan QR Code',
               style: TextStyle(
                 fontFamily: 'SF-Pro',
                 fontWeight: FontWeight.w700,
@@ -471,21 +562,22 @@ class WidgetGroupsBuilderState extends State<WidgetGroupsBuilder> {
   }
 
   void JoinGroup(String groupID) async {
-    DataSnapshot snapshot = await (FirebaseDatabase.instance.ref("Groups"))
-        .get();
+    DataSnapshot snapshot =
+        await (FirebaseDatabase.instance.ref("Groups")).get();
     if (snapshot.hasChild(groupID)) {
       String userID = "${getUID()}";
-      DatabaseReference ref = FirebaseDatabase.instance.ref("Groups/${groupID}/members");
+      DatabaseReference ref =
+          FirebaseDatabase.instance.ref("Groups/${groupID}/members");
       ref.update({
         userID: true,
       });
-      DatabaseReference ref2 = FirebaseDatabase.instance.ref("Users/${userID}/groups");
+      DatabaseReference ref2 =
+          FirebaseDatabase.instance.ref("Users/${userID}/groups");
       ref2.update({
         groupID: true,
       });
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text(
-            "Successfully added to group!"),
+        content: Text("Successfully added to group!"),
       ));
     } else {
       showDialog(
@@ -497,44 +589,50 @@ class WidgetGroupsBuilderState extends State<WidgetGroupsBuilder> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 title: Center(
-                  child: Text("Invalid Class Invite",
-                      style: TextStyle(
-                        color: Color.fromRGBO(245, 245, 245, 1),
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20,
-                      )),
+                  child: Column(children: [
+                    Image.asset(
+                      "lib/assets/images/onboarding/emptypost.png",
+                      height: 300,
+                    ),
+                    Text("Invalid Class Invite",
+                        style: TextStyle(
+                          color: Color.fromRGBO(245, 245, 245, 1),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                        )),
+                  ]),
                 ),
                 content: Text(
                     "We could not find a class with that ID. Please try again with a valid QR code.",
                     style: TextStyle(
                       color: Color.fromRGBO(245, 245, 245, 0.8),
                       fontSize: 14,
-                    )
-                ),
+                    )),
                 actions: [
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll<Color>(
-                          Color.fromRGBO(98, 112, 242, 1)),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                  Align(
+                    alignment: Alignment.center,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll<Color>(
+                            Color.fromRGBO(98, 112, 242, 1)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
                         ),
                       ),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text("Confirm",
-                        style: TextStyle(
-                          color: Color.fromRGBO(245, 245, 245, 0.8),
-                        )
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("Confirm",
+                          style: TextStyle(
+                            color: Color.fromRGBO(245, 245, 245, 0.8),
+                          )),
                     ),
                   ),
-                ]
-            );
-          }
-      );
+                ]);
+          });
     }
   }
 
@@ -544,15 +642,16 @@ class WidgetGroupsBuilderState extends State<WidgetGroupsBuilder> {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: ListView.builder(
         shrinkWrap: true,
-        itemCount: widget.groups.length+2,
+        itemCount: widget.groups.length + 2,
         itemBuilder: (BuildContext context, int i) {
-          if (i == 0){
+          if (i == 0) {
             return Padding(
                 padding: EdgeInsets.fromLTRB(5, 7, 0, 0),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('MY CLASSES',
+                      Text(
+                        'MY CLASSES',
                         style: TextStyle(
                           fontSize: 12,
                           color: Color.fromRGBO(245, 245, 245, 0.8),
@@ -566,30 +665,28 @@ class WidgetGroupsBuilderState extends State<WidgetGroupsBuilder> {
                           onPressed: () async {
                             AlertJoinGroup();
                           },
-                          child:
-                          Row(
-                              children: [
-                                Icon(Icons.qr_code_scanner, size: 15, color: Color.fromRGBO(235, 235, 235, 0.6)),
-                                SizedBox(width: 5),
-                                Text('SCAN QR CODE',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Color.fromRGBO(245, 245, 245, 0.8),
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                )
-                              ]
-                          ),
+                          child: Row(children: [
+                            Icon(Icons.qr_code_scanner,
+                                size: 15,
+                                color: Color.fromRGBO(235, 235, 235, 0.6)),
+                            SizedBox(width: 5),
+                            Text(
+                              'SCAN QR CODE',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color.fromRGBO(245, 245, 245, 0.8),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            )
+                          ]),
                         ),
                       )
-                    ]
-                )
-            );
+                    ]));
           }
-          if (i == widget.groups.length+1){
+          if (i == widget.groups.length + 1) {
             return SizedBox(height: 75);
           }
-          var group = widget.groups[i-1];
+          var group = widget.groups[i - 1];
           bool isPrint = true;
           if (widget.inputSearch.text.isNotEmpty) {
             isPrint = group.groupName
@@ -597,8 +694,8 @@ class WidgetGroupsBuilderState extends State<WidgetGroupsBuilder> {
                 .contains(widget.inputSearch.text.toLowerCase());
           }
           if (isPrint) {
-            return CardGroup(group.groupID, group.groupName, group.groupDesc,
-                group.adminID);
+            return CardGroup(
+                group.groupID, group.groupName, group.groupDesc, group.adminID);
           } else {
             return const SizedBox.shrink();
           }
