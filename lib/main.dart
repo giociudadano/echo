@@ -35,6 +35,7 @@ import 'objects/card_post.dart';
 import 'objects/group_filter.dart';
 import 'package:bullet/content_model.dart';
 part 'objects/card_group.dart';
+part 'objects/card_group_member.dart';
 
 part 'gui/page_login.dart';
 part 'gui/page_signup.dart';

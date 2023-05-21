@@ -100,7 +100,8 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          GroupsMoreMembersPage()),
+                                                          GroupsMoreMembersPage(
+                                                              widget.groupID)),
                                                 ));
                                       },
                                       child: Text(
@@ -160,6 +161,26 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                                     ),
                                   ]
                                 : [
+                                    PopupMenuItem(
+                                      onTap: () {
+                                        Future.delayed(
+                                            const Duration(seconds: 0),
+                                            () => Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          GroupsMoreMembersPage(
+                                                              widget.groupID)),
+                                                ));
+                                      },
+                                      child: Text(
+                                        "View Members",
+                                        style: TextStyle(
+                                          color:
+                                              Color.fromRGBO(235, 235, 235, 1),
+                                        ),
+                                      ),
+                                    ),
                                     PopupMenuItem(
                                       onTap: () {
                                         Future.delayed(
