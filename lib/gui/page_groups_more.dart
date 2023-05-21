@@ -125,6 +125,28 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                                           color:
                                               Color.fromRGBO(235, 235, 235, 1),
                                         ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            PopupMenuButton(
+                              icon: Icon(Icons.more_vert, color: Colors.white),
+                              color: Color.fromRGBO(30, 30, 32, 1),
+                              itemBuilder: (BuildContext context) {
+                                return isAdmin ? [
+                                  PopupMenuItem(
+                                    onTap: () {
+                                      Future.delayed(
+                                          const Duration(seconds: 0),
+                                              () => Navigator.push(context,
+                                            MaterialPageRoute(builder: (context) =>
+                                                GroupsMoreMembersPage(widget.groupID)
+                                            ),
+                                          ));
+                                    },
+                                    child: Text("View Members",
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(235, 235, 235, 1),
                                       ),
                                     ),
                                     PopupMenuItem(
@@ -194,6 +216,33 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                                           color:
                                               Color.fromRGBO(255, 167, 167, 1),
                                         ),
+                                  ),
+                                ] : [
+                                  PopupMenuItem(
+                                    onTap: () {
+                                      Future.delayed(
+                                          const Duration(seconds: 0),
+                                              () => Navigator.push(context,
+                                            MaterialPageRoute(builder: (context) =>
+                                                GroupsMoreMembersPage(widget.groupID)
+                                            ),
+                                          ));
+                                    },
+                                    child: Text("View Members",
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(235, 235, 235, 1),
+                                      ),
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    onTap: () {
+                                      Future.delayed(
+                                          const Duration(seconds: 0),
+                                              () => AlertLeaveGroup(widget.groupID));
+                                    },
+                                    child: Text("Leave Class",
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(255, 167, 167, 1),
                                       ),
                                     ),
                                   ];
