@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 5),
                       WidgetGroupsFilter(groupsFiltered: (newGroups) {
                         filters = newGroups;
                         setState(() {});
@@ -112,7 +112,7 @@ class WidgetGroupsFilterState extends State<WidgetGroupsFilter> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return groupIDs.length == 0 ? SizedBox.shrink() : SizedBox(
       height: 30,
       child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -190,6 +190,7 @@ class WidgetGroupsFilterState extends State<WidgetGroupsFilter> {
 class WidgetDashboardPostsBuilder extends StatefulWidget {
   var filters = [];
   TextEditingController inputSearch;
+
   WidgetDashboardPostsBuilder(this.filters, this.inputSearch, {super.key});
 
   @override
@@ -339,7 +340,44 @@ class WidgetDashboardPostsBuilderState
                             ),
                           ),
                         ),
-                        const Spacer(),
+                        SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children:[
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                MaterialStatePropertyAll<
+                                    Color>(
+                                    Colors.black),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius
+                                          .circular(8.0),
+                                    )),
+                              ),
+                              onPressed: () async {
+                                AlertJoinGroup(context);
+                              },
+                              child: Row(children: [
+                                Icon(Icons.qr_code_scanner,
+                                    size: 15,
+                                    color: Color.fromRGBO(235, 235, 235, 0.6)),
+                                SizedBox(width: 5),
+                                Text(
+                                  'SCAN QR CODE',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Color.fromRGBO(245, 245, 245, 0.8),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                )
+                              ]),
+                            ),
+                          ],
+                        ),
                       ],
                     ))
                 : isDoneBuilding
@@ -490,9 +528,8 @@ class _FormAddPostState extends State<FormAddPost> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              const SizedBox(height: 10),
-                                              const SizedBox(height: 10),
-                                              const Center(
+                                              const SizedBox(height: 20),
+                                              Center(
                                                 child: Text(
                                                   "Create a New Card",
                                                   style: TextStyle(
@@ -503,7 +540,7 @@ class _FormAddPostState extends State<FormAddPost> {
                                                   ),
                                                 ),
                                               ),
-                                              const SizedBox(height: 20),
+                                              const SizedBox(height: 30),
                                               Text(
                                                 "TITLE",
                                                 style: TextStyle(

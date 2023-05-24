@@ -24,8 +24,8 @@ class SignupPage extends StatelessWidget {
                   Row(children: [
                     Placeholder(
                       color: Colors.white,
-                      fallbackHeight: 250,
-                      fallbackWidth: 250,
+                      fallbackHeight: 200,
+                      fallbackWidth: 200,
                     )
                   ]),
                   SizedBox(height: 40),
@@ -254,7 +254,7 @@ class SignupPage extends StatelessWidget {
         ref.update({
           "username": _generateUsername(username),
           "displayName": username,
-          "status": "online",
+          "status": "Online",
         });
       }
     });

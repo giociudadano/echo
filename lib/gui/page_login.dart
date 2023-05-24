@@ -32,8 +32,8 @@ class LoginPage extends StatelessWidget {
                     Row(children: [
                       Placeholder(
                         color: Colors.white,
-                        fallbackHeight: 250,
-                        fallbackWidth: 250,
+                        fallbackHeight: 200,
+                        fallbackWidth: 200,
                       ),
                     ]),
                     SizedBox(height: 40),
