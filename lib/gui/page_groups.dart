@@ -82,7 +82,7 @@ class _GroupsPageState extends State<GroupsPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
@@ -103,13 +103,14 @@ class _GroupsPageState extends State<GroupsPage> {
                                       height: 300,
                                     ),
                                     const Text(
-                                      "It feels lonely in here...",
+                                      "Ready to join your\nfirst class?",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontFamily: 'Spotnik',
+                                          fontStyle: FontStyle.italic,
                                           fontWeight: FontWeight.w700,
-                                          fontSize: 28,
-                                          color: Color(0xFFFFFFFF)),
+                                          fontSize: 24,
+                                          color: Color(0xFF9F9F9F)),
                                     ),
                                   ]),
                             ),
@@ -591,7 +592,7 @@ class WidgetGroupsBuilderState extends State<WidgetGroupsBuilder> {
                 title: Center(
                   child: Column(children: [
                     Image.asset(
-                      "lib/assets/images/onboarding/emptypost.png",
+                      "lib/assets/images/onboarding/searchfail.png",
                       height: 300,
                     ),
                     Text("Invalid Class Invite",
