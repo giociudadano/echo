@@ -100,7 +100,7 @@ class GroupsMoreMembersState extends State<ProfileEditPage> {
                         name: widget.username,
                         radius: 40,
                         fontsize: 21,
-                        img: profilePictureURL,
+                        img: profilePictureURL == "" ? null : profilePictureURL,
                       ),
                       Positioned(
                           bottom: 0,

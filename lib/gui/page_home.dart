@@ -112,7 +112,11 @@ class WidgetGroupsFilterState extends State<WidgetGroupsFilter> {
 
   @override
   Widget build(BuildContext context) {
-    return groupIDs.length == 0 ? SizedBox.shrink() : SizedBox(
+    return groupIDs.length == 0 ? SizedBox.shrink() :
+    Column(
+      children: [
+        SizedBox(height: 10),
+        SizedBox(
       height: 30,
       child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -159,6 +163,8 @@ class WidgetGroupsFilterState extends State<WidgetGroupsFilter> {
               ),
             ],
           )),
+    ),
+      ]
     );
   }
 

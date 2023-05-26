@@ -1,9 +1,9 @@
 part of main;
 
 class GroupsMorePage extends StatefulWidget {
-  String groupID, groupName, groupDesc;
+  String groupID, groupName, groupDesc, adminID;
 
-  GroupsMorePage(this.groupID, this.groupName, this.groupDesc);
+  GroupsMorePage(this.groupID, this.groupName, this.groupDesc, this.adminID);
 
   @override
   State<GroupsMorePage> createState() => _GroupsMorePageState();
@@ -18,7 +18,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
   @override
   void initState() {
     super.initState();
-    initAdminPerms(widget.groupID);
+    initAdminPerms(widget.adminID);
     DatabaseReference ref =
         FirebaseDatabase.instance.ref('Groups/${widget.groupID}');
     ref.onValue.listen((event) async {
@@ -102,7 +102,9 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       GroupsMoreMembersPage(
-                                                          widget.groupID)),
+                                                          widget.groupID, isAdmin, widget.adminID
+                                                      )
+                                              ),
                                             ));
                                   },
                                   child: Text(
@@ -166,7 +168,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       GroupsMoreMembersPage(
-                                                          widget.groupID)),
+                                                          widget.groupID, isAdmin, widget.adminID)),
                                             ));
                                   },
                                   child: Text(
@@ -446,13 +448,9 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
     ref.update({'name': groupName, 'description': groupDesc});
   }
 
-  void initAdminPerms(String groupID) async {
-    DatabaseReference ref =
-        FirebaseDatabase.instance.ref("Groups/$groupID/admin");
-    DataSnapshot snapshot = await ref.get();
+  void initAdminPerms(String adminID) async {
     setState(() {
-      isAdmin = (FirebaseAuth.instance.currentUser?.uid.toString() ==
-          snapshot.value.toString());
+      isAdmin = (FirebaseAuth.instance.currentUser?.uid.toString() == adminID);
     });
   }
 

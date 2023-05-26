@@ -2,13 +2,15 @@ part of main;
 
 class GroupMember {
   String UID, username, displayName, profilePictureURL, status;
+  bool isAdmin;
 
-  GroupMember(this.UID, this.username, this.displayName, this.profilePictureURL, this.status);
+  GroupMember(this.UID, this.username, this.displayName, this.profilePictureURL, this.status, this.isAdmin);
 }
 
 class GroupsMoreMembersPage extends StatefulWidget {
-  String groupID, displayName = '', username = '';
-  GroupsMoreMembersPage(this.groupID);
+  String groupID, displayName = '', username = '', adminID;
+  bool isSelectable;
+  GroupsMoreMembersPage(this.groupID, this.isSelectable, this.adminID);
 
   @override
   State<GroupsMoreMembersPage> createState() => GroupsMoreMembersPageState();
@@ -36,7 +38,7 @@ class GroupsMoreMembersPageState extends State<GroupsMoreMembersPage> {
       members.add(
           GroupMember(
               userID, userMetadata['username'], userMetadata['displayName'],
-              userMetadata['profilePicture']['url'], userMetadata['status']
+              userMetadata['profilePicture']['url'], userMetadata['status'], userID == widget.adminID
           )
       );
     }
@@ -75,7 +77,7 @@ class GroupsMoreMembersPageState extends State<GroupsMoreMembersPage> {
               itemCount: members.length,
               itemBuilder: (BuildContext context, int i) {
                 return CardGroupMember(members[i].UID, members[i].username,
-                    members[i].displayName, members[i].profilePictureURL, members[i].status);
+                    members[i].displayName, members[i].profilePictureURL, members[i].status, widget.isSelectable, members[i].isAdmin);
               },
             ) : CircularProgressIndicator()
           ),

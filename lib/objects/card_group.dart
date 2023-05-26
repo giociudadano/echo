@@ -143,7 +143,8 @@ class _CardGroupState extends State<CardGroup> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => GroupsMorePage("${widget.groupID}","${widget.name}", "${widget.desc}")),
+                              MaterialPageRoute(builder: (context) =>
+                                  GroupsMorePage("${widget.groupID}","${widget.name}", "${widget.desc}", "${widget.adminID}")),
                             );
                           },
                         )

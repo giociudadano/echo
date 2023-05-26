@@ -383,8 +383,10 @@ class _CardPostState extends State<CardPost> {
             ),
             content: Text("This action will permanently delete your card. Are you sure you want to continue?",
                 style: TextStyle(
-                  color: Color.fromRGBO(245, 245, 245, 0.8),
-                  fontSize: 14,
+                  fontStyle: FontStyle.italic,
+                  color: Color.fromRGBO(245, 245, 245, 0.6),
+                  height: 0.95,
+                  fontSize: 12,
                 )
             ),
             actions: [
