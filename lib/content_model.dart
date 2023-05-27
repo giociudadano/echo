@@ -12,14 +12,14 @@ final List<PageContent> contents = [
   PageContent(
     image: "lib/assets/images/onboarding/louder.png",
     title: "Louder",
-    description1: "Create a card and share it to different classes at the same time",
-    description2: "Join a class and see cards created by other users",
+    description1: "create a card and share it to different classes at the same time",
+    description2: "join a class and see cards created by other users",
   ),
   PageContent(
     image: "lib/assets/images/onboarding/faster.png",
     title: "Faster",
-    description1: "Users are updated and notified in real-time",
-    description2: "Mark posts as done and increase user productivity",
+    description1: "users are updated and notified in real-time",
+    description2: "mark posts as done and increase user productivity",
   ),
   PageContent(
     image: "lib/assets/images/onboarding/clearer.png",

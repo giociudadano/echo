@@ -777,13 +777,14 @@ class WidgetGroupsMorePostsBuilderState
                                   height: 300,
                                 ),
                                 const Text(
-                                  "It feels lonely in here...",
+                                  "This group has\nno posts yet",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontFamily: 'Spotnik',
                                       fontWeight: FontWeight.w700,
-                                      fontSize: 28,
-                                      color: Color(0xFFFFFFFF)),
+                                      fontStyle: FontStyle.italic,
+                                      fontSize: 24,
+                                      color: Color(0xFF9F9F9F)),
                                 ),
                               ]),
                         ),
@@ -795,7 +796,7 @@ class WidgetGroupsMorePostsBuilderState
                             height: 25,
                           ),
                           title: const Text(
-                            "create a new group using the form button",
+                            "post announcements using the forms button",
                             style: TextStyle(
                               fontSize: 16,
                               color: Color(0x5EFFFFFF),
@@ -810,7 +811,7 @@ class WidgetGroupsMorePostsBuilderState
                             height: 25,
                           ),
                           title: const Text(
-                            "join a group by scanning a valid QR code",
+                            "invite new members by sharing the group\'s QR code",
                             style: TextStyle(
                               fontSize: 16,
                               color: Color(0x5EFFFFFF),
