@@ -306,14 +306,13 @@ class WidgetDashboardPostsBuilderState
                                   height: 300,
                                 ),
                                 const Text(
-                                  "Nothing has been\nposted yet",
+                                  "It feels lonely in here...",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontFamily: 'Spotnik',
                                       fontWeight: FontWeight.w700,
-                                      fontStyle: FontStyle.italic,
-                                      fontSize: 24,
-                                      color: Color(0xFF9F9F9F)),
+                                      fontSize: 28,
+                                      color: Color(0xFFFFFFFF)),
                                 ),
                               ]),
                         ),
