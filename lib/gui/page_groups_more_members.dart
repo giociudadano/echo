@@ -76,7 +76,7 @@ class GroupsMoreMembersPageState extends State<GroupsMoreMembersPage> {
             child: isDoneBuilding ? ListView.builder(
               itemCount: members.length,
               itemBuilder: (BuildContext context, int i) {
-                return CardGroupMember(members[i].UID, members[i].username,
+                return CardGroupMember(widget.groupID, members[i].UID, members[i].username,
                     members[i].displayName, members[i].profilePictureURL, members[i].status, widget.isSelectable, members[i].isAdmin);
               },
             ) : CircularProgressIndicator()

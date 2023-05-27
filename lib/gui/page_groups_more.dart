@@ -464,18 +464,20 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
             borderRadius: BorderRadius.circular(10),
           ),
           title: Center(
-              child: Text("Confirm Delete Class",
+              child: Text("Confirm Delete Class?",
                   style: TextStyle(
                     color: Color.fromRGBO(245, 245, 245, 1),
                     fontWeight: FontWeight.w600,
                     fontSize: 20,
                   ))),
-          content: Text(
-              "This action will permanently delete your class. Are you sure you want to continue?",
+          content: Text("This action will permanently delete your class. Are you sure you want to continue?",
               style: TextStyle(
-                color: Color.fromRGBO(245, 245, 245, 0.8),
-                fontSize: 14,
-              )),
+                fontStyle: FontStyle.italic,
+                color: Color.fromRGBO(245, 245, 245, 0.6),
+                height: 0.95,
+                fontSize: 12,
+              )
+          ),
           actions: [
             ElevatedButton(
               style: ButtonStyle(
@@ -558,29 +560,6 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
     Navigator.pop(context);
   }
 
-  void DeleteCard(String postID) async {
-    DatabaseReference ref =
-        FirebaseDatabase.instance.ref("Posts/$postID/groups");
-    DataSnapshot snapshot = await ref.get();
-    List groups = [];
-    (snapshot.value as Map).forEach((a, b) => groups.add(a));
-    for (var group in groups) {
-      (FirebaseDatabase.instance.ref("Groups/$group/posts/$postID")).remove();
-    }
-
-    ref = FirebaseDatabase.instance.ref("Posts/$postID/usersDone");
-    snapshot = await ref.get();
-    List users = [];
-    if (snapshot.value != null) {
-      (snapshot.value as Map).forEach((a, b) => users.add(a));
-      for (var user in users) {
-        (FirebaseDatabase.instance.ref("Users/$user/postsDone/$postID"))
-            .remove();
-      }
-    }
-    (FirebaseDatabase.instance.ref("Posts/$postID")).remove();
-  }
-
   void AlertLeaveGroup(String groupID) {
     showDialog(
       context: context,
@@ -591,18 +570,20 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
             borderRadius: BorderRadius.circular(10),
           ),
           title: Center(
-              child: Text("Confirm Leave Class",
+              child: Text("Confirm Leave Class?",
                   style: TextStyle(
                     color: Color.fromRGBO(245, 245, 245, 1),
                     fontWeight: FontWeight.w600,
                     fontSize: 20,
                   ))),
-          content: Text(
-              "This action will permanently remove you from the class. Are you sure you want to continue?",
-              style: TextStyle(
-                color: Color.fromRGBO(245, 245, 245, 0.8),
-                fontSize: 14,
-              )),
+            content: Text("This action will remove you from the class. You will be required to scan the QR code again in order to be re-invited. Are you sure you want to continue?",
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  color: Color.fromRGBO(245, 245, 245, 0.6),
+                  height: 0.95,
+                  fontSize: 12,
+                )
+            ),
           actions: [
             ElevatedButton(
               style: ButtonStyle(
@@ -636,7 +617,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                 Navigator.of(context).pop();
                 LeaveGroup(widget.groupID);
               },
-              child: Text("Leave Class",
+              child: Text("Confirm",
                   style: TextStyle(
                     color: Color.fromRGBO(245, 245, 245, 0.8),
                   )),
@@ -872,4 +853,27 @@ class WidgetGroupsMorePostsBuilderState
                         child: CircularProgressIndicator(),
                       )));
   }
+}
+
+void DeleteCard(String postID) async {
+  DatabaseReference ref =
+  FirebaseDatabase.instance.ref("Posts/$postID/groups");
+  DataSnapshot snapshot = await ref.get();
+  List groups = [];
+  (snapshot.value as Map).forEach((a, b) => groups.add(a));
+  for (var group in groups) {
+    (FirebaseDatabase.instance.ref("Groups/$group/posts/$postID")).remove();
+  }
+
+  ref = FirebaseDatabase.instance.ref("Posts/$postID/usersDone");
+  snapshot = await ref.get();
+  List users = [];
+  if (snapshot.value != null) {
+    (snapshot.value as Map).forEach((a, b) => users.add(a));
+    for (var user in users) {
+      (FirebaseDatabase.instance.ref("Users/$user/postsDone/$postID"))
+          .remove();
+    }
+  }
+  (FirebaseDatabase.instance.ref("Posts/$postID")).remove();
 }
