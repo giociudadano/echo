@@ -94,7 +94,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               name: username,
                               radius: 50,
                               fontsize: 21,
-                              img: profilePictureURL,
+                              img: profilePictureURL == "" ? null : profilePictureURL,
                             ),
                             Positioned(
                                 bottom: 0,
@@ -315,8 +315,16 @@ class _ProfilePageState extends State<ProfilePage> {
                                       fontSize: 14,
                                     ))
                               ]),
-                              Icon(Icons.chevron_right,
-                                  color: Color.fromRGBO(235, 235, 235, 0.8)),
+                              Row(
+                                children:[
+                                  Text("English",
+                                  style: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.4))),
+                                  SizedBox(width: 20),
+                                  Icon(Icons.chevron_right,
+                                      color: Color.fromRGBO(235, 235, 235, 0.8)),
+                                ]
+                              )
+
                             ]),
                       ),
                       TextButton(
@@ -357,8 +365,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                       fontSize: 14,
                                     ))
                               ]),
-                              Icon(Icons.chevron_right,
-                                  color: Color.fromRGBO(235, 235, 235, 0.8)),
+                              Row(
+                                  children:[
+                                    Text("Dark Mode",
+                                        style: TextStyle(color: Color.fromRGBO(235, 235, 235, 0.4))),
+                                    SizedBox(width: 20),
+                                    Icon(Icons.chevron_right,
+                                        color: Color.fromRGBO(235, 235, 235, 0.8)),
+                                  ]
+                              )
                             ]),
                       ),
                       TextButton(

@@ -1,20 +1,51 @@
 part of main;
 
 class CardGroupMember extends StatefulWidget {
-  var userID, username, displayName, profilePictureURL, status;
-  CardGroupMember(this.userID, this.username, this.displayName, this.profilePictureURL, this.status);
+  var groupID, userID, username, displayName, profilePictureURL, status;
+  bool isSelectable, isAdmin;
+  CardGroupMember(
+      this.groupID, this.userID, this.username, this.displayName,
+      this.profilePictureURL, this.status, this.isSelectable, this.isAdmin);
 
   @override
   State<CardGroupMember> createState() => _CardGroupMemberState();
 }
 
 class _CardGroupMemberState extends State<CardGroupMember> {
+  bool onSelected = false;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return GestureDetector(
+    onTap: () {
+      setState((){
+        onSelected = !onSelected;
+      });
+    },
+    child: Padding(
       padding: EdgeInsets.only(top: 20),
-      child: Row(
+      child: PopupMenuButton(
+        enabled: (widget.isSelectable && !widget.isAdmin),
+        color: Colors.black,
+        itemBuilder: (BuildContext context) {
+          return [
+            PopupMenuItem(
+              onTap: () {
+                Future.delayed(
+                    const Duration(seconds: 0),
+                        () => AlertRemoveMember(widget.userID)
+                );
+              },
+              child: Text(
+                "Remove Member",
+                style: TextStyle(
+                  color: Color.fromRGBO(255, 167, 167, 1),
+                ),
+              ),
+            ),
+          ];
+        },
+        icon: Row(
         children:[
           ProfilePicture(
             name: widget.username,
@@ -28,7 +59,8 @@ class _CardGroupMemberState extends State<CardGroupMember> {
             children: [
               Text(widget.displayName,
                 style: TextStyle(
-                  color: Color.fromRGBO(245, 245, 245, 1),
+                  color: widget.isAdmin ? Color.fromRGBO(
+                      183, 147, 248, 1.0) : Color.fromRGBO(245, 245, 245, 1),
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                 )
@@ -45,6 +77,105 @@ class _CardGroupMemberState extends State<CardGroupMember> {
           )
         ]
       )
+      ),
+    )
     );
   }
+
+  void AlertRemoveMember(String userID){
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color.fromRGBO(30, 30, 32, 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: Center(
+              child: Text("Confirm Remove Member?",
+                  style: TextStyle(
+                    color: Color.fromRGBO(245, 245, 245, 1),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                  ))),
+            content: Text("This action will remove this user from the group. They will be required to scan the QR Code again in order to be re-invited. Are you sure you want to continue?",
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  color: Color.fromRGBO(245, 245, 245, 0.6),
+                  height: 0.95,
+                  fontSize: 12,
+                )
+            ),
+          actions: [
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor:
+                MaterialStatePropertyAll<Color>(Colors.transparent),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    side: BorderSide(
+                        color: Color.fromRGBO(245, 245, 245, 0.8), width: 1.5),
+                  ),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Cancel",
+                  style: TextStyle(color: Color.fromRGBO(245, 245, 245, 0.8))),
+            ),
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll<Color>(
+                    Color.fromRGBO(238, 94, 94, 1)),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+              ),
+              onPressed: () {
+                RemoveMember(widget.groupID, widget.userID);
+                Navigator.of(context).pop();
+              },
+              child: Text("Confirm",
+                  style: TextStyle(
+                    color: Color.fromRGBO(245, 245, 245, 0.8),
+                  )),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void RemoveMember(String groupID, String userID) async {
+    DataSnapshot snapshot =
+    await (FirebaseDatabase.instance.ref("Groups/$groupID/posts")).get();
+    List posts = [];
+    if (snapshot.value != null) {
+      (snapshot.value as Map).forEach((a, b) => posts.add(a));
+      for (var post in posts) {
+        snapshot =
+        await (FirebaseDatabase.instance.ref("Posts/$post/userID")).get();
+        if (snapshot.value == userID) {
+          snapshot =
+          await (FirebaseDatabase.instance.ref("Posts/$post/groups")).get();
+          List groups = [];
+          (snapshot.value as Map).forEach((a, b) => groups.add(a));
+          if (groups.length == 1) {
+            DeleteCard(post);
+          } else {
+            (FirebaseDatabase.instance.ref("Posts/$post/groups/$groupID"))
+                .remove();
+          }
+        }
+      }
+    }
+    (FirebaseDatabase.instance.ref("Groups/$groupID/members/$userID")).remove();
+    (FirebaseDatabase.instance.ref("Users/$userID/groups/$groupID")).remove();
+    Navigator.pop(context);
+  }
+
 }

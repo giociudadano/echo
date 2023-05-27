@@ -28,12 +28,15 @@ import 'package:bullet/firebase_options.dart';
 import 'package:intl/intl.dart';
 import 'package:universal_io/io.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 
 // Custom Objects
 import 'objects/card_post.dart';
 import 'objects/group_filter.dart';
 import 'package:bullet/content_model.dart';
+
+part 'services/auth_service.dart';
 part 'objects/card_group.dart';
 part 'objects/card_group_member.dart';
 
@@ -103,7 +106,7 @@ class _MyAppPageState extends State<MyAppPage> with TickerProviderStateMixin {
       } else {
         String username = await _getUsername();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Successfully logged in as $username"),
+          content: username == null ? Text("Successfully logged in!") : Text("Successfully logged in as $username"),
         ));
         if (foundation.kIsWeb) {
           Navigator.pop(context);

@@ -1,8 +1,9 @@
 part of main;
 
 class GroupsMorePage extends StatefulWidget {
-  String groupID, groupName, groupDesc;
-  GroupsMorePage(this.groupID, this.groupName, this.groupDesc);
+  String groupID, groupName, groupDesc, adminID;
+
+  GroupsMorePage(this.groupID, this.groupName, this.groupDesc, this.adminID);
 
   @override
   State<GroupsMorePage> createState() => _GroupsMorePageState();
@@ -17,7 +18,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
   @override
   void initState() {
     super.initState();
-    initAdminPerms(widget.groupID);
+    initAdminPerms(widget.adminID);
     DatabaseReference ref =
         FirebaseDatabase.instance.ref('Groups/${widget.groupID}');
     ref.onValue.listen((event) async {
@@ -90,113 +91,107 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                           icon: Icon(Icons.more_vert, color: Colors.white),
                           color: Color.fromRGBO(30, 30, 32, 1),
                           itemBuilder: (BuildContext context) {
-                            return isAdmin
-                                ? [
-                                    PopupMenuItem(
-                                      onTap: () {
-                                        Future.delayed(
-                                            const Duration(seconds: 0),
-                                            () => Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          GroupsMoreMembersPage(
-                                                              widget.groupID)),
-                                                ));
-                                      },
-                                      child: Text(
-                                        "View Members",
-                                        style: TextStyle(
-                                          color:
-                                              Color.fromRGBO(235, 235, 235, 1),
-                                        ),
-                                      ),
+                            if (isAdmin) {
+                              return [
+                                PopupMenuItem(
+                                  onTap: () {
+                                    Future.delayed(
+                                        const Duration(seconds: 0),
+                                        () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      GroupsMoreMembersPage(
+                                                          widget.groupID, isAdmin, widget.adminID
+                                                      )
+                                              ),
+                                            ));
+                                  },
+                                  child: Text(
+                                    "View Members",
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(235, 235, 235, 1),
                                     ),
-                                    PopupMenuItem(
-                                      onTap: () {
-                                        Future.delayed(
-                                            const Duration(seconds: 0),
-                                            () => AlertInviteMembers(
-                                                widget.groupID));
-                                      },
-                                      child: Text(
-                                        "Invite Members",
-                                        style: TextStyle(
-                                          color:
-                                              Color.fromRGBO(235, 235, 235, 1),
-                                        ),
-                                      ),
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  onTap: () {
+                                    Future.delayed(
+                                        const Duration(seconds: 0),
+                                        () =>
+                                            AlertInviteMembers(widget.groupID));
+                                  },
+                                  child: Text(
+                                    "Invite Members",
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(235, 235, 235, 1),
                                     ),
-                                    PopupMenuItem(
-                                      onTap: () {
-                                        Future.delayed(
-                                            const Duration(seconds: 0),
-                                            () => AlertEditGroup(
-                                                widget.groupID,
-                                                widget.groupName,
-                                                widget.groupDesc));
-                                      },
-                                      child: Text(
-                                        "Edit Class",
-                                        style: TextStyle(
-                                          color:
-                                              Color.fromRGBO(235, 235, 235, 1),
-                                        ),
-                                      ),
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  onTap: () {
+                                    Future.delayed(
+                                        const Duration(seconds: 0),
+                                        () => AlertEditGroup(
+                                            widget.groupID,
+                                            widget.groupName,
+                                            widget.groupDesc));
+                                  },
+                                  child: Text(
+                                    "Edit Class",
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(235, 235, 235, 1),
                                     ),
-                                    PopupMenuItem(
-                                      onTap: () {
-                                        Future.delayed(
-                                            const Duration(seconds: 0),
-                                            () => AlertDeleteGroup(
-                                                widget.groupID));
-                                      },
-                                      child: Text(
-                                        "Delete Class",
-                                        style: TextStyle(
-                                          color:
-                                              Color.fromRGBO(255, 167, 167, 1),
-                                        ),
-                                      ),
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  onTap: () {
+                                    Future.delayed(const Duration(seconds: 0),
+                                        () => AlertDeleteGroup(widget.groupID));
+                                  },
+                                  child: Text(
+                                    "Delete Class",
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(255, 167, 167, 1),
                                     ),
-                                  ]
-                                : [
-                                    PopupMenuItem(
-                                      onTap: () {
-                                        Future.delayed(
-                                            const Duration(seconds: 0),
-                                            () => Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          GroupsMoreMembersPage(
-                                                              widget.groupID)),
-                                                ));
-                                      },
-                                      child: Text(
-                                        "View Members",
-                                        style: TextStyle(
-                                          color:
-                                              Color.fromRGBO(235, 235, 235, 1),
-                                        ),
-                                      ),
+                                  ),
+                                ),
+                              ];
+                            } else {
+                              return [
+                                PopupMenuItem(
+                                  onTap: () {
+                                    Future.delayed(
+                                        const Duration(seconds: 0),
+                                        () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      GroupsMoreMembersPage(
+                                                          widget.groupID, isAdmin, widget.adminID)),
+                                            ));
+                                  },
+                                  child: Text(
+                                    "View Members",
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(235, 235, 235, 1),
                                     ),
-                                    PopupMenuItem(
-                                      onTap: () {
-                                        Future.delayed(
-                                            const Duration(seconds: 0),
-                                            () => AlertLeaveGroup(
-                                                widget.groupID));
-                                      },
-                                      child: Text(
-                                        "Leave Class",
-                                        style: TextStyle(
-                                          color:
-                                              Color.fromRGBO(255, 167, 167, 1),
-                                        ),
-                                      ),
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  onTap: () {
+                                    Future.delayed(const Duration(seconds: 0),
+                                        () => AlertLeaveGroup(widget.groupID));
+                                  },
+                                  child: Text(
+                                    "Leave Class",
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(255, 167, 167, 1),
                                     ),
-                                  ];
+                                  ),
+                                )
+                              ];
+                            }
                           },
                         ),
                       ],
@@ -453,13 +448,9 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
     ref.update({'name': groupName, 'description': groupDesc});
   }
 
-  void initAdminPerms(String groupID) async {
-    DatabaseReference ref =
-        FirebaseDatabase.instance.ref("Groups/$groupID/admin");
-    DataSnapshot snapshot = await ref.get();
+  void initAdminPerms(String adminID) async {
     setState(() {
-      isAdmin = (FirebaseAuth.instance.currentUser?.uid.toString() ==
-          snapshot.value.toString());
+      isAdmin = (FirebaseAuth.instance.currentUser?.uid.toString() == adminID);
     });
   }
 
@@ -473,18 +464,20 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
             borderRadius: BorderRadius.circular(10),
           ),
           title: Center(
-              child: Text("Confirm Delete Class",
+              child: Text("Confirm Delete Class?",
                   style: TextStyle(
                     color: Color.fromRGBO(245, 245, 245, 1),
                     fontWeight: FontWeight.w600,
                     fontSize: 20,
                   ))),
-          content: Text(
-              "This action will permanently delete your class. Are you sure you want to continue?",
+          content: Text("This action will permanently delete your class. Are you sure you want to continue?",
               style: TextStyle(
-                color: Color.fromRGBO(245, 245, 245, 0.8),
-                fontSize: 14,
-              )),
+                fontStyle: FontStyle.italic,
+                color: Color.fromRGBO(245, 245, 245, 0.6),
+                height: 0.95,
+                fontSize: 12,
+              )
+          ),
           actions: [
             ElevatedButton(
               style: ButtonStyle(
@@ -567,29 +560,6 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
     Navigator.pop(context);
   }
 
-  void DeleteCard(String postID) async {
-    DatabaseReference ref =
-        FirebaseDatabase.instance.ref("Posts/$postID/groups");
-    DataSnapshot snapshot = await ref.get();
-    List groups = [];
-    (snapshot.value as Map).forEach((a, b) => groups.add(a));
-    for (var group in groups) {
-      (FirebaseDatabase.instance.ref("Groups/$group/posts/$postID")).remove();
-    }
-
-    ref = FirebaseDatabase.instance.ref("Posts/$postID/usersDone");
-    snapshot = await ref.get();
-    List users = [];
-    if (snapshot.value != null) {
-      (snapshot.value as Map).forEach((a, b) => users.add(a));
-      for (var user in users) {
-        (FirebaseDatabase.instance.ref("Users/$user/postsDone/$postID"))
-            .remove();
-      }
-    }
-    (FirebaseDatabase.instance.ref("Posts/$postID")).remove();
-  }
-
   void AlertLeaveGroup(String groupID) {
     showDialog(
       context: context,
@@ -600,18 +570,20 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
             borderRadius: BorderRadius.circular(10),
           ),
           title: Center(
-              child: Text("Confirm Leave Class",
+              child: Text("Confirm Leave Class?",
                   style: TextStyle(
                     color: Color.fromRGBO(245, 245, 245, 1),
                     fontWeight: FontWeight.w600,
                     fontSize: 20,
                   ))),
-          content: Text(
-              "This action will permanently remove you from the class. Are you sure you want to continue?",
-              style: TextStyle(
-                color: Color.fromRGBO(245, 245, 245, 0.8),
-                fontSize: 14,
-              )),
+            content: Text("This action will remove you from the class. You will be required to scan the QR code again in order to be re-invited. Are you sure you want to continue?",
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  color: Color.fromRGBO(245, 245, 245, 0.6),
+                  height: 0.95,
+                  fontSize: 12,
+                )
+            ),
           actions: [
             ElevatedButton(
               style: ButtonStyle(
@@ -645,7 +617,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
                 Navigator.of(context).pop();
                 LeaveGroup(widget.groupID);
               },
-              child: Text("Leave Class",
+              child: Text("Confirm",
                   style: TextStyle(
                     color: Color.fromRGBO(245, 245, 245, 0.8),
                   )),
@@ -882,4 +854,27 @@ class WidgetGroupsMorePostsBuilderState
                         child: CircularProgressIndicator(),
                       )));
   }
+}
+
+void DeleteCard(String postID) async {
+  DatabaseReference ref =
+  FirebaseDatabase.instance.ref("Posts/$postID/groups");
+  DataSnapshot snapshot = await ref.get();
+  List groups = [];
+  (snapshot.value as Map).forEach((a, b) => groups.add(a));
+  for (var group in groups) {
+    (FirebaseDatabase.instance.ref("Groups/$group/posts/$postID")).remove();
+  }
+
+  ref = FirebaseDatabase.instance.ref("Posts/$postID/usersDone");
+  snapshot = await ref.get();
+  List users = [];
+  if (snapshot.value != null) {
+    (snapshot.value as Map).forEach((a, b) => users.add(a));
+    for (var user in users) {
+      (FirebaseDatabase.instance.ref("Users/$user/postsDone/$postID"))
+          .remove();
+    }
+  }
+  (FirebaseDatabase.instance.ref("Posts/$postID")).remove();
 }

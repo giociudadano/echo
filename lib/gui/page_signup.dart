@@ -13,161 +13,186 @@ class SignupPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color.fromRGBO(98, 112, 243, 1),
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 40),
+        child: Scrollbar(
+          thickness: 10,
           child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    const Text(
-                      'Nice to\nmeet you!',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 50,
-                          height: 0.85,
-                          color: Colors.white),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 80),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Email",
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      TextFormField(
-                        controller: _inputEmail,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(8.0),
+              child: ListView(
+                children: [
+                  SizedBox(height: 30),
+                  Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        SizedBox(height: 270),
+                        Positioned(
+                          left: -30,
+                          child: Image.asset(
+                            'lib/assets/images/mascot_echo_writing.png',
+                            height: 250,
                           ),
-                          hintText: 'Enter your email',
-                          filled: true,
-                          fillColor: Colors.white,
-                          isDense: true,
                         ),
-                        validator: (String? value) {
-                          return _verifyEmail(value);
-                        },
-                      ),
-                      SizedBox(height: 20),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Username",
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      TextFormField(
-                        controller: _inputUsername,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          hintText: 'Enter your username',
-                          filled: true,
-                          fillColor: Colors.white,
-                          isDense: true,
-                        ),
-                        validator: (String? value) {
-                          return _verifyUsername(value);
-                        },
-                      ),
-                      SizedBox(height: 20),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Password",
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      TextFormField(
-                        controller: _inputPassword,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          hintText: 'Enter your password',
-                          filled: true,
-                          fillColor: Colors.white,
-                          isDense: true,
-                        ),
-                        validator: (String? value) {
-                          return _verifyPassword(value);
-                        },
-                      ),
-                      SizedBox(height: 60),
-                      Row(
+                        Positioned(
+                          left: 80,
+                          top: 160,
+                          child: Row(children: [
+                            const Text(
+                              'Nice to \nmeet you!',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 50,
+                                  height: 0.85,
+                                  color: Colors.white),
+                            ),
+                          ]),
+                        )
+                      ]
+                  ),
+                  SizedBox(height: 30),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 40),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
                         children: [
-                          Expanded(
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                  backgroundColor:
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Email",
+                              style: TextStyle(color: Colors.white, fontSize: 14),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          TextFormField(
+                            controller: _inputEmail,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              hintText: 'Enter your email',
+                              filled: true,
+                              fillColor: Colors.white,
+                              isDense: true,
+                            ),
+                            style: TextStyle(fontSize: 14),
+                            validator: (String? value) {
+                              return _verifyEmail(value);
+                            },
+                          ),
+                          SizedBox(height: 10),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Username",
+                              style: TextStyle(color: Colors.white, fontSize: 14),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          TextFormField(
+                            controller: _inputUsername,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              hintText: 'Enter your username',
+                              filled: true,
+                              fillColor: Colors.white,
+                              isDense: true,
+                            ),
+                            style: TextStyle(fontSize: 14),
+                            validator: (String? value) {
+                              return _verifyUsername(value);
+                            },
+                          ),
+                          SizedBox(height: 10),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Password",
+                              style: TextStyle(color: Colors.white, fontSize: 14),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          TextFormField(
+                            controller: _inputPassword,
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              hintText: 'Enter your password',
+                              filled: true,
+                              fillColor: Colors.white,
+                              isDense: true,
+                            ),
+                            style: TextStyle(fontSize: 14),
+                            validator: (String? value) {
+                              return _verifyPassword(value);
+                            },
+                          ),
+                          SizedBox(height: 40),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                      backgroundColor:
                                       MaterialStatePropertyAll<Color>(
                                           Colors.black),
-                                  shape: MaterialStateProperty.all<
+                                      shape: MaterialStateProperty.all<
                                           RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ))),
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  _addUser(context, _inputEmail.text,
-                                      _inputUsername.text, _inputPassword.text);
-                                }
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 10),
-                                child: Text(
-                                  'Get Started',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(235, 235, 235, 0.8),
-                                    fontSize: 14,
+                                          RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8.0),
+                                          ))),
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      _addUser(
+                                          context,
+                                          _inputEmail.text,
+                                          _inputUsername.text,
+                                          _inputPassword.text);
+                                    }
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 10),
+                                    child: Text(
+                                      'Get Started',
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(235, 235, 235, 0.8),
+                                        fontSize: 14,
+                                      ),
+                                    ),
                                   ),
                                 ),
+                              )
+                            ],
+                          ),
+                          SizedBox(height: 15),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              'I already have an account',
+                              style: TextStyle(
+                                color: Colors.white,
+                                decoration: TextDecoration.underline,
+                                decorationColor: Colors.white,
                               ),
                             ),
-                          )
+                          ),
+                          SizedBox(height: 40),
                         ],
                       ),
-                      SizedBox(height: 15),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text(
-                          'I already have an account',
-                          style: TextStyle(
-                            color: Colors.white,
-                            decoration: TextDecoration.underline,
-                            decorationColor: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
         ),
       ),
     );
@@ -239,7 +264,7 @@ class SignupPage extends StatelessWidget {
         ref.update({
           "username": _generateUsername(username),
           "displayName": username,
-          "status": "online",
+          "status": "Online",
         });
       }
     });
