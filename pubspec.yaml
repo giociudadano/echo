@@ -24,6 +24,7 @@ dependencies:
   image_picker: ^0.8.7+4
   firebase_storage: ^11.1.2
   universal_io: ^2.2.0
+  google_sign_in: ^6.1.2
 
 dev_dependencies:
   flutter_test:
@@ -36,6 +37,8 @@ flutter:
   uses-material-design: true
   assets:
     - lib/assets/images/onboarding/
+    - lib/assets/images/services/
+    - lib/assets/images/
 
   fonts:
     - family: SF-Pro

@@ -23,152 +23,204 @@ class LoginPage extends StatelessWidget {
       body: SafeArea(
         child: Scrollbar(
             thickness: 10,
-            child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 40),
-          child: Center(
+            child: Center(
               child: ListView(
                   children: [
-                    SizedBox(height: 40),
-                    Row(children: [
-                      Placeholder(
-                        color: Colors.white,
-                        fallbackHeight: 200,
-                        fallbackWidth: 200,
-                      ),
-                    ]),
-                    SizedBox(height: 40),
-                    Row(children: [
-                      const Text(
-                        'Welcome\nback',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 50,
-                            height: 0.85,
-                            color: Colors.white),
-                      ),
-                    ]),
-                    SizedBox(height: 40),
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Email",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                              textAlign: TextAlign.left,
-                            ),
+                    SizedBox(height: 30),
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        SizedBox(height: 270),
+                        Positioned(
+                          left: -120,
+                          child: Image.asset(
+                            'lib/assets/images/mascot_echo_flying.PNG',
+                            height: 250,
                           ),
-                          SizedBox(height: 5),
-                          TextFormField(
-                            controller: _inputEmail,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        Positioned(
+                          left: 80,
+                          top: 160,
+                          child: Row(children: [
+                            const Text(
+                              'Welcome\nback',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 50,
+                                  height: 0.85,
+                                  color: Colors.white),
+                            ),
+                          ]),
+                        )
+                      ]
+                    ),
+                    SizedBox(height: 30),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 40),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Email",
+                                style:
+                                TextStyle(color: Colors.white, fontSize: 14),
+                                textAlign: TextAlign.left,
                               ),
-                              hintText: 'Enter your email',
-                              filled: true,
-                              fillColor: Colors.white,
-                              isDense: true,
                             ),
-                            validator: (String? value) {
-                              return _verifyEmail(value);
-                            },
-                          ),
-                          SizedBox(height: 20),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Password",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          SizedBox(height: 5),
-                          TextFormField(
-                            controller: _inputPassword,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(8.0),
+                            SizedBox(height: 5),
+                            TextFormField(
+                              controller: _inputEmail,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                hintText: 'Enter your email',
+                                filled: true,
+                                fillColor: Colors.white,
+                                isDense: true,
                               ),
-                              hintText: 'Enter your password',
-                              filled: true,
-                              fillColor: Colors.white,
-                              isDense: true,
+                              style: TextStyle(fontSize: 14),
+                              validator: (String? value) {
+                                return _verifyEmail(value);
+                              },
                             ),
-                            validator: (String? value) {
-                              return _verifyPassword(value);
-                            },
-                            obscureText: true,
-                          ),
-                          SizedBox(height: 60),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStatePropertyAll<Color>(
-                                              Colors.black),
-                                      shape: MaterialStateProperty.all<
-                                              RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                      ))),
-                                  onPressed: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      loginUser(
-                                          _scaffoldKey.currentContext,
-                                          _inputEmail.text,
-                                          _inputPassword.text);
-                                    }
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 10),
-                                    child: Text(
-                                      'Log In',
-                                      style: TextStyle(
-                                        color:
-                                            Color.fromRGBO(235, 235, 235, 0.8),
-                                        fontSize: 14,
+                            SizedBox(height: 10),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Password",
+                                style:
+                                TextStyle(color: Colors.white, fontSize: 14),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            TextFormField(
+                              controller: _inputPassword,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                hintText: 'Enter your password',
+                                filled: true,
+                                fillColor: Colors.white,
+                                isDense: true,
+                              ),
+                              validator: (String? value) {
+                                return _verifyPassword(value);
+                              },
+                              style: TextStyle(fontSize: 14),
+                              obscureText: true,
+                            ),
+                            SizedBox(height: 30),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                        MaterialStatePropertyAll<Color>(
+                                            Colors.black),
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(8.0),
+                                            ))),
+                                    onPressed: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        loginUser(
+                                            _scaffoldKey.currentContext,
+                                            _inputEmail.text,
+                                            _inputPassword.text);
+                                      }
+                                    },
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(vertical: 10),
+                                      child: Text(
+                                        'Sign In',
+                                        style: TextStyle(
+                                          color:
+                                          Color.fromRGBO(235, 235, 235, 0.8),
+                                          fontSize: 14,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 15),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SignupPage()));
-                            },
-                            child: const Text(
-                              'Sign up instead',
-                              style: TextStyle(
-                                color: Colors.white,
-                                decoration: TextDecoration.underline,
-                                decorationColor: Colors.white,
+                              ],
+                            ),
+                            SizedBox(height: 30),
+                            Row(
+                                children:[
+                                  Expanded(
+                                      child: Divider(
+                                        thickness: 0.5,
+                                        color: Colors.grey[400],
+                                      )
+                                  ),
+                                  Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 10),
+                                      child: Text(
+                                          "Or continue with",
+                                          style: TextStyle(color: Colors.grey[400])
+                                      )
+                                  ),
+                                  Expanded(
+                                      child: Divider(
+                                        thickness: 0.5,
+                                        color: Colors.grey[400],
+                                      )
+                                  ),
+                                ]
+                            ),
+                            SizedBox(height: 20),
+                            Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                                  color: Colors.white,
+                                ),
+                                height: 70,
+                                width: 70,
+                                child: Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: IconButton(
+                                    icon: Image.asset('lib/assets/images/services/service_google.png'),
+                                    onPressed: () => AuthService().signInWithGoogle(),
+                                  ),
+                                )
+                            ),
+                            SizedBox(height: 20),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SignupPage()));
+                              },
+                              child: const Text(
+                                'Sign up instead',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: Colors.white,
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(height: 40),
-                        ],
+                            SizedBox(height: 40),
+                          ],
+                        ),
                       ),
-                    ),
+                    )
+
                   ],
                 ),
           ),
-        ),
         ),
       ),
     );
