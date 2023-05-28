@@ -27,6 +27,7 @@ dependencies:
   universal_io: ^2.2.0
   google_sign_in: ^6.1.2
   intl: ^0.18.1
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
@@ -77,3 +78,9 @@ flutter_native_splash:
   android_12:
     color: "#5C70F2"
     image: lib/assets/images/mascot_echo_writing.png
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "lib/assets/images/mascot_echo_writing_square.png"
+  min_sdk_android: 21
