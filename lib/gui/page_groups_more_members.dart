@@ -25,6 +25,7 @@ class GroupsMoreMembersPageState extends State<GroupsMoreMembersPage> {
   void initState() {
     super.initState();
     getMembers();
+    initListener();
   }
 
   getProfilePicture(Map userMetadata) {
@@ -53,6 +54,22 @@ class GroupsMoreMembersPageState extends State<GroupsMoreMembersPage> {
     }
     setState((){
       isDoneBuilding = true;
+    });
+  }
+
+  void initListener() async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref('Users');
+    ref.onChildChanged.listen((event) async {
+      for (var member in members) {
+        if (member.UID == event.snapshot.key) {
+          print("[DEBUG] User changed at ${member.UID}");
+          member.username = event.snapshot.child('username').value.toString();
+          member.displayName = event.snapshot.child('displayName').value.toString();
+          member.status = event.snapshot.child('status').value.toString();
+          setState((){
+          });
+        }
+      }
     });
   }
 
