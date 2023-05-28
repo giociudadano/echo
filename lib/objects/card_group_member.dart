@@ -142,7 +142,23 @@ class _CardGroupMemberState extends State<CardGroupMember> {
                   )
               ),
             ]
+          ),
+          Spacer(),
+          widget.isAdmin ? Container(
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Color.fromRGBO(183, 147, 248, 1.0),
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(10))
+              ),
+            child: Text("   Admin   ",
+                style: TextStyle(
+                    color: Color.fromRGBO(183, 147, 248, 1.0),
+                    fontSize: 12,
+                )
+            )
           )
+          : SizedBox.shrink(),
         ]
       )
       ),
