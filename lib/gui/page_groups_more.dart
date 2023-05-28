@@ -265,7 +265,7 @@ class _GroupsMorePageState extends State<GroupsMorePage> {
               Container(
                 width: 250.0,
                 height: 250.0,
-                child: QrImage(
+                child: QrImageView(
                   errorCorrectionLevel: QrErrorCorrectLevel.H,
                   backgroundColor: Colors.white,
                   data: "${groupID}",

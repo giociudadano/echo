@@ -244,6 +244,7 @@ class LoginPage extends StatelessWidget {
     try {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       String errorMessage;
       switch (e.code) {
