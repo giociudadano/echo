@@ -662,21 +662,6 @@ class _ProfilePageState extends State<ProfilePage> {
         );
   }
 
-  getStatusColor(String status) {
-    switch (status){
-      case 'Online':
-        return Color.fromRGBO(102, 189, 80, 1);
-      case 'Away':
-        return Color.fromRGBO(235, 188, 70, 1);
-      case 'Do Not Disturb':
-        return Color.fromRGBO(222, 72, 65, 1);
-      case 'Offline':
-        return Color.fromRGBO(195, 201, 208, 1);
-      default:
-        return Colors.transparent;
-    }
-  }
-
   Widget getStatusOverlay(String status){
     switch (status) {
       case 'Away':
@@ -731,5 +716,20 @@ class _ProfilePageState extends State<ProfilePage> {
     ref.update({
       "status": status,
     });
+  }
+}
+
+getStatusColor(String status) {
+  switch (status){
+    case 'Online':
+      return Color.fromRGBO(102, 189, 80, 1);
+    case 'Away':
+      return Color.fromRGBO(235, 188, 70, 1);
+    case 'Do Not Disturb':
+      return Color.fromRGBO(222, 72, 65, 1);
+    case 'Offline':
+      return Color.fromRGBO(195, 201, 208, 1);
+    default:
+      return Colors.transparent;
   }
 }

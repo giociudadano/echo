@@ -23,7 +23,7 @@ class _CardGroupMemberState extends State<CardGroupMember> {
       });
     },
     child: Padding(
-      padding: EdgeInsets.only(top: 20),
+      padding: EdgeInsets.only(top: 15),
       child: PopupMenuButton(
         enabled: (widget.isSelectable && !widget.isAdmin),
         color: Colors.black,
@@ -47,11 +47,79 @@ class _CardGroupMemberState extends State<CardGroupMember> {
         },
         icon: Row(
         children:[
-          ProfilePicture(
-            name: widget.username,
-            radius: 25,
-            fontsize: 21,
-            img: widget.profilePictureURL,
+          Stack(
+            children: [
+              ProfilePicture(
+                name: widget.username,
+                radius: 25,
+                fontsize: 21,
+                img: widget.profilePictureURL,
+              ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: Color.fromRGBO(32, 35, 43, 1),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 4,
+                right: 4,
+                child: Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: getStatusColor(widget.status),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+              widget.status == 'Away' ? Positioned(
+                  bottom: 5,
+                  right: 2,
+                  child: Container(
+                    width: 10,
+                    height: 10,
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(32, 35, 43, 1),
+                      shape: BoxShape.circle,
+                    ),
+                  )
+              ) : SizedBox.shrink(),
+              widget.status == 'Do Not Disturb' ?
+              Positioned(
+                  bottom: 9,
+                  right: 7,
+                  child: ClipRect(
+                      child: Container(
+                        width: 7,
+                        height: 3,
+                        decoration: BoxDecoration(
+                          color: Color.fromRGBO(32, 35, 43, 1),
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      )
+                  )
+              ) : SizedBox.shrink(),
+              widget.status == 'Offline' ? Positioned(
+                  bottom: 7,
+                  right: 7,
+                  child: Container(
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(32, 35, 43, 1),
+                      shape: BoxShape.circle,
+                    ),
+                  )
+              ) : SizedBox.shrink(),
+            ]
           ),
           SizedBox(width: 20),
           Column(
