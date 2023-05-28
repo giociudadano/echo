@@ -1,7 +1,8 @@
 part of main;
 
 class GroupMember {
-  String UID, username, displayName, profilePictureURL, status;
+  String UID, username, displayName, status;
+  var profilePictureURL;
   bool isAdmin;
 
   GroupMember(this.UID, this.username, this.displayName, this.profilePictureURL, this.status, this.isAdmin);
@@ -26,6 +27,14 @@ class GroupsMoreMembersPageState extends State<GroupsMoreMembersPage> {
     getMembers();
   }
 
+  getProfilePicture(Map userMetadata) {
+    if (userMetadata['profilePicture'] == null){
+      return null;
+    } else {
+      return userMetadata['profilePicture']['url'];
+    }
+  }
+
   void getMembers() async {
     List users = [];
     DatabaseReference ref = FirebaseDatabase.instance.ref('Groups/${widget.groupID}/members');
@@ -38,7 +47,7 @@ class GroupsMoreMembersPageState extends State<GroupsMoreMembersPage> {
       members.add(
           GroupMember(
               userID, userMetadata['username'], userMetadata['displayName'],
-              userMetadata['profilePicture']['url'], userMetadata['status'], userID == widget.adminID
+              getProfilePicture(userMetadata), userMetadata['status'], userID == widget.adminID
           )
       );
     }
