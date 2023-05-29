@@ -224,6 +224,7 @@ class SignupPage extends StatelessWidget {
   }
 
   _addUser(BuildContext context, email, username, password) async {
+    bool newUserInitialized = false;
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
@@ -232,6 +233,19 @@ class SignupPage extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Account has been created!"),
       ));
+      String userID;
+      FirebaseAuth.instance.authStateChanges().listen((User? user) {
+        if ((user != null) && (!newUserInitialized)) {
+          newUserInitialized = true;
+          userID = user.uid;
+          DatabaseReference ref = FirebaseDatabase.instance.ref("Users/$userID");
+          ref.update({
+            "username": _generateUsername(username),
+            "displayName": username,
+            "status": "Online",
+          });
+        }
+      });
     } on FirebaseAuthException catch (e) {
       String errorMessage;
       switch (e.code) {
@@ -256,18 +270,6 @@ class SignupPage extends StatelessWidget {
       ));
       return;
     }
-    String userID;
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user != null) {
-        userID = user.uid;
-        DatabaseReference ref = FirebaseDatabase.instance.ref("Users/$userID");
-        ref.update({
-          "username": _generateUsername(username),
-          "displayName": username,
-          "status": "Online",
-        });
-      }
-    });
     Navigator.pop(context);
     LoginPage().loginUser(context, email, password);
   }

@@ -2,6 +2,7 @@ part of main;
 
 class AuthService {
   signInWithGoogle() async {
+    bool newUserInitialized = false;
     final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
     final GoogleSignInAuthentication gAuth = await gUser!.authentication;
 
@@ -14,9 +15,10 @@ class AuthService {
 
     if (result.additionalUserInfo!.isNewUser) {
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
-        if (user != null) {
+        if ((user != null) && (!newUserInitialized)) {
           String userID = user.uid;
           String displayName = user.displayName!;
+          newUserInitialized = true;
           DatabaseReference ref = FirebaseDatabase.instance.ref("Users/$userID");
           ref.update({
             "username": generateUsername(displayName),
