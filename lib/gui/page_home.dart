@@ -619,7 +619,7 @@ class _FormAddPostState extends State<FormAddPost> {
                                               ),
                                               const SizedBox(height: 10),
                                               Text(
-                                                "START TIME",
+                                                "SCHEDULE",
                                                 style: TextStyle(
                                                   color: Color.fromRGBO(
                                                       245, 245, 245, 0.8),
@@ -676,7 +676,7 @@ class _FormAddPostState extends State<FormAddPost> {
                                                     const InputDecoration(
                                                   border: InputBorder.none,
                                                   hintText:
-                                                      'Select start time of card',
+                                                      'Select schedule of card',
                                                   hintStyle: TextStyle(
                                                       color: Color.fromRGBO(
                                                           235, 235, 235, 0.2),
