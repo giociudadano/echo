@@ -37,7 +37,7 @@ class _CardPostState extends State<CardPost> {
   void initState(){
     getUsername();
     getProfilePicture();
-    getPostDoneState(widget.userID, widget.postID);
+    getPostDoneState(widget.postID);
     isCardAuthor(widget.postID);
     DatabaseReference ref = FirebaseDatabase.instance.ref('Posts/${widget.postID}');
     ref.onChildChanged.listen((event) async {
@@ -88,9 +88,9 @@ class _CardPostState extends State<CardPost> {
     }
   }
 
-  void getPostDoneState(String userID, String postID) async {
+  void getPostDoneState(String postID) async {
     DatabaseReference ref = FirebaseDatabase.instance.ref(
-        "Users/$userID/postsDone");
+        "Users/${getUID()}/postsDone");
     DataSnapshot snapshot = await ref.get();
     if (snapshot.value != null) {
       Map postsDoneMap = snapshot.value as Map;
@@ -257,7 +257,7 @@ class _CardPostState extends State<CardPost> {
                                 ),
                                 value: isDone,
                                 onChanged: (bool? value) {
-                                  updatePostDoneState(widget.userID, widget.postID, value!);
+                                  updatePostDoneState(widget.postID, value!);
                                   setState(() {
                                     isDone = value;
                                   });
@@ -339,7 +339,8 @@ class _CardPostState extends State<CardPost> {
     );
   }
 
-  void updatePostDoneState(String userID, String postID, bool value) {
+  void updatePostDoneState(String postID, bool value) {
+    var userID = getUID();
     DatabaseReference ref = FirebaseDatabase.instance.ref("Users/$userID/postsDone");
     DatabaseReference ref2 = FirebaseDatabase.instance.ref("Posts/$postID/usersDone");
     if (value == true){
