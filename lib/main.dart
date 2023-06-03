@@ -1,115 +1,219 @@
-import 'package:flutter/material.dart';
+library main;
 
-void main() {
+// Dart Libraries
+import 'dart:async'; // Asynchronous Computing
+import 'dart:math'; // Randomizers
+import 'dart:ui';
+
+// Flutter Libraries
+import 'package:flutter/foundation.dart' as foundation;
+import 'package:flutter/material.dart'; // Material Design
+import 'package:flutter/services.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart'; // Date and Time Picker Widget
+import 'package:multi_select_flutter/multi_select_flutter.dart'; // Item Selector
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart'; // Emoji Picker
+import 'package:qr_flutter/qr_flutter.dart'; //QR Code Generator
+import 'package:mobile_scanner/mobile_scanner.dart'; //QR Code Scanner
+import 'package:flutter_profile_picture/flutter_profile_picture.dart'; //Flutter Profile Pictures
+import 'package:image_picker/image_picker.dart'; //Image Picker
+
+// Firebase Libraries
+import 'package:firebase_core/firebase_core.dart'; // Firebase Main
+import 'package:firebase_auth/firebase_auth.dart'; // Authentication
+import 'package:firebase_database/firebase_database.dart'; // Read and Write
+import 'package:firebase_storage/firebase_storage.dart'; //Image Picker
+import 'package:bullet/firebase_options.dart';
+
+// Miscellaneous Libraries
+import 'package:intl/intl.dart';
+import 'package:universal_io/io.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+
+// Custom Objects
+import 'objects/card_post.dart';
+import 'objects/group_filter.dart';
+import 'package:bullet/content_model.dart';
+
+part 'services/auth_service.dart';
+part 'objects/card_group.dart';
+part 'objects/card_group_member.dart';
+
+part 'gui/page_login.dart';
+part 'gui/page_signup.dart';
+part 'gui/page_groups.dart';
+part 'gui/page_home.dart';
+part 'gui/page_profile.dart';
+part 'gui/page_groups_more.dart';
+part 'gui/page_profile_edit.dart';
+part 'gui/page_onboarding.dart';
+part 'gui/page_groups_more_members.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  if (foundation.kIsWeb) {
+    await FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
+  }
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Bullet',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+        fontFamily: 'SF-Pro',
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyAppPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class MyAppPage extends StatefulWidget {
+  const MyAppPage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyAppPage> createState() => _MyAppPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _MyAppPageState extends State<MyAppPage> with TickerProviderStateMixin {
+  late TabController tabController;
+  bool isLoggedIn = false;
+  int selectedIndex = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+  @override
+  void initState() {
+    super.initState();
+    tabController = TabController(vsync: this, length: 3);
+    tabController.addListener(() {
+      setState(() {
+        selectedIndex = tabController.index;
+      });
+    });
+    FirebaseAuth.instance.authStateChanges().listen((User? user) async {
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Successfully logged out!")));
+      } else {
+        String username = await _getUsername();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: username == null ? Text("Successfully logged in!") : Text("Successfully logged in as $username"),
+        ));
+        if (foundation.kIsWeb) {
+          Navigator.pop(context);
+        }
+      }
+      setState((){
+        isLoggedIn = (user != null);
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+    Widget page;
+    page = TabBarView(
+      controller: tabController,
+      children: [
+      HomePage(),
+      GroupsPage(),
+      ProfilePage(),
+    ]);
+
+    return DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          extendBody: true,
+          body: Stack(
+            children: [
+              isLoggedIn ? page : OnBoardingPage(),
+              isLoggedIn
+                  ? AppNavigationBar(tabController)
+                  : const SizedBox.shrink(),
+            ],
+          ),
+        ));
+  }
+
+  AppNavigationBar(TabController tabController) {
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(30.0),
+              topRight: Radius.circular(30.0),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            child: BottomNavigationBar(
+              iconSize: 24,
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Padding(
+                    padding: EdgeInsets.fromLTRB(40, 8, 0, 8),
+                    child: Icon(Icons.home_outlined),
+                  ),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.groups_outlined),
+                  label: 'Groups',
+                ),
+                BottomNavigationBarItem(
+                  icon: Padding(
+                    padding: EdgeInsets.fromLTRB(0, 8, 40, 8),
+                    child: Icon(Icons.account_circle_outlined),
+                  ),
+                  label: 'Debug',
+                ),
+              ],
+              currentIndex: selectedIndex,
+              backgroundColor: Color.fromRGBO(22, 23, 27, 0.2),
+              unselectedItemColor: const Color.fromRGBO(200, 200, 200, 0.8),
+              selectedItemColor: const Color.fromRGBO(98, 112, 142, 1),
+              onTap: (index) {
+                setState(() {
+                  tabController.index = index;
+                  tabController.animateTo(index);
+                  selectedIndex = index;
+                });
+              },
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
             ),
-          ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+  _getUsername() async {
+    String userID = '';
+    String username = 'Anonymous';
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      userID = user.uid;
+      DatabaseReference ref =
+          FirebaseDatabase.instance.ref("Users/$userID/username");
+      DataSnapshot snapshot = await ref.get();
+      username = snapshot.value.toString();
+    }
+    return username;
+  }
 }
+
+
+
+// hi from lloyd
